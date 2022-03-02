@@ -60,9 +60,10 @@ hold on; grid on; legend;
 for a = 1:numel(alphas)
     plot(1:nIters, squeeze(rews(a, :)), ...
         'Color', colors(a, :), ...
+        'LineWidth', 2, ...
         'DisplayName', ['\alpha = ', alpha_lables{a}])
 end
-xlim([0, nIters]); xlabel('Iterations')
+xlabel('Iterations'); xlim([0, nIters]);
 ylabel('Avg. rewards')
 % Actions taken plot
 subplot(1+nArms/2, 2, 2)
@@ -72,6 +73,9 @@ pb = bar(categorical(arm_lables), squeeze(cnts)');
 for a = 1:numel(alphas)
     pb(a).DisplayName = ['\alpha = ', alpha_lables{a}];
     pb(a).FaceColor = colors(a, :);
+    text(pb(a).XEndPoints, pb(a).YEndPoints, string(pb(a).YData), ...
+        'HorizontalAlignment', 'center', ...
+        'VerticalAlignment', 'bottom')
 end
 xlabel('Iterations')
 ylabel('Actions taken')
@@ -81,15 +85,16 @@ for i = 1:nArms
     title(['Arm #', num2str(i), ' Real vs Est means'])
     hold on; grid on; legend;
     plot(1:nIters, squeeze(real(1, i, :)), 'k', ...
+        'LineWidth', 2, ...
         'DisplayName', 'Real')
     for a = 1:numel(alphas)
         plot(1:nIters, squeeze(ests(a, i, :)), ...
             'Color', colors(a, :), ...
+            'LineWidth', 2, ...
             'DisplayName', ['\alpha = ', alpha_lables{a}])
     end
-    xlabel('Iterations')
-    ylabel('Means')
-    xlim([0, nIters])
+    xlabel('Iterations'); xlim([0, nIters]);
+    ylabel('Means');
 end
 
 % Optimal actions frequency heatmap

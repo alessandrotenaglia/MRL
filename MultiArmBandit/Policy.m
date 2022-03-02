@@ -30,8 +30,8 @@ classdef (Abstract) Policy
             obj.bandit = Bandit(nArms, means, stdevs, stat);
             obj.nIters = nIters;
             % Init arrays to store simulation data
-            obj.avgReward = zeros(1, nIters);
             obj.armCnt = zeros(nArms, 1);
+            obj.avgReward = zeros(1, nIters);
             obj.meansReal = zeros(nArms, nIters);
             obj.meansEst = zeros(nArms, nIters);
             obj.meansEst(:, 1) = initEst;
@@ -59,15 +59,12 @@ classdef (Abstract) Policy
         function obj = storeData(obj, iter, arm, reward)
             % Increment the counter of the action taken
             obj.armCnt(arm) = obj.armCnt(arm) + 1;
-
             % Update the average reward
             % R_avg(k) = R_avg(k-1) + 1/k * (R - R_avg(k-1))
             obj.avgReward(iter) = obj.avgReward(max(iter-1, 1)) + ...
                 (1 / iter) * (reward - obj.avgReward(max(iter-1, 1)));
-
             % Store the real means
             obj.meansReal(:, iter) = obj.bandit.means;
-
             % Copy the means of the previous iteration
             obj.meansEst(:, iter) = obj.meansEst(:, max(iter-1, 1));
             % Update the mean of the chosen arm
@@ -79,10 +76,11 @@ classdef (Abstract) Policy
             else
                 % Weighted avarege
                 % Q_a(k) = Q_a(k-1) + alpha * (R - Q_a(k-1))
+                % or
+                % Q_a(k) = alpha * R + (1 - alpha) * Q_a(k-1)
                 obj.meansEst(arm, iter) = obj.meansEst(arm, iter) + ...
                     obj.alpha * (reward - obj.meansEst(arm, iter));
             end
-
             % Check if it's the optimal action
             [~, opt_arm] = max(obj.meansReal(:, iter));
             if (arm == opt_arm)
@@ -94,7 +92,6 @@ classdef (Abstract) Policy
     methods (Abstract)
         % Choose the arm to pull
         arm = chooseArm(obj, iter);
-
         % Update policy params
         obj = updateParams(obj, iter, arm, reward);
     end

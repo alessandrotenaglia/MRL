@@ -8,8 +8,8 @@
 % Epsilon Greedy policy
 classdef EpsGreedy < Policy
 
-    % Eps-greedy params
     properties
+        % Eps-greedy params
         eps;    % Degree of exploration
         const;  % True if eps is constant, false otherwise
     end
@@ -18,15 +18,15 @@ classdef EpsGreedy < Policy
         % Class constructor
         function obj = EpsGreedy(nArms, means, stdevs, stat, alpha, ...
                 nIters, initEst, initEps, const)
-            obj = obj@Policy(nArms, means, stdevs, stat, alpha, ...
-                nIters, initEst)
+            obj = obj@Policy(nArms, means, stdevs, stat, alpha, nIters, ...
+                initEst)
             % Set params
             obj.eps = initEps * ones(1, nIters);
             obj.const = const;
         end
 
         % Choose the arm to pull with eps-greedy policy
-        function arm = chooseArm(obj, iter)
+        function arm = chooseArm(obj, iter)                
             if (rand() < obj.eps(iter))
                 % Explorative choice (prob = eps)
                 arm = randi(obj.bandit.nArms, 1);
@@ -45,10 +45,12 @@ classdef EpsGreedy < Policy
             % Update eps
             if (~obj.const)
                 % Exponential decay
-                % dx/dt = -lambda*t -> x(t) = x(0)*e^(-lambda*t)
-                % x(tf/2) < 0.05 * x(0) -> lambda = 3 / tf/2
+                % dx/dt = -lambda*t
+                % x(t) = x(0)*e^(-lambda*t)
+                % x(tf/3) < 0.05 * x(0)
+                % lambda = ln(0.05) / tf/3 ~= 3 / tf/3
                 obj.eps(iter+1) = obj.eps(1) * ...
-                    exp((-3/(obj.nIters/3))*iter);
+                    exp((-3 / (obj.nIters/3)) *iter);
             end
         end
     end

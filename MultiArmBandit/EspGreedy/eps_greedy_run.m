@@ -5,8 +5,8 @@
 %  Email: alessandro.tenaglia@uniroma2.it  %
 % ---------------------------------------- %
 
-function eps_greedy_run(nArms, means, stdevs, stat, alphas, ...
-    nIters, initEst, epsilons, epsconst)
+function eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, ...
+    initEst, epsilons, epsconst)
 
 % Initilaize simulation data arrays
 cnts = zeros(numel(alphas), numel(epsilons), nArms);

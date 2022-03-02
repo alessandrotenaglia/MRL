@@ -13,11 +13,11 @@ classdef Bandit
     end
 
     properties
-        nArms;      % Number of arms
-        means;      % Means of the normal distributions for rewards
-        stdevs;     % Std devs of the normal distributions for rewards
-        stat;       % True if the bandit is stationary, false otherwise
-        rng;        % Local random number generator for reproducibility
+        nArms;  % Number of arms
+        means;  % Means of the normal distributions for rewards
+        stdevs; % Std devs of the normal distributions for rewards
+        stat;   % True if the bandit is stationary, false otherwise
+        rng;    % Local random number generator for reproducibility
     end
 
     methods
@@ -44,7 +44,7 @@ classdef Bandit
         function obj = update(obj)
             if (~obj.stat)
                 % Update the means
-                obj.means = obj.means + randn(obj.rng, obj.nArms, 1) / 100;
+                obj.means = obj.means + randn(obj.rng, obj.nArms, 1) / 10;
             end
         end
     end

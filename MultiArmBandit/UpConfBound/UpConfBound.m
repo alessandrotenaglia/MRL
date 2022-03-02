@@ -8,8 +8,8 @@
 % Upper Confident Bound
 classdef UpConfBound < Policy
 
-    % Upper Confident Bound params
     properties
+        % Upper Confident Bound params
         c;          % Degree of exploration
         uncerts;    % Values of uncertainty
     end
@@ -34,7 +34,7 @@ classdef UpConfBound < Policy
         function obj = updateParams(obj, iter, ~, ~)
             % Compute uncertainties
             % uncert = c * sqrt(ln(k) / N_a(k))
-            for a = 1:obj.bandit.nArms
+            for a = 1 : obj.bandit.nArms
                 if (obj.armCnt(a) == 0)
                     obj.uncerts(a) = Inf;
                 else

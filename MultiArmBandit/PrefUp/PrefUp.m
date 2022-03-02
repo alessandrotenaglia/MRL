@@ -8,8 +8,8 @@
 % Preference Updates
 classdef PrefUp < Policy
 
-    % Preference Updates params
     properties
+        % Preference Updates params
         prefs;  % Preference values of actions
         probs;  % Probability of choosing actions
     end
@@ -50,9 +50,11 @@ classdef PrefUp < Policy
             rew_diff = reward - obj.avgReward(iter);
             for i = 1:obj.bandit.nArms
                 if (i == arm)
+                    % H_a(k+1) = H_a(k) + alpha * (R − R_bar)(1 − pi_a(k)))
                     obj.prefs(i, iter+1) = obj.prefs(i, iter) + ...
                         step * rew_diff * (1 - obj.probs(i, iter));
                 else
+                    % H_a(k+1) = H_a(k) - alpha * (R − R_bar) * pi_a(k))
                     obj.prefs(i, iter+1) = obj.prefs(i, iter) - ...
                         step * rew_diff * obj.probs(i, iter);
                 end

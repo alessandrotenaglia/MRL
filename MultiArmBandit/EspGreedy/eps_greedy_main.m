@@ -16,7 +16,7 @@ stat = true;
 alphas = 0.0;
 nIters = 200;
 initEst = zeros(nArms, 1);
-epsilons = [0.1; 0.1];
+epsilons = [0.2; 0.2];
 epsconst = [true; false];
 % Run
 eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
