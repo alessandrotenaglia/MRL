@@ -12,6 +12,7 @@ classdef Bandit
         seed = 42;  % Seed for random number generator
     end
 
+    % Bandit params
     properties
         nArms;  % Number of arms
         means;  % Means of the normal distributions for rewards
@@ -34,8 +35,12 @@ classdef Bandit
 
         % Pull an arm of the bandit
         function reward = pullArm(obj, arm)
-            % Return a reward through a normal disribution
+            % Return a reward through a normal disribution:
             % N(mu, sigma^2) = sigma * N(0, 1) + mu
+            % Test:
+            % mu = 10; sigma = 5;
+            % y = sigma * randn(1e6, 1) + mu;
+            % stats = [mean(y) std(y) var(y)];
             reward = obj.stdevs(arm) * randn(obj.rng, 1) + ...
                 obj.means(arm);
         end

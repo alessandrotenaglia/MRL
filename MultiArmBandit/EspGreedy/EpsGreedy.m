@@ -44,9 +44,9 @@ classdef EpsGreedy < Policy
             end
             % Update eps
             if (~obj.const)
-                % Exponential decay
+                % Exponential decay:
                 % dx/dt = -lambda*t
-                % x(t) = x(0)*e^(-lambda*t)
+                % x(t) = x(0) * e^(-lambda*t)
                 % x(tf/3) < 0.05 * x(0)
                 % lambda = ln(0.05) / tf/3 ~= 3 / tf/3
                 obj.eps(iter+1) = obj.eps(1) * ...

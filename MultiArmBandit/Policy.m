@@ -75,8 +75,7 @@ classdef (Abstract) Policy
                     (1 / obj.armCnt(arm)) * (reward - obj.meansEst(arm, iter));
             else
                 % Weighted avarege
-                % Q_a(k) = Q_a(k-1) + alpha * (R - Q_a(k-1))
-                % or
+                % Q_a(k) = Q_a(k-1) + alpha * (R - Q_a(k-1)) or
                 % Q_a(k) = alpha * R + (1 - alpha) * Q_a(k-1)
                 obj.meansEst(arm, iter) = obj.meansEst(arm, iter) + ...
                     obj.alpha * (reward - obj.meansEst(arm, iter));
