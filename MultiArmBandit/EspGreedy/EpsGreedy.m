@@ -1,6 +1,6 @@
 % ---------------------------------------- %
 %  File: EpsGreedy.m                       %
-%  Date: 22 February 2022                  %
+%  Date: February 22, 2022                 %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %
 % ---------------------------------------- %
@@ -50,7 +50,7 @@ classdef EpsGreedy < Policy
                 % x(tf/3) < 0.05 * x(0)
                 % lambda = ln(0.05) / tf/3 ~= 3 / tf/3
                 obj.eps(iter+1) = obj.eps(1) * ...
-                    exp((-3 / (obj.nIters/3)) *iter);
+                    exp((-3 / (obj.nIters/3)) * iter);
             end
         end
     end

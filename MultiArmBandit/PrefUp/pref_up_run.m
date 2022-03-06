@@ -1,6 +1,6 @@
 % ---------------------------------------- %
 %  File: pref_up_run.m                     %
-%  Date: 22 February 2022                  %
+%  Date: February 22, 2022                 %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %
 % ---------------------------------------- %

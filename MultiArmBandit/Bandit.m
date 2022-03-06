@@ -1,6 +1,6 @@
 % ---------------------------------------- %
 %  File: Bandit.m                          %
-%  Date: 22 February 2022                  %
+%  Date: February 22, 2022                 %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %
 % ---------------------------------------- %
@@ -8,12 +8,8 @@
 % Multi-Arm bandit
 classdef Bandit
 
-    properties (Constant)
-        seed = 42;  % Seed for random number generator
-    end
-
-    % Bandit params
     properties
+        % Bandit params
         nArms;  % Number of arms
         means;  % Means of the normal distributions for rewards
         stdevs; % Std devs of the normal distributions for rewards
@@ -30,7 +26,7 @@ classdef Bandit
             obj.stdevs = stdevs;
             obj.stat = stat;
             % Create a local random number generator
-            obj.rng = RandStream('dsfmt19937', 'Seed', obj.seed);
+            obj.rng = RandStream('dsfmt19937', 'Seed', 42);
         end
 
         % Pull an arm of the bandit
