@@ -7,23 +7,6 @@
 
 clear; close all; clc;
 
-%% Deterministic and stationary case
-close all;
-rng(0);
-nArms = 4;
-means = (1:nArms)';
-stdevs = zeros(nArms, 1);
-stat = true;
-alphas = [0.0; 0.01; 0.1];
-nIters = 1e3;
-initEst = zeros(nArms, 1);
-% Run
-pref_up_run(nArms, means, stdevs, stat, alphas, nIters, initEst)
-
-% NOTES:
-% In the deterministic and stationary case a step size euqal to iterations
-% is better
-
 %% Stochastic and stationary case
 close all;
 rng(0);
@@ -31,7 +14,7 @@ nArms = 4;
 means = (1:nArms)';
 stdevs = 2 * ones(nArms, 1);
 stat = true;
-alphas = [0.0; 0.01; 0.1];
+alphas = [0.0; 0.1];
 nIters = 1e3;
 initEst = zeros(nArms, 1);
 % Run
@@ -47,7 +30,7 @@ nArms = 4;
 means = zeros(nArms, 1);
 stdevs = 2 * ones(nArms, 1);
 stat = false;
-alphas = [0.0; 0.01; 0.1];
+alphas = [0.0; 0.1];
 nIters = 1e3;
 initEst = zeros(nArms, 1);
 % Run

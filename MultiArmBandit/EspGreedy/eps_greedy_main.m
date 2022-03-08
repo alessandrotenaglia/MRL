@@ -31,15 +31,6 @@ eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
 %% Deterministic and stationary case: constant vs decreasing eps
 close all;
 rng(4);
-nArms = 4;
-means = (1:nArms)';
-stdevs = zeros(nArms, 1);
-stat = true;
-alphas = 0.0;
-nIters = 1e2;
-initEst = zeros(nArms, 1);
-epsilons = [0.1; 0.1];
-epsconst = [true; false];
 % Run
 eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
@@ -51,15 +42,7 @@ eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
 %% Deterministic and stationary case: optimistic initialization
 close all;
 rng(4);
-nArms = 4;
-means = (1:nArms)';
-stdevs = zeros(nArms, 1);
-stat = true;
-alphas = 0.0;
-nIters = 1e2;
 initEst = 5 * ones(nArms, 1);
-epsilons = [0.1; 0.1];
-epsconst = [true; false];
 % Run
 eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
@@ -99,7 +82,7 @@ nArms = 4;
 means = zeros(nArms, 1);
 stdevs = ones(nArms, 1);
 stat = false;
-alphas = [0.0; 0.01; 0.1];
+alphas = [0.0; 0.1];
 nIters = 1e3;
 initEst = 5 * ones(nArms, 1);
 epsilons = 0.1;

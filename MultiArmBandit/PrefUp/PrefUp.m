@@ -23,14 +23,18 @@ classdef PrefUp < Policy
             % Set params
             obj.prefs = zeros(nArms, nIters);
             obj.probs = zeros(nArms, nIters);
+            obj.probs(:, 1) = 1 / nArms;
         end
 
         % Choose the arm to pull with eps-greedy policy
         function arm = chooseArm(obj, iter)
-            % Compute the probabilities to select the actions
-            exps = exp(obj.prefs(:, iter));
-            obj.probs(:, iter) = exps / sum(exps);
             % Choose the action according to their probabilities
+            % Test:
+            % probs = [0.3, 0.1, 0.6]; y = zeros(size(probs)); nIters = 1e4
+            % for i = 1 : nIters
+            %  idx = find(rand() < cumsum(probs), 1, 'first');
+            %  y(idx) = y(idx) + 1/nIters;
+            % end
             arm = find(rand() < cumsum(obj.probs(:, iter)), 1, 'first');
         end
 
@@ -59,6 +63,9 @@ classdef PrefUp < Policy
                         step * rew_diff * obj.probs(i, iter);
                 end
             end
+            % Update probabilities
+            exps = exp(obj.prefs(:, iter+1));
+            obj.probs(:, iter+1) = exps / sum(exps);
         end
     end
 end

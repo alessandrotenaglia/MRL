@@ -17,7 +17,7 @@ stat = true;
 alphas = 0.0;
 nIters = 1e2;
 initEst = 5 * ones(nArms, 1);
-cs = [0.1; 1; 10];
+cs = [0.1; 10];
 % Run
 up_conf_bound_run(nArms, means, stdevs, stat, alphas, nIters, initEst, cs)
 
@@ -25,6 +25,7 @@ up_conf_bound_run(nArms, means, stdevs, stat, alphas, nIters, initEst, cs)
 % Increasing the values of c, also increases the degree of exploration
 % Even if the estimate of the means is correct, for c = 10 the excessive 
 % eploration involves a lower average reward
+% Optimistic init unnecessary, beacause the estimates are INF for N_a = 0
 
 %% Stochastic and non-stationary case: constant vs decreasing
 close all;
@@ -34,7 +35,7 @@ means = zeros(nArms, 1);
 stdevs = ones(nArms, 1);
 stat = false;
 nIters = 2e3;
-alphas = [0.0; 0.01; 0.1];
+alphas = [0.0; 0.1];
 initEst = zeros(nArms, 1);
 cs = 1;
 % Run

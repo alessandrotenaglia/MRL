@@ -27,6 +27,8 @@ classdef Bandit
             obj.stat = stat;
             % Create a local random number generator
             obj.rng = RandStream('dsfmt19937', 'Seed', 42);
+            % Why 42? It's the Answer to the Ultimate Question of Life,
+            % The Universe, and Everything
         end
 
         % Pull an arm of the bandit
@@ -35,8 +37,9 @@ classdef Bandit
             % N(mu, sigma^2) = sigma * N(0, 1) + mu
             % Test:
             % mu = 10; sigma = 5;
-            % y = sigma * randn(1e6, 1) + mu;
-            % stats = [mean(y) std(y) var(y)];
+            % y = randn(1e6, 1);
+            % z = sigma * y + mu;
+            % stats = [mean(y) std(y) var(y); mean(z) std(z) var(z)]
             reward = obj.stdevs(arm) * randn(obj.rng, 1) + ...
                 obj.means(arm);
         end
