@@ -6,5 +6,5 @@ University of Rome "Tor Vergata", academic year 2021/2022
 
 ## Authors
 
-- Corrado Possieri, possieri@ing.uniroma2.it
+- Corrado Possieri, corrado.possieri@uniroma2.it
 - Alessandro Tenaglia, alessandro.tenaglia@uniroma2.it
