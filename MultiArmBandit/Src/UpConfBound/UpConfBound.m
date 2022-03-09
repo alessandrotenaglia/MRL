@@ -35,9 +35,7 @@ classdef UpConfBound < Policy
             % Compute uncertainties
             % uncert = c * sqrt(ln(k) / N_a(k))
             for a = 1 : obj.bandit.nArms
-                if (obj.armCnt(a) == 0)
-                    obj.uncerts(a) = Inf;
-                else
+                if (obj.armCnt(a) > 0)
                     obj.uncerts(a) = obj.c * ...
                         sqrt(log(iter) / obj.armCnt(a));
                 end

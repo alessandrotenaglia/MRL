@@ -17,7 +17,7 @@ stat = true;
 alphas = 0.0;
 nIters = 1e2;
 initEst = 5 * ones(nArms, 1);
-cs = [0.1; 10];
+cs = [0.1; 1; 10];
 % Run
 up_conf_bound_run(nArms, means, stdevs, stat, alphas, nIters, initEst, cs)
 
@@ -37,7 +37,7 @@ stat = false;
 nIters = 2e3;
 alphas = [0.0; 0.1];
 initEst = zeros(nArms, 1);
-cs = 1;
+cs = 0.1;
 % Run
 up_conf_bound_run(nArms, means, stdevs, stat, alphas, nIters, initEst, cs)
 

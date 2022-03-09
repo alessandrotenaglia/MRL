@@ -48,7 +48,7 @@ classdef EpsGreedy < Policy
                 % dx/dt = -lambda*t -> x(t) = x(0) * e^(-lambda*t)
                 % x(tbar) < 0.05 * x(0) -> lambda = ln(0.05) / tbar ~= 3 / tbar
                 % Test:
-                % tf = 3; tbar = 1; t = 0:0.01:tf; lambda = -log(0.05)/tbar;
+                % t0 = 0; dt = 0.01; tf = 3; tbar = 1; t = t0:dt:tf; lambda = -log(0.05)/tbar;
                 % x = @(t) exp(-lambda*t);
                 % hold on; plot(t, x(t)); plot(t, x(tbar)*ones(size(t)), 'k-')
                 obj.eps(iter+1) = obj.eps(1) * ...
