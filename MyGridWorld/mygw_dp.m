@@ -7,8 +7,9 @@
 
 clear; close all; clc;
 
-%% Load
-load MYGW.mat
+%% Load MyGridWorld
+[path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
+load([path, '/MYGW.mat'])
 
 %% Policy Iteration
 % Start timer
@@ -35,19 +36,19 @@ toc
 %% Plots PI vs VI
 figure()
 sgtitle('GridWorld - Dynamic Programming')
-%
+% Plot the PI optimal policy
 subplot(2, 2, 1)
 title('PI - Optimal policy')
 mygw.plotPolicy(PI.policy)
-%
+% Plot the VI optimal policy
 subplot(2, 2, 2)
 title('VI - Optimal policy')
 mygw.plotPolicy(VI.policy)
-%
+% Plot the PI optimal value function
 subplot(2, 2, 3)
 title('PI - Optimal value function')
 mygw.plotValue(PI.value)
-%
+% Plot the VI optimal value function
 subplot(2, 2, 4)
 title('VI - Optimal value function')
 mygw.plotValue(VI.value)

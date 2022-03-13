@@ -97,92 +97,103 @@ classdef MyGridWorld
             end
         end
 
-        % Plot the grid world
-        function plot(obj)
+        % Polt the grid world
+        function [xs, ys] = plot(obj)
             axis equal; hold on;
             xlim([0.5 obj.nX+0.5])
             ylim([0.5 obj.nY+0.5])
             set(gca,'xtick',[]); set(gca,'ytick',[])
             set(gca,'xticklabel',[]); set(gca,'yticklabel',[])
-            x = 0.5 : 1 : obj.nX;
-            y = 0.5 : 1 : obj.nY;
-            for i = 1 : numel(x)
-                for j = 1 : numel(y)
-                    r = rectangle('Position', [x(i) y(j) 1 1]);
-                    s = sub2ind([obj.nX, obj.nY], x(i)+0.5, y(j)+0.5);
+            xs = 0.5 : 1 : obj.nX;
+            ys = 0.5 : 1 : obj.nY;
+            for i = 1 : numel(xs)
+                for j = 1 : numel(ys)
+                    r = rectangle('Position', [xs(i) ys(j) 1 1]);
+                    s = sub2ind([obj.nX, obj.nY], xs(i)+0.5, ys(j)+0.5);
                     if (ismember(s, obj.obstStates))
                         r.FaceColor = 'k';
                     elseif (ismember(s, obj.termStates))
                         r.FaceColor = 'g';
-                    else
+                    end
+                end
+            end
+        end
+
+        % Plot the grid world with possible movements
+        function plotGrid(obj)
+            [xs, ys] = obj.plot();
+            for i = 1 : numel(xs)
+                for j = 1 : numel(ys)
+                    s = sub2ind([obj.nX, obj.nY], xs(i)+0.5, ys(j)+0.5);
+                    if (~ismember(s, obj.obstStates) && ...
+                            ~ismember(s, obj.termStates))
                         for a = 1 : obj.nActions
                             [dx, dy] = obj.action2coord(a);
                             arr = annotation('arrow');
                             arr.Parent = gca;
-                            arr.X = [x(i)+0.5-dx*0.45, x(i)+0.5+dx*0.45];
-                            arr.Y = [y(j)+0.5-dy*0.45, y(j)+0.5+dy*0.45];
+                            arr.X = [xs(i)+0.5-dx*0.45, xs(i)+0.5+dx*0.45];
+                            arr.Y = [ys(j)+0.5-dy*0.45, ys(j)+0.5+dy*0.45];
                         end
                     end
                 end
             end
+            hold off;
         end
 
         % Plot a policy on the grid world
         function plotPolicy(obj, policy)
-            axis equal; hold on;
-            xlim([0.5 obj.nX+0.5])
-            ylim([0.5 obj.nY+0.5])
-            set(gca,'xtick',[]); set(gca,'ytick',[])
-            set(gca,'xticklabel',[]); set(gca,'yticklabel',[])
-            x = 0.5 : 1 : obj.nX;
-            y = 0.5 : 1 : obj.nY;
-            for i = 1 : numel(x)
-                for j = 1 : numel(y)
-                    r = rectangle('Position', [x(i) y(j) 1 1]);
-                    s = sub2ind([obj.nX, obj.nY], x(i)+0.5, y(j)+0.5);
-                    if (~isempty(find(obj.obstStates == s, 1)))
-                        r.FaceColor = 'k';
-                    elseif (~isempty(find(obj.termStates == s, 1)))
-                        r.FaceColor = 'g';
-                    else
+            [xs, ys] = obj.plot();
+            for i = 1 : numel(xs)
+                for j = 1 : numel(ys)
+                    s = sub2ind([obj.nX, obj.nY], xs(i)+0.5, ys(j)+0.5);
+                    if (~ismember(s, obj.obstStates) && ...
+                            ~ismember(s, obj.termStates))
                         [dx, dy] = obj.action2coord(policy(s));
                         arr = annotation('arrow');
                         arr.Parent = gca;
-                        arr.X = [x(i)+0.5-dx*0.4, x(i)+0.5+dx*0.4];
-                        arr.Y = [y(j)+0.5-dy*0.4, y(j)+0.5+dy*0.4];
+                        arr.X = [xs(i)+0.5-dx*0.4, xs(i)+0.5+dx*0.4];
+                        arr.Y = [ys(j)+0.5-dy*0.4, ys(j)+0.5+dy*0.4];
                     end
                 end
             end
+            hold off;
         end
 
         % Plot a value function on the grid world
         function plotValue(obj, value)
-            axis equal; hold on;
-            xlim([0.5 obj.nX+0.5])
-            ylim([0.5 obj.nY+0.5])
-            set(gca,'xtick',[]); set(gca,'ytick',[])
-            set(gca,'xticklabel',[]); set(gca,'yticklabel',[])
-            x = 0.5 : 1 : obj.nX;
-            y = 0.5 : 1 : obj.nY;
-            for i = 1 : numel(x)
-                for j = 1 : numel(y)
-                    r = rectangle('Position', [x(i) y(j) 1 1]);
-                    s = sub2ind([obj.nX, obj.nY], x(i)+0.5, y(j)+0.5);
-                    t = text(x(i)+0.5, y(j)+0.5, sprintf('%.2f', value(s)));
+            [xs, ys] = obj.plot();
+            for i = 1 : numel(xs)
+                for j = 1 : numel(ys)
+                    s = sub2ind([obj.nX, obj.nY], xs(i)+0.5, ys(j)+0.5);
+                    t = text(xs(i)+0.5, ys(j)+0.5, sprintf('%.2f', value(s)));
                     set(t, 'visible', 'on', ...
                         'HorizontalAlignment', 'center', ...
                         'VerticalAlignment', 'middle')
-                    if (~isempty(find(obj.obstStates == s, 1)))
-                        r.FaceColor = 'k';
-                        t.Color = 'w';
-                    elseif (~isempty(find(obj.termStates == s, 1)))
-                        r.FaceColor = 'g';
+                    if (ismember(s, obj.termStates))
                         t.Color = 'k';
+                    elseif (ismember(s, obj.obstStates))
+                        t.Color = 'w';
                     else
                         t.Color = 'k';
                     end
                 end
             end
+            hold off;
+        end
+
+        % Plot a value function on the grid world
+        function plotPath(obj, states)
+            obj.plot();
+            nS = numel(states);
+            alphas = linspace(0.25, 1, nS);
+            for s = 1 : nS
+                % Convert the state in cells
+                [x, y] = ind2sub([obj.nX, obj.nY], states(s));
+                r = rectangle('Position', [x-0.25, y-0.25, 0.5, 0.5], ...
+                    'Curvature',[1 1]);
+                r.FaceColor = [1, 0, 0, alphas(s)];
+            end
+            hold off;
         end
 
         % Convert an action into axis movements

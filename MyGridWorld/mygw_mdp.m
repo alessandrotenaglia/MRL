@@ -8,13 +8,13 @@
 clear; close all; clc;
 
 %% My Grid World
-nX = 5;
-nY = 5;
+nX = 4;
+nY = 4;
 nActions = 4;
 termCells = [4;4];
 obstCells = [2, 2, 3; 2, 3, 2];
 mygw = MyGridWorld(nX, nY, nActions, termCells, obstCells);
-plot(mygw)
+mygw.plotGrid();
 
 %% MDP
 % Generate the transition matrix
@@ -22,5 +22,6 @@ mygw = mygw.generateP();
 % Generate the reward matrix
 mygw = mygw.generateR();
 
-%% Save
-save MYGW.mat mygw
+%% Save MyGridWorld
+[path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
+save([path, '/MYGW.mat'], 'mygw')
