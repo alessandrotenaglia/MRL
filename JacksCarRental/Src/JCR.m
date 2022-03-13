@@ -26,7 +26,7 @@ classdef JCR
 
     methods
         function obj = JCR(maxCars, maxMoves, gain, loss, lRet, lRen)
-            % Set params
+            % Set properties
             obj.maxCars = maxCars;
             obj.maxMoves = maxMoves;
             obj.gain = gain;
@@ -130,12 +130,14 @@ classdef JCR
             for s = 1 : obj.nStates
                 % Convert the state in the car configuration
                 cars = obj.state2cars(s);
-                % 
+                % Available cars at location 1
                 avail1 = 0:cars(1);
+                % Probabilities to rent cars at loaction 1
                 probs1 = poisspdf(avail1, obj.lRen(1));
                 probs1(end) = 1 - sum(probs1(1:end-1));
-                % 
+                % Available cars at location 2 
                 avail2 = 0:cars(2);
+                % Probabilities to rent cars at loaction 2
                 probs2 = poisspdf(avail2, obj.lRen(2));
                 probs2(end) = 1 - sum(probs2(1:end-1));
                 % Compute the expected earning 
@@ -159,7 +161,7 @@ classdef JCR
             cars = [carsA - 1; carsB - 1];
         end
 
-        % Convert a car condifuration in the corresponding state
+        % Convert a car configuration in the corresponding state
         function s = cars2state(obj, cars)
             s = sub2ind(obj.maxCars + [1;1], cars(1) + 1, cars(2) + 1);
         end

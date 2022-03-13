@@ -7,7 +7,7 @@
 
 clear; close all; clc;
 
-%%
+%% Jack's Car Rental
 maxCars = [20, 20];
 maxMoves = 5;
 gain = 10;
@@ -15,8 +15,13 @@ loss = 2;
 lRet = [3, 2];
 lRen = [3, 4];
 jcr = JCR(maxCars, maxMoves, gain, loss, lRet, lRen);
+
+%% MDP
+% Generate the transition matrix
 jcr = jcr.generateP();
+% Generate the reward matrix
 jcr = jcr.generateR();
 
-%% Save
-save JCR.mat jcr
+%% Save JCR
+[path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
+save([path, '/JCR.mat'], 'jcr')
