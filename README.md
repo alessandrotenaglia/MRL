@@ -16,8 +16,8 @@ University of Rome "Tor Vergata", academic year 2021/2022
   - `Policy.m` is an abstract class that defines a template for a sample-average policy;
   - `EpsGreedy/` contains the code of **&epsilon;-greedy policy**;
     - `EpsGreedy.m` is a class that implements the **&epsilon;-greedy policy**;
-    - `eg_run.m` is a script that shows the behavior of the **&epsilon;-greedy policy**;
-    - `eg_main.m` is a script that compares the **&epsilon;-greedy policy** in different scenarios;
+    - `eps_run.m` is a script that shows the behavior of the **&epsilon;-greedy policy**;
+    - `eps_main.m` is a script that compares the **&epsilon;-greedy policy** in different scenarios;
   - `UpConfBound/` contains the code of **upper confidence bound policy**;
     - `UpConfBound.m` is a class that implements the **upper confidence bound policy**;
     - `ucb_run.m` is a script that shows the behavior of the **upper confidence bound policy**;
@@ -27,8 +27,8 @@ University of Rome "Tor Vergata", academic year 2021/2022
     - `pref_run.m` is a script that shows the behavior of the **preference updates policy**;
     - `pref_main.m` is a script that compares the **preference updates policy** in different scenarios;
 - `DynamicProgramming/` contains the code to resolve **dynamic programming** problems;
-  - `PolicyIter.m` is a class that implement the **policy iteration** algorithm;
-  - `ValueIter.m` is a class that implement the **value iteration** algorithm;
+  - `PolicyIter.m` is a class that implements the **policy iteration** algorithm;
+  - `ValueIter.m` is a class that implements the **value iteration** algorithm;
 - `MyGridWorld/` contains a custom implementation of a **grid world**;
   - `MyGridWorld.m` is a class that implements a **grid world** environment;
   - `mygw_mdp.m` is a script that reforms the shortest path problem on a **grid world** as a **MDP**;
