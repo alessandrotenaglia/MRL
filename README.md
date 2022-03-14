@@ -12,9 +12,9 @@ University of Rome "Tor Vergata", academic year 2021/2022
 ## Repository structure
 
 - `MultiArmBandit/` contains the code to resolve the **multi-armed bandit** problem;
-  - `Bandit.m`
-  - `Policy.m`
-  - `EpsGreedy/`
+  - `Bandit.m` is a class that implements a bandit in different scenarios;
+  - `Policy.m` is an abstract class that defines a template
+  - `EpsGreedy/` contains the code of **$\eps$-greedy policy**
     - `EpsGreedy.m`
     - `eg_run.m`
     - `eg_main.m`
