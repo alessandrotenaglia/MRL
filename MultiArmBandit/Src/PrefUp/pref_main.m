@@ -1,5 +1,5 @@
 % ---------------------------------------- %
-%  File: pref_up_main.m                    %
+%  File: pref_main.m                       %
 %  Date: February 22, 2022                 %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %
@@ -18,7 +18,7 @@ alphas = [0.0; 0.1];
 nIters = 1e3;
 initEst = zeros(nArms, 1);
 % Run
-pref_up_run(nArms, means, stdevs, stat, alphas, nIters, initEst)
+pref_run(nArms, means, stdevs, stat, alphas, nIters, initEst)
 
 % NOTES:
 % The mean is a low-pass filter and alpha move the cutoff frequency
@@ -34,7 +34,7 @@ alphas = [0.0; 0.1];
 nIters = 1e3;
 initEst = zeros(nArms, 1);
 % Run
-pref_up_run(nArms, means, stdevs, stat, alphas, nIters, initEst)
+pref_run(nArms, means, stdevs, stat, alphas, nIters, initEst)
 
 % NOTES:
 % The accuracy of the estimates grows as alpha grows

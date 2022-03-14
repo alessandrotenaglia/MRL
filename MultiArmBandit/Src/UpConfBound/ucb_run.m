@@ -1,11 +1,11 @@
 % ---------------------------------------- %
-%  File: up_conf_bound_run.m               %
+%  File: ucb_run.m                         %
 %  Date: February 22, 2022                 %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %
 % ---------------------------------------- %
 
-function up_conf_bound_run(nArms, means, stdevs, stat, alphas, ...
+function ucb_run(nArms, means, stdevs, stat, alphas, ...
     nIters, initEst, cs)
 
 % Initilaize simulation data arrays
@@ -62,7 +62,7 @@ for a = 1:numel(alphas)
     figure()
     sgtitle(['Upper Confidence Bound, \alpha = ', alpha_lables{a}])
     % Average rewards plot
-    subplot(1+nArms/2, 2, 1)
+    subplot(1+ceil(nArms/2), 2, 1)
     title('Average rewards')
     hold on; grid on; legend;
     for c = 1:numel(cs)
@@ -74,7 +74,7 @@ for a = 1:numel(alphas)
     xlabel('Iterations'); xlim([0, nIters]);
     ylabel('Avg. rewards');
     % Actions taken plot
-    subplot(1+nArms/2, 2, 2)
+    subplot(1+ceil(nArms/2), 2, 2)
     title('Actions taken')
     hold on; grid on; legend;
     pb = bar(categorical(arm_lables), squeeze(cnts(a, :, :))');
@@ -89,7 +89,7 @@ for a = 1:numel(alphas)
     ylabel('Actions taken')
     % Real mean vs estimated means subplots
     for i = 1:nArms
-        subplot(1+nArms/2, 2, 2+i)
+        subplot(1+ceil(nArms/2), 2, 2+i)
         title(['Arm #', num2str(i), ' Real vs Est means'])
         hold on;  grid on; legend;
         plot(1:nIters, squeeze(real(a, 1, i, :)), 'k', ...

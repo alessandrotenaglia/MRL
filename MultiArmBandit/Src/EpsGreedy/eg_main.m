@@ -1,5 +1,5 @@
 % ---------------------------------------- %
-%  File: eps_greedy_main.m                 %
+%  File: eg_main.m                         %
 %  Date: February 22, 2022                 %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %
@@ -20,7 +20,7 @@ initEst = zeros(nArms, 1);
 epsilons = [0.1; 0.1];
 epsconst = [true; false];
 % Run
-eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
+eg_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
 
 % NOTES:
@@ -32,7 +32,7 @@ eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
 close all;
 rng(4);
 % Run
-eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
+eg_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
 
 % NOTES:
@@ -44,11 +44,11 @@ close all;
 rng(4);
 initEst = 5 * ones(nArms, 1);
 % Run
-eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
+eg_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
 
 % NOTES:
-% Eps-dec thanks to the optimistic initialization explores the arm #4 
+% Eps-dec thanks to the optimistic initialization explores the arm #4
 % and exploits it
 % Eps-dec better than eps-const :), especially in the long term!
 % Try with 1e5 iters!
@@ -66,11 +66,11 @@ initEst = 5 * ones(nArms, 1);
 epsilons = [0.1; 0.1];
 epsconst = [true; false];
 % Run
-eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
+eg_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
 
 % NOTES:
-% Eps-dec understimates the value of the arms #3 and #4, so exploits 
+% Eps-dec understimates the value of the arms #3 and #4, so exploits
 % the arm #3 :(
 % Eps-const thanks to continuous exploration corrects the estimates
 % Eps-const is better than eps-dec :)
@@ -88,11 +88,11 @@ initEst = 5 * ones(nArms, 1);
 epsilons = 0.1;
 epsconst = true;
 % Run
-eps_greedy_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
+eg_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
 
 % NOTES:
 % Alpha-dec weighs past rewards like recent ones, so the estimates are
 % wrong
 % Alpha-const weighs recent rewards more, so it has better estimates
-% The mean is a low-pass filter and alpha move the cutoff frequency 
+% The mean is a low-pass filter and alpha move the cutoff frequency
