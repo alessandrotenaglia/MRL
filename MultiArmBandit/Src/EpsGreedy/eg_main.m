@@ -1,5 +1,5 @@
 % ---------------------------------------- %
-%  File: eg_main.m                         %
+%  File: eps_main.m                        %
 %  Date: February 22, 2022                 %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %
@@ -20,7 +20,7 @@ initEst = zeros(nArms, 1);
 epsilons = [0.1; 0.1];
 epsconst = [true; false];
 % Run
-eg_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
+eps_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
 
 % NOTES:
@@ -32,7 +32,7 @@ eg_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
 close all;
 rng(4);
 % Run
-eg_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
+eps_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
 
 % NOTES:
@@ -44,7 +44,7 @@ close all;
 rng(4);
 initEst = 5 * ones(nArms, 1);
 % Run
-eg_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
+eps_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
 
 % NOTES:
@@ -66,7 +66,7 @@ initEst = 5 * ones(nArms, 1);
 epsilons = [0.1; 0.1];
 epsconst = [true; false];
 % Run
-eg_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
+eps_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
 
 % NOTES:
@@ -88,7 +88,7 @@ initEst = 5 * ones(nArms, 1);
 epsilons = 0.1;
 epsconst = true;
 % Run
-eg_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
+eps_run(nArms, means, stdevs, stat, alphas, nIters, initEst, ...
     epsilons, epsconst)
 
 % NOTES:
