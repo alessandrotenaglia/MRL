@@ -1,11 +1,11 @@
 % ---------------------------------------- %
-%  File: eg_run.m                          %
+%  File: eps_run.m                         %
 %  Date: February 22, 2022                 %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %
 % ---------------------------------------- %
 
-function eg_run(nArms, means, stdevs, stat, alphas, nIters, ...
+function eps_run(nArms, means, stdevs, stat, alphas, nIters, ...
     initEst, epsilons, epsconst)
 
 % Initilaize simulation data arrays
