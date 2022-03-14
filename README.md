@@ -14,10 +14,10 @@ University of Rome "Tor Vergata", academic year 2021/2022
 - `MultiArmBandit/` contains the code to resolve the **multi-armed bandit** problem;
   - `Bandit.m` is a class that implements a bandit in different scenarios;
   - `Policy.m` is an abstract class that defines a template for a sample-average policy;
-  - `EpsGreedy/` contains the code of **$\epsilon$-greedy policy**;
-    - `EpsGreedy.m` is a class that implements the **$\epsilon$-greedy policy**;
-    - `eg_run.m` is a script that shows the behavior of the **$\epsilon$-greedy policy**;
-    - `eg_main.m` is a script that compares the **$\epsilon$-greedy policy** in different scenarios;
+  - `EpsGreedy/` contains the code of **&epsilon;-greedy policy**;
+    - `EpsGreedy.m` is a class that implements the **&epsilon;-greedy policy**;
+    - `eg_run.m` is a script that shows the behavior of the **&epsilon;-greedy policy**;
+    - `eg_main.m` is a script that compares the **&epsilon;-greedy policy** in different scenarios;
   - `UpConfBound/` contains the code of **upper confidence bound policy**;
     - `UpConfBound.m` is a class that implements the **upper confidence bound policy**;
     - `ucb_run.m` is a script that shows the behavior of the **upper confidence bound policy**;
