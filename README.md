@@ -11,7 +11,7 @@ University of Rome "Tor Vergata", academic year 2021/2022
 
 ## Repository structure
 
-- `MultiArmBandit/`
+- `MultiArmBandit/` contains the code to resolve the **multi-armed bandit** problem;
   - `Bandit.m`
   - `Policy.m`
   - `EpsGreedy/`
@@ -26,14 +26,14 @@ University of Rome "Tor Vergata", academic year 2021/2022
     - `PrefUp.m`
     - `pref_run.m`
     - `pref_main.m`
-- `DynamicProgramming/`
+- `DynamicProgramming/` contains the code to resolve **dynamic programming** problems;
   - `PolicyIter.m`
   - `ValueIter.m`
-- `MyGridWorld/`
+- `MyGridWorld/` contains a custom implementation of a **grid world**;
   - `MyGridWorld.m`
   - `mygw_mdp.m`
   - `mygw_dp.m`
-- `JacksCarRental/`
+- `JacksCarRental/` contains the code to resolve the **Jack's car rental** problem;
   - `JCR.m`
   - `jcr.mdp.m`
   - `jcr_dp.m`
