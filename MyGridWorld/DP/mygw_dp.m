@@ -9,7 +9,7 @@ clear; close all; clc;
 
 %% Load MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-load([path, '/MYGW.mat'])
+load([path, '/MYGW_MDP.mat'])
 
 %% Policy Iteration
 % Start timer

@@ -97,6 +97,57 @@ classdef MyGridWorld
             end
         end
 
+        % Generate the reward matrix
+        function [sp, r] = move(obj, s, a)
+            % Convert the state in cells
+            [x, y] = ind2sub([obj.nX, obj.nY], s);
+            % Convert the action in cell movements
+            [dx, dy] = obj.action2coord(a);
+            %
+            xp = max(1, min(obj.nX, x + dx));
+            yp = max(1, min(obj.nY, y + dy));
+            % Convert the new position in the new state
+            sp = sub2ind([obj.nX, obj.nY], xp, yp);
+            % Check the nature of the state
+            if (ismember(s, obj.termStates))
+                % If it's a terminal state, the reward is 0
+                sp = [sp, -1];
+                r = 0;
+            elseif (ismember(s, obj.obstStates))
+                % If it's an obstacle, the reward is -1e3
+                sp = [sp, -1];
+                r = -1e3;
+            else
+                % If it's not a terminal state, the reward is -1
+                r = -1;
+            end
+        end
+
+        % Generate the reward matrix
+        function [sts, acts, rews] = run(obj, s0, policy, eps)
+            % Initialize states and rewards
+            sts = s0;
+            acts = [];
+            rews = [];
+            % Generate the episode
+            while (sts(end) ~= -1)
+                % Eps-greedy policy
+                if (rand() < eps)
+                    % Explorative choice (prob = eps)
+                    a = randi(obj.nActions);
+                else
+                    % Greedy choice (prob = 1-eps)
+                    a = policy(sts(end));
+                end
+                % Move on grid world
+                [sp, r] = obj.move(sts(end), a);
+                % Store the movement
+                sts = [sts, sp];
+                acts = [acts, a];
+                rews = [rews, r];
+            end
+        end
+
         % Polt the grid world
         function [xs, ys] = plot(obj)
             axis equal; hold on;

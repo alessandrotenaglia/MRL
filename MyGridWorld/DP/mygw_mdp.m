@@ -24,4 +24,4 @@ mygw = mygw.generateR();
 
 %% Save MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-save([path, '/MYGW.mat'], 'mygw')
+save([path, '/MYGW_MDP.mat'], 'mygw')
