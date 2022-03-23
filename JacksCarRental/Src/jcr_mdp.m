@@ -12,8 +12,8 @@ maxCars = [20, 20];
 maxMoves = 5;
 gain = 10;
 loss = 2;
-lRet = [3, 2];
-lRen = [3, 4];
+lRet = [3, 3];
+lRen = [3, 3];
 jcr = JCR(maxCars, maxMoves, gain, loss, lRet, lRen);
 
 %% MDP
