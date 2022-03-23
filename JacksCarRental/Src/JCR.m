@@ -14,7 +14,7 @@ classdef JCR
         gain;       % Gain for each rented car
         loss;       % Loss for each moved car
         nStates;    % Number of states
-        nActions;   % Muber of actions
+        nActions;   % Number of actions
         lRet;       % Lambdas of returns
         lRen;       % Lambdas of rentals
         Pret;       % Transition matrix of returns
@@ -111,9 +111,23 @@ classdef JCR
                     % Remap the action
                     moved = a - obj.maxMoves - 1;
                     % Compute how many cars it's really possible to move
-                    moved = min(max(moved, -cars(1)), cars(2));
+                    if (moved >= 0)
+                        % Cars are moved from location 2 to location 1
+                        % It's not possible to move more cars than those
+                        % available at location 2 and more than the free
+                        % slots at location 1
+                        moved = min([moved, cars(2), ...
+                            obj.maxCars(1) - cars(1)]);
+                    else
+                        % Cars are moved from location 1 to location 2
+                        % It's not possible to move more cars than those
+                        % available at location 1 and more than the free
+                        % slots at location 2
+                        moved = -min([-moved, cars(1), ...
+                            obj.maxCars(2) - cars(2)]);
+                    end
                     % Compute the new number of cars in each location
-                    newCars = min(obj.maxCars, cars + [moved; -moved]);
+                    newCars = cars + [moved; -moved];
                     % Compute the new state
                     sp = obj.cars2state(newCars);
                     % Set the transition
@@ -135,12 +149,12 @@ classdef JCR
                 % Probabilities to rent cars at loaction 1
                 probs1 = poisspdf(avail1, obj.lRen(1));
                 probs1(end) = 1 - sum(probs1(1:end-1));
-                % Available cars at location 2 
+                % Available cars at location 2
                 avail2 = 0:cars(2);
                 % Probabilities to rent cars at loaction 2
                 probs2 = poisspdf(avail2, obj.lRen(2));
                 probs2(end) = 1 - sum(probs2(1:end-1));
-                % Compute the expected earning 
+                % Compute the expected earning
                 earnings(s) = obj.gain * avail1 * probs1' + ...
                     obj.gain * avail2 * probs2';
             end

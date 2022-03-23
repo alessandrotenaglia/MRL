@@ -41,7 +41,7 @@ sgtitle('JCR - Optimal policy')
 % Plot the PI optimal policy
 subplot(2, 2, 1)
 Z = reshape(PI.policy - jcr.maxMoves - 1, jcr.maxCars + [1, 1]);
-h = heatmap(flipud(Z));
+h = heatmap(flipud(Z'));
 h.XData = cars1;
 h.YData = cars2;
 h.XLabel = 'Number of cars at loc 1';
@@ -51,7 +51,7 @@ h.Title = 'PI - Optimal policy';
 % Plot the VI optimal policy
 subplot(2, 2, 2)
 Z = reshape(VI.policy - jcr.maxMoves - 1, jcr.maxCars + [1, 1]);
-h = heatmap(flipud(Z));
+h = heatmap(flipud(Z'));
 h.XData = cars1;
 h.YData = cars2;
 h.XLabel = 'Number of cars at loc 1';
@@ -61,7 +61,7 @@ h.Title = 'VI - Optimal policy';
 % Plot the PI optimal value function
 subplot(2, 2, 3)
 Z = reshape(PI.value - jcr.maxMoves - 1, jcr.maxCars + [1, 1]);
-h = heatmap(flipud(Z));
+h = heatmap(flipud(Z'));
 h.XData = cars1;
 h.YData = cars2;
 h.XLabel = 'Number of cars at loc 1';
@@ -71,7 +71,7 @@ h.Title = 'PI - Optimal value function';
 % Plot the VI optimal value function
 subplot(2, 2, 4)
 Z = reshape(VI.value - jcr.maxMoves - 1, jcr.maxCars + [1, 1]);
-h = heatmap(flipud(Z));
+h = heatmap(flipud(Z'));
 h.XData = cars1;
 h.YData = cars2;
 h.XLabel = 'Number of cars at loc 1';
