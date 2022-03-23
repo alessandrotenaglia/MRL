@@ -13,10 +13,10 @@ classdef PolicyIter
         R;          % Reward matrix
         gamma;      % Discount factor
         tol;        % Tollerance
-        nStates;    % Number of states
+        nStates;    % Number of statesp(s',r|s,a) * 
         nActions;   % Number of actions
         policy;     % Current policy
-        value;      % Current value function
+        value;      % Current state value function
     end
 
     methods
@@ -48,15 +48,17 @@ classdef PolicyIter
                 Ppi(s, :) = obj.P(s, obj.policy(s), :);
                 Rpi(s) = obj.R(s, obj.policy(s));
             end
-            % Iterate until it's reached a fixed point
+            % Iterate the evaluation, until it's reached a fixed point
             while (1)
                 % Store the old values to compute their variations
                 oldValue = obj.value;
                 % Update the estimates
                 % v_{k+1}(s) = sum_{s',r}(p(s',r|s,a) * (r + gamma * v_{k}(s'))) =
-                %            = r(s,pi(s)) + gamma * p(s'|s,pi(s)) * v_{k}(s')
+                %            = sum_{s',r}(p(s',r|s,a) * r) + ...
+                %              gamma * sum_{s',r}(p(s',r|s,a) * v_{k}(s'))) =
+                %            = R(s,pi(s)) + gamma * P(s'|s,pi(s)) * v_{k}(s')
                 obj.value = Rpi + obj.gamma * Ppi * obj.value;
-                % Compute the max variation of the value function
+                % Compute the max variation of the value functionp(s',r|s,a) * 
                 % Inf-norm: max_i(|x_i|)
                 % Test: vecnorm([0, -1, 2, -4], Inf)
                 if (vecnorm(obj.value - oldValue, Inf) < obj.tol)
@@ -72,20 +74,20 @@ classdef PolicyIter
             % Iterate on states
             for s = 1 : obj.nStates
                 % Compute the state-action value function
-                qpi = zeros(1, obj.nActions);
+                Qpi = zeros(1, obj.nActions);
                 for a = 1 : obj.nActions
                     Psa = squeeze(obj.P(s, a, :))';
-                    qpi(a) = obj.R(s, a) + obj.gamma * Psa * obj.value;
+                    Qpi(a) = obj.R(s, a) + obj.gamma * Psa * obj.value;
                 end
                 % Take the best action
-                [~, obj.policy(s)] = max(qpi, [], 2);
+                [~, obj.policy(s)] = max(Qpi, [], 2);
             end
         end
 
         % Policy Iteration
         function obj = policyIter(obj)
             % Iterate alternating policy evaluation and policy improvment
-            % until it's reach a fixed point
+            % until it's reached a fixed point
             while (1)
                 oldPolicy = obj.policy;
                 % Policy evaluation: pi -> v_pi
