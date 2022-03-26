@@ -39,7 +39,7 @@ classdef JCR
             obj.nActions = (2 * maxMoves) + 1;
         end
 
-        % Generate transition matrix
+        % Generate transition matrix using the law of total probability
         function obj = generateP(obj)
             % Compute transition matrix of returns
             obj.Pret = obj.generatePret(1) * obj.generatePret(2);
@@ -81,7 +81,7 @@ classdef JCR
 
         % Generate transition matrix of rentals
         function P = generatePren(obj, loc)
-            % Initilaize matrix
+            % Initialize the matrix
             P = zeros(obj.nStates, obj.nStates);
             % Iterate on states
             for s = 1 : obj.nStates

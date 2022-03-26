@@ -33,7 +33,7 @@ classdef ValueIter
             obj.nActions = size(P, 2);
             % Generate a randomic initial policy
             obj.policy = randi(obj.nActions, obj.nStates, 1);
-            % Generate a randomic initial value function
+            % Initialize the state value function
             obj.value = zeros(obj.nStates, 1);
         end
 
@@ -43,7 +43,7 @@ classdef ValueIter
             while (1)
                 % Store the old values to compute their variations
                 oldValue = obj.value;
-                % Iterare on states
+                % Iterate on states
                 for s = 1 : obj.nStates
                     % Compute the state-action value function
                     Qpi = zeros(1, obj.nActions);

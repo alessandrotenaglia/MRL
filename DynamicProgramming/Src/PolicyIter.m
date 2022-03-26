@@ -33,13 +33,12 @@ classdef PolicyIter
             obj.nActions = size(P, 2);
             % Generate a randomic initial policy
             obj.policy = randi(obj.nActions, obj.nStates, 1);
-            % Generate a randomic initial value function
+            % Initialize the state value function
             obj.value = zeros(obj.nStates, 1);
         end
 
         % Policy Evaluation
         % Given a policy pi, estimate its value function v_pi
-        % (In-place implementation)
         function obj = policyEval(obj)
             % Define the transitions and the rewards for the current policy
             Ppi = zeros(obj.nStates, obj.nStates);
