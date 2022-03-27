@@ -92,34 +92,47 @@ classdef MyGridWorld
                     obj.R(s, :) = 0;
                 else
                     % If it's not a terminal state, the reward is -1
-                    obj.R(s, :) = -1;
+                    obj.R(s, 1:4) = -1;
+                    obj.R(s, 5:end) = -sqrt(2);
                 end
             end
         end
 
-        % Generate the reward matrix
+        % Given a state and an action, compute the new postion and the
+        % reward
         function [sp, r] = move(obj, s, a)
+            % Check the nature of the state
+            if (ismember(s, obj.termStates))
+                % If it's a terminal state, the reward is 0
+                sp = s;
+                r = 0;
+                return
+            elseif (ismember(s, obj.obstStates))
+                % If it's an obstacle, the reward is -1e6
+                sp = s;
+                r = -1e6;
+                return
+            end
             % Convert the state in cells
             [x, y] = ind2sub([obj.nX, obj.nY], s);
             % Convert the action in cell movements
             [dx, dy] = obj.action2coord(a);
-            %
+            % Compute new position
             xp = max(1, min(obj.nX, x + dx));
             yp = max(1, min(obj.nY, y + dy));
             % Convert the new position in the new state
             sp = sub2ind([obj.nX, obj.nY], xp, yp);
             % Check the nature of the state
-            if (ismember(s, obj.termStates))
-                % If it's a terminal state, the reward is 0
-                sp = [sp, -1];
-                r = 0;
-            elseif (ismember(s, obj.obstStates))
-                % If it's an obstacle, the reward is -1e3
-                sp = [sp, -1];
-                r = -1e3;
+            if (ismember(sp, obj.obstStates))
+                % If it's an obstacle, the reward is -1e6
+                r = -1e6;
             else
                 % If it's not a terminal state, the reward is -1
-                r = -1;
+                if (a <= 4)
+                    r = -1;
+                else
+                    r = -sqrt(2);
+                end
             end
         end
 
@@ -130,7 +143,8 @@ classdef MyGridWorld
             acts = [];
             rews = [];
             % Generate the episode
-            while (sts(end) ~= -1)
+            while (~ismember(sts(end), obj.obstStates) && ...
+                    ~ismember(sts(end), obj.termStates) && numel(sts) < 20)
                 % Eps-greedy policy
                 if (rand() < eps)
                     % Explorative choice (prob = eps)
