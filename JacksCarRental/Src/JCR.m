@@ -138,7 +138,7 @@ classdef JCR
 
         % Generate the reward matrix
         function obj = generateR(obj)
-            % Compute the expected earning for ech state
+            % Compute the expected earning for each state
             earnings = zeros(obj.nStates, 1);
             % Iterate on states
             for s = 1 : obj.nStates
@@ -155,8 +155,8 @@ classdef JCR
                 probs2 = poisspdf(avail2, obj.lRen(2));
                 probs2(end) = 1 - sum(probs2(1:end-1));
                 % Compute the expected earning
-                earnings(s) = obj.gain * avail1 * probs1' + ...
-                    obj.gain * avail2 * probs2';
+                earnings(s) = obj.gain * ...
+                    (avail1 * probs1' + avail2 * probs2');
             end
             % Initialize reward matrix
             obj.R = zeros(obj.nStates, obj.nActions);
