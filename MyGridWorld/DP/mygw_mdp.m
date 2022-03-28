@@ -8,10 +8,10 @@
 clear; close all; clc;
 
 %% My Grid World
-nX = 4;
-nY = 4;
-nActions = 4;
-termCells = [4;4];
+nX = 5;
+nY = 5;
+nActions = 8;
+termCells = [nX; nY];
 obstCells = [2, 2, 3; 2, 3, 2];
 mygw = MyGridWorld(nX, nY, nActions, termCells, obstCells);
 mygw.plotGrid();
@@ -24,4 +24,4 @@ mygw = mygw.generateR();
 
 %% Save MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-save([path, '/MYGW.mat'], 'mygw')
+save([path, '/MYGW_MDP.mat'], 'mygw')

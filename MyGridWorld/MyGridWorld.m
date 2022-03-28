@@ -92,8 +92,73 @@ classdef MyGridWorld
                     obj.R(s, :) = 0;
                 else
                     % If it's not a terminal state, the reward is -1
-                    obj.R(s, :) = -1;
+                    obj.R(s, 1:4) = -1;
+                    obj.R(s, 5:end) = -sqrt(2);
                 end
+            end
+        end
+
+        % Given a state and an action, compute the new postion and the
+        % reward
+        function [sp, r] = move(obj, s, a)
+            % Check the nature of the state
+            if (ismember(s, obj.termStates))
+                % If it's a terminal state, the reward is 0
+                sp = s;
+                r = 0;
+                return
+            elseif (ismember(s, obj.obstStates))
+                % If it's an obstacle, the reward is -1e6
+                sp = s;
+                r = -1e6;
+                return
+            end
+            % Convert the state in cells
+            [x, y] = ind2sub([obj.nX, obj.nY], s);
+            % Convert the action in cell movements
+            [dx, dy] = obj.action2coord(a);
+            % Compute new position
+            xp = max(1, min(obj.nX, x + dx));
+            yp = max(1, min(obj.nY, y + dy));
+            % Convert the new position in the new state
+            sp = sub2ind([obj.nX, obj.nY], xp, yp);
+            % Check the nature of the state
+            if (ismember(sp, obj.obstStates))
+                % If it's an obstacle, the reward is -1e6
+                r = -1e6;
+            else
+                % If it's not a terminal state, the reward is -1
+                if (a <= 4)
+                    r = -1;
+                else
+                    r = -sqrt(2);
+                end
+            end
+        end
+
+        % Generate the reward matrix
+        function [sts, acts, rews] = run(obj, s0, policy, eps)
+            % Initialize states and rewards
+            sts = s0;
+            acts = [];
+            rews = [];
+            % Generate the episode
+            while (~ismember(sts(end), obj.obstStates) && ...
+                    ~ismember(sts(end), obj.termStates) && numel(sts) < 20)
+                % Eps-greedy policy
+                if (rand() < eps)
+                    % Explorative choice (prob = eps)
+                    a = randi(obj.nActions);
+                else
+                    % Greedy choice (prob = 1-eps)
+                    a = policy(sts(end));
+                end
+                % Move on grid world
+                [sp, r] = obj.move(sts(end), a);
+                % Store the movement
+                sts = [sts, sp];
+                acts = [acts, a];
+                rews = [rews, r];
             end
         end
 
@@ -149,10 +214,16 @@ classdef MyGridWorld
                     if (~ismember(s, obj.obstStates) && ...
                             ~ismember(s, obj.termStates))
                         [dx, dy] = obj.action2coord(policy(s));
-                        arr = annotation('arrow');
-                        arr.Parent = gca;
-                        arr.X = [xs(i)+0.5-dx*0.4, xs(i)+0.5+dx*0.4];
-                        arr.Y = [ys(j)+0.5-dy*0.4, ys(j)+0.5+dy*0.4];
+                        xarr = [xs(i)+0.5-dx*0.4, xs(i)+0.5+dx*0.4];
+                        yarr = [ys(j)+0.5-dy*0.4, ys(j)+0.5+dy*0.4];
+                        arr1 = annotation('arrow', 'headstyle', 'none');
+                        arr1.Parent = gca;
+                        arr1.X = [xs(i)+0.5-dx*0.4, xs(i)+0.5+dx*0.4];
+                        arr1.Y = [ys(j)+0.5-dy*0.4, ys(j)+0.5+dy*0.4];
+                        arr2 = annotation('arrow', 'linestyle', 'none');
+                        arr2.Parent = gca;
+                        arr2.X = [xs(i)+0.5+dx*0.3, xs(i)+0.5+dx*0.4];
+                        arr2.Y = [ys(j)+0.5+dy*0.3, ys(j)+0.5+dy*0.4];
                     end
                 end
             end

@@ -25,6 +25,7 @@ classdef JCR
     end
 
     methods
+        % Class constructor
         function obj = JCR(maxCars, maxMoves, gain, loss, lRet, lRen)
             % Set properties
             obj.maxCars = maxCars;
@@ -39,7 +40,36 @@ classdef JCR
             obj.nActions = (2 * maxMoves) + 1;
         end
 
-        % Generate transition matrix using the law of total probability
+        % Convert a state in the corresponding car configuration
+        function cars = state2cars(obj, s)
+            % ind2sub convert a linear index into subscript values
+            % according to a given size
+            % Test:
+            % siz = [2, 2];  A = zeros(siz);
+            % for ind = 1 : siz(1) * siz(2)
+            %   [i, j] = ind2sub(siz, ind); A(i, j) = ind;
+            %   sprintf("%d -> [%d, %d]", ind, i, j)
+            % end
+            [carsA, carsB] = ind2sub(obj.maxCars + [1; 1], s);
+            cars = [carsA - 1; carsB - 1];
+        end
+
+        % Convert a car configuration in the corresponding state
+        function s = cars2state(obj, cars)
+            % sub2ind convert subscript values into a linear index
+            % according to a given size
+            % Test:
+            % siz = [2, 2]; A = zeros(siz);
+            % for j = 1 : siz(2)
+            %   for i = 1 : siz(1)
+            %     ind = sub2ind(siz, i, j); A(i, j) = ind;
+            %     sprintf("[%d, %d] -> %d", i, j, ind)
+            %   end
+            % end
+            s = sub2ind(obj.maxCars + [1; 1], cars(1) + 1, cars(2) + 1);
+        end
+
+        % Generate transition matrix
         function obj = generateP(obj)
             % Compute transition matrix of returns
             obj.Pret = obj.generatePret(1) * obj.generatePret(2);
@@ -59,9 +89,9 @@ classdef JCR
         end
 
         % Generate transition matrix of returns
-        function P = generatePret(obj, loc)
+        function Pret = generatePret(obj, loc)
             % Initilaize matrix
-            P = zeros(obj.nStates, obj.nStates);
+            Pret = zeros(obj.nStates, obj.nStates);
             % Iterate on states
             for s = 1 : obj.nStates
                 % Convert the state in the car configuration
@@ -74,19 +104,24 @@ classdef JCR
                     % Compute the new state
                     sp = obj.cars2state(newCars);
                     % Set probability
-                    P(s, sp) = P(s, sp) + poisspdf(n, obj.lRet(loc));
+                    % Test:
+                    % n = 0:20; lambdas = 1:2:10;
+                    % figure(); hold on;
+                    % for l = lambdas; plot(poisspdf(n, l), 'o-'); end
+                    Pret(s, sp) = Pret(s, sp) + poisspdf(n, obj.lRet(loc));
                 end
             end
         end
 
         % Generate transition matrix of rentals
-        function P = generatePren(obj, loc)
-            % Initialize the matrix
-            P = zeros(obj.nStates, obj.nStates);
+        function Pren = generatePren(obj, loc)
+            % Initilaize matrix
+            Pren = zeros(obj.nStates, obj.nStates);
             % Iterate on states
             for s = 1 : obj.nStates
                 % Convert the state in the car configuration
                 cars = obj.state2cars(s);
+                % Iterate on possible rentals
                 for n = 0 : obj.maxCars(loc)
                     % Set the new car configuration
                     newCars = cars;
@@ -94,19 +129,20 @@ classdef JCR
                     % Compute the new state
                     sp = obj.cars2state(newCars);
                     % Set probability
-                    P(s, sp) = P(s, sp) + poisspdf(n, obj.lRen(loc));
+                    Pren(s, sp) = Pren(s, sp) + poisspdf(n, obj.lRen(loc));
                 end
             end
         end
 
         % Generate transition matrix of moves
-        function P = generatePmov(obj)
+        function Pmov = generatePmov(obj)
             % Initilaize matrix
-            P = zeros(obj.nStates, obj.nActions, obj.nStates);
+            Pmov = zeros(obj.nStates, obj.nActions, obj.nStates);
             % Iterate on states
             for s = 1 : obj.nStates
                 % Convert the state in the car configuration
                 cars = obj.state2cars(s);
+                % Iterate on actions
                 for a = 1 : obj.nActions
                     % Remap the action
                     moved = a - obj.maxMoves - 1;
@@ -131,7 +167,7 @@ classdef JCR
                     % Compute the new state
                     sp = obj.cars2state(newCars);
                     % Set the transition
-                    P(s, a, sp) = 1;
+                    Pmov(s, a, sp) = 1;
                 end
             end
         end
@@ -145,12 +181,12 @@ classdef JCR
                 % Convert the state in the car configuration
                 cars = obj.state2cars(s);
                 % Available cars at location 1
-                avail1 = 0:cars(1);
+                avail1 = 0 : cars(1);
                 % Probabilities to rent cars at loaction 1
                 probs1 = poisspdf(avail1, obj.lRen(1));
                 probs1(end) = 1 - sum(probs1(1:end-1));
                 % Available cars at location 2
-                avail2 = 0:cars(2);
+                avail2 = 0 : cars(2);
                 % Probabilities to rent cars at loaction 2
                 probs2 = poisspdf(avail2, obj.lRen(2));
                 probs2(end) = 1 - sum(probs2(1:end-1));
@@ -167,17 +203,6 @@ classdef JCR
                 % Set the expected reward
                 obj.R(:, a) = obj.Pret * earnings - obj.loss * abs(moved);
             end
-        end
-
-        % Convert a state in the corresponding car configuration
-        function cars = state2cars(obj, s)
-            [carsA, carsB] = ind2sub(obj.maxCars + [1;1], s);
-            cars = [carsA - 1; carsB - 1];
-        end
-
-        % Convert a car configuration in the corresponding state
-        function s = cars2state(obj, cars)
-            s = sub2ind(obj.maxCars + [1;1], cars(1) + 1, cars(2) + 1);
         end
     end
 end
