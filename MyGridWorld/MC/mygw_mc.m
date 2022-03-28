@@ -41,7 +41,7 @@ mygw.plotValue(MC.value)
 %% MC Control
 eps = 0.1;
 gamma = 0.9;
-nEpisodes = 1e4;
+nEpisodes = 1e7;
 MC = Montecarlo(eps, gamma, nEpisodes);
 % Find the optimal policy
 MC = MC.control(mygw);

@@ -47,12 +47,14 @@ classdef ValueIter
                 for s = 1 : obj.nStates
                     % Compute the state-action value function
                     Qpi = zeros(1, obj.nActions);
+                    % Iterate on actions
                     for a = 1 : obj.nActions
-                        Psa = squeeze(obj.P(s, a, :))';
-                        Qpi(a) = obj.R(s, a) + obj.gamma * Psa * obj.value;
+                        % Compute the estimate
+                        Qpi(a) = obj.R(s, a) + obj.gamma * ...
+                            squeeze(obj.P(s, a, :))' * obj.value;
                     end
                     % Take the best action and its value
-                    [obj.value(s), obj.policy(s)] = max(Qpi, [], 2);
+                    [obj.value(s), obj.policy(s)] = max(Qpi);
                 end
                 % Compute the max variation of the value function
                 if (vecnorm(obj.value - oldValue, Inf) < obj.tol)
