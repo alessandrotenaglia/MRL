@@ -35,7 +35,9 @@ classdef Montecarlo
             % Initialize a counter
             obj.N = zeros(env.nStates, 1);
             % Iterate on episodes
+            wb = waitbar(0, 'Please wait...');
             for e = 1 : obj.nEpisodes
+                waitbar(e/obj.nEpisodes, wb, 'Running episodes...')
                 % Genearte a randomic intial state (Exploring start)
                 s0 = randi(env.nStates);
                 % Run an episode
@@ -53,6 +55,7 @@ classdef Montecarlo
                         (1 / obj.N(sts(t))) * (G - obj.value(sts(t)));
                 end
             end
+            close(wb)
         end
 
         % Control
@@ -66,7 +69,9 @@ classdef Montecarlo
             % Initialize the state-action value function
             Q = zeros(env.nStates, env.nActions);
             % Iterate on episodes
+            wb = waitbar(0, 'Please wait...');
             for e = 1 : obj.nEpisodes
+                waitbar(e/obj.nEpisodes, wb, 'Running episodes...')
                 % Genearte a randomic intial state (Exploring start)
                 s0 = randi(env.nStates);
                 % Run an episode
@@ -87,6 +92,7 @@ classdef Montecarlo
                         max(Q(sts(t), :));
                 end
             end
+            close(wb)
         end
     end
 end

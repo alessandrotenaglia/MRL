@@ -214,10 +214,16 @@ classdef MyGridWorld
                     if (~ismember(s, obj.obstStates) && ...
                             ~ismember(s, obj.termStates))
                         [dx, dy] = obj.action2coord(policy(s));
-                        arr = annotation('arrow');
-                        arr.Parent = gca;
-                        arr.X = [xs(i)+0.5-dx*0.4, xs(i)+0.5+dx*0.4];
-                        arr.Y = [ys(j)+0.5-dy*0.4, ys(j)+0.5+dy*0.4];
+                        xarr = [xs(i)+0.5-dx*0.4, xs(i)+0.5+dx*0.4];
+                        yarr = [ys(j)+0.5-dy*0.4, ys(j)+0.5+dy*0.4];
+                        arr1 = annotation('arrow', 'headstyle', 'none');
+                        arr1.Parent = gca;
+                        arr1.X = [xs(i)+0.5-dx*0.4, xs(i)+0.5+dx*0.4];
+                        arr1.Y = [ys(j)+0.5-dy*0.4, ys(j)+0.5+dy*0.4];
+                        arr2 = annotation('arrow', 'linestyle', 'none');
+                        arr2.Parent = gca;
+                        arr2.X = [xs(i)+0.5+dx*0.3, xs(i)+0.5+dx*0.4];
+                        arr2.Y = [ys(j)+0.5+dy*0.3, ys(j)+0.5+dy*0.4];
                     end
                 end
             end

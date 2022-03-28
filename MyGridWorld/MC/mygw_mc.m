@@ -22,8 +22,9 @@ eps = 0.1;
 gamma = 0.9;
 nEpisodes = 1e4;
 MC = Montecarlo(eps, gamma, nEpisodes);
-
+% Generate a randomic policy
 policy = randi(mygw.nActions, mygw.nStates, 1);
+% Estimate the value function
 MC = MC.prediction(mygw, policy);
 
 figure()
@@ -40,9 +41,9 @@ mygw.plotValue(MC.value)
 %% MC Control
 eps = 0.1;
 gamma = 0.9;
-nEpisodes = 1e7;
+nEpisodes = 1e4;
 MC = Montecarlo(eps, gamma, nEpisodes);
-
+% Find the optimal policy
 MC = MC.control(mygw);
 
 figure()
