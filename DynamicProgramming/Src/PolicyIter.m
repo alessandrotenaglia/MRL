@@ -37,36 +37,6 @@ classdef PolicyIter
             obj.value = zeros(obj.nStates, 1);
         end
 
-        %         % Policy Evaluation
-        %         % Given a policy pi, estimate its value function v_pi
-        %         function obj = policyEval(obj)
-        %             % Define the transitions and the rewards for the current policy
-        %             Ppi = zeros(obj.nStates, obj.nStates);
-        %             Rpi = zeros(obj.nStates, 1);
-        %             for s = 1 : obj.nStates
-        %                 Ppi(s, :) = obj.P(s, obj.policy(s), :);
-        %                 Rpi(s) = obj.R(s, obj.policy(s));
-        %             end
-        %             % Iterate the evaluation, until it's reached a fixed point
-        %             while (1)
-        %                 % Store the old values to compute their variations
-        %                 oldValue = obj.value;
-        %                 % Update the estimates
-        %                 % v_{k+1}(s) = sum_{s',r}(p(s',r|s,a) * (r + gamma * v_{k}(s'))) =
-        %                 %            = sum_{s',r}(p(s',r|s,a) * r) + ...
-        %                 %              gamma * sum_{s',r}(p(s',r|s,a) * v_{k}(s'))) =
-        %                 %            = R(s,pi(s)) + gamma * P(s'|s,pi(s)) * v_{k}(s')
-        %                 obj.value = Rpi + obj.gamma * Ppi * obj.value;
-        %                 % Compute the max variation of the value function
-        %                 % Inf-norm: max{i}(|x_i|)
-        %                 % Test: vecnorm([0, -1, 2, -4], Inf)
-        %                 if (vecnorm(obj.value - oldValue, Inf) < obj.tol)
-        %                     % If the max variation is less than the tollerance stop!
-        %                     break;
-        %                 end
-        %             end
-        %         end
-
         % Policy Evaluation
         % Given a policy pi, estimate its value function v_pi
         function obj = policyEval(obj)
@@ -93,7 +63,7 @@ classdef PolicyIter
         end
 
         % Policy Improvment
-        % Given a policy pi, find a new policy pi' s.t v_pi' > v_pi
+        % Given a policy pi, find a new policy pi' s.t v_pi' >= v_pi
         function obj = policyImprov(obj)
             % Iterate on states
             for s = 1 : obj.nStates
