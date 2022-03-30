@@ -71,7 +71,7 @@ classdef Montecarlo
             for e = 1 : obj.nEpisodes
                 waitbar(e/obj.nEpisodes, wb, 'Running episodes...')
                 % Run an episode
-                [sts, acts, rews] = env.run(obj.policy, obj.eps);
+                [sts, acts, rews] = env.run(0, obj.policy, obj.eps);
                 % Reset the cumulative reward
                 G = 0;
                 % Iterate backwards on the states of the episode
