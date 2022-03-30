@@ -1,6 +1,15 @@
+% ---------------------------------------- %
+%  File: Track.m                           %
+%  Date: March 30, 2022                    %
+%  Author: Alessandro Tenaglia             %
+%  Email: alessandro.tenaglia@uniroma2.it  %
+% ---------------------------------------- %
+
+% Formula 1 track
 classdef Track < MyGridWorld
 
     methods
+        % Class constructor
         function obj = Track(nActions, cells)
             initCells = [];
             termCells = [];
