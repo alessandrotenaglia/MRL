@@ -26,22 +26,20 @@ classdef Montecarlo
             obj.nEpisodes = nEpisodes;
         end
 
-        % Prediction
+        % Montecarlo Prediction
         function obj = prediction(obj, env, policy)
-            % Initialize the state value function
-            obj.value = zeros(env.nStates, 1);
             % Store the policy to be estimated
             obj.policy = policy;
+            % Initialize the state value function
+            obj.value = zeros(env.nStates, 1);
             % Initialize a counter
             obj.N = zeros(env.nStates, 1);
             % Iterate on episodes
             wb = waitbar(0, 'Please wait...');
             for e = 1 : obj.nEpisodes
                 waitbar(e/obj.nEpisodes, wb, 'Running episodes...')
-                % Genearte a randomic intial state (Exploring start)
-                s0 = randi(env.nStates);
                 % Run an episode
-                [sts, ~, rews] = env.run(s0, policy, obj.eps);
+                [sts, ~, rews] = env.run(policy, obj.eps);
                 % Reset the cumulative reward
                 G = 0;
                 % Iterate backwards on the states of the episode
@@ -58,24 +56,22 @@ classdef Montecarlo
             close(wb)
         end
 
-        % Control
+        % Montecarlo Control
         function obj = control(obj, env)
             % Initialize the state value function
             obj.value = zeros(env.nStates, 1);
-            % Generate a randomic intial policy
-            obj.policy = randi(env.nActions, env.nStates, 1);
-            % Initialize a counter
-            obj.N = zeros(env.nStates, env.nActions);
             % Initialize the state-action value function
             Q = zeros(env.nStates, env.nActions);
+            % Initialize a counter
+            obj.N = zeros(env.nStates, env.nActions);
+            % Generate a randomic intial policy
+            obj.policy = randi(env.nActions, env.nStates, 1);
             % Iterate on episodes
             wb = waitbar(0, 'Please wait...');
             for e = 1 : obj.nEpisodes
                 waitbar(e/obj.nEpisodes, wb, 'Running episodes...')
-                % Genearte a randomic intial state (Exploring start)
-                s0 = randi(env.nStates);
                 % Run an episode
-                [sts, acts, rews] = env.run(s0, obj.policy, obj.eps);
+                [sts, acts, rews] = env.run(obj.policy, obj.eps);
                 % Reset the cumulative reward
                 G = 0;
                 % Iterate backwards on the states of the episode
@@ -84,7 +80,7 @@ classdef Montecarlo
                     G = rews(t) + obj.gamma * G;
                     % Increment the counter
                     obj.N(sts(t), acts(t)) = obj.N(sts(t), acts(t)) + 1;
-                    % Update the value-action function
+                    % Update the state-action value function
                     Q(sts(t), acts(t)) = Q(sts(t), acts(t)) + ...
                         (1 / obj.N(sts(t), acts(t))) * (G - Q(sts(t), acts(t)));
                     % Update the policy and the value fucntion
