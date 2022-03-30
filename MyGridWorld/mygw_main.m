@@ -1,6 +1,6 @@
 % ---------------------------------------- %
 %  File: mygw_main.m                       %
-%  Date: March 11, 2022                    %
+%  Date: March 22, 2022                    %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %
 % ---------------------------------------- %
@@ -8,22 +8,25 @@
 clear; close all; clc;
 
 %% My Grid World
-nX = 5;
-nY = 5;
-nActions = 8;
+nX = 6;
+nY = 6;
+nActions = 4;
+initCell = [];
 termCells = [nX; nY];
-obstCells = [2, 2, 3; 2, 3, 2];
-mygw = MyGridWorld(nX, nY, nActions, termCells, obstCells);
+obstCells = [];
+mygw = MyGridWorld(nX, nY, nActions, initCell, termCells, obstCells);
 
 %% Plot Grid World
-figure()
+figure();
 mygw.plotGrid();
 
-%% Plot a randomic episode
-s0 = randi(mygw.nStates);
-
-policy = randi(mygw.nActions, mygw.nStates, 1);
-[sts, acts, rews] = mygw.run(s0, policy, 0.0);
-figure()
+%% Plot an episode
+policy = ones(mygw.nStates, 1);
+[sts, acts, rews] = mygw.run(0, policy, 0.0);
+figure();
 mygw.plotPolicy(policy);
 mygw.plotPath(sts);
+
+%% Save MyGridWorld
+[path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
+save([path, '/MYGW.mat'], 'mygw');

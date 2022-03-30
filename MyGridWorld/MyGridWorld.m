@@ -12,6 +12,7 @@ classdef MyGridWorld
         nX;         % Number of cells along x-axis
         nY;         % Number of cells along y-axis
         nActions;   % Number of actions
+        initStates; % Initial states
         termStates; % Terminal states
         obstStates; % Ostacles states
         nStates;    % Number of states
@@ -21,15 +22,16 @@ classdef MyGridWorld
 
     methods
         % Class constructor
-        function obj = MyGridWorld(nX, nY, nActions, termCells, obstCells)
+        function obj = MyGridWorld(nX, nY, nActions, ...
+                initCells, termCells, obstCells)
             % Set properties
             obj.nX = nX;
             obj.nY = nY;
-            % Check the number of actions
-            if (nActions == 4 || nActions == 8)
-                obj.nActions = nActions;
-            else
-                obj.nActions = 4;
+            obj.nActions = nActions;
+            % Convert the initial cells in states
+            if (size(initCells, 2) >  0)
+                obj.initStates = sub2ind([nX, nY], ...
+                    initCells(1, :), initCells(2, :));
             end
             % Convert the terminal cells in states
             obj.termStates = sub2ind([nX, nY], ...
@@ -92,8 +94,7 @@ classdef MyGridWorld
                     obj.R(s, :) = 0;
                 else
                     % If it's not a terminal state, the reward is -1
-                    obj.R(s, 1:4) = -1;
-                    obj.R(s, 5:end) = -sqrt(2);
+                    obj.R(s, :) = -1;
                 end
             end
         end
@@ -128,23 +129,29 @@ classdef MyGridWorld
                 r = -1e6;
             else
                 % If it's not a terminal state, the reward is -1
-                if (a <= 4)
-                    r = -1;
-                else
-                    r = -sqrt(2);
-                end
+                r = -1;
             end
         end
 
         % Generate the reward matrix
         function [sts, acts, rews] = run(obj, s0, policy, eps)
-            % Initialize states and rewards
-            sts = s0;
+            % Initialize states
+            if (s0 == 0)
+                % Initialize states and rewards
+                if (numel(obj.initStates) > 0)
+                    sts = obj.initStates(randi(numel(obj.initStates)));
+                else
+                    sts = randi(obj.nStates);
+                end
+            else
+                sts = s0;
+            end
+            % Initialize actions and rewards
             acts = [];
             rews = [];
             % Generate the episode
             while (~ismember(sts(end), obj.obstStates) && ...
-                    ~ismember(sts(end), obj.termStates) && numel(sts) < 20)
+                    ~ismember(sts(end), obj.termStates))
                 % Eps-greedy policy
                 if (rand() < eps)
                     % Explorative choice (prob = eps)
@@ -159,23 +166,29 @@ classdef MyGridWorld
                 sts = [sts, sp];
                 acts = [acts, a];
                 rews = [rews, r];
+                if (ismember(sp, sts(1:end-1)))
+                    % Store the movement
+                    rews(end) = -1e6;
+                    return;
+                end
             end
         end
 
         % Polt the grid world
         function [xs, ys] = plot(obj)
             axis equal; hold on;
-            xlim([0.5 obj.nX+0.5])
-            ylim([0.5 obj.nY+0.5])
-            set(gca,'xtick',[]); set(gca,'ytick',[])
-            set(gca,'xticklabel',[]); set(gca,'yticklabel',[])
+            xlim([0.5 obj.nX+0.5]); ylim([0.5 obj.nY+0.5]);
+            set(gca,'xtick',[]); set(gca,'ytick',[]);
+            set(gca,'xticklabel',[]); set(gca,'yticklabel',[]);
             xs = 0.5 : 1 : obj.nX;
             ys = 0.5 : 1 : obj.nY;
             for i = 1 : numel(xs)
                 for j = 1 : numel(ys)
                     r = rectangle('Position', [xs(i) ys(j) 1 1]);
                     s = sub2ind([obj.nX, obj.nY], xs(i)+0.5, ys(j)+0.5);
-                    if (ismember(s, obj.obstStates))
+                    if (ismember(s, obj.initStates))
+                        r.FaceColor = 'c';
+                    elseif (ismember(s, obj.obstStates))
                         r.FaceColor = 'k';
                     elseif (ismember(s, obj.termStates))
                         r.FaceColor = 'g';
@@ -186,6 +199,7 @@ classdef MyGridWorld
 
         % Plot the grid world with possible movements
         function plotGrid(obj)
+            hold on;
             [xs, ys] = obj.plot();
             for i = 1 : numel(xs)
                 for j = 1 : numel(ys)
@@ -207,6 +221,7 @@ classdef MyGridWorld
 
         % Plot a policy on the grid world
         function plotPolicy(obj, policy)
+            hold on;
             [xs, ys] = obj.plot();
             for i = 1 : numel(xs)
                 for j = 1 : numel(ys)
@@ -214,16 +229,10 @@ classdef MyGridWorld
                     if (~ismember(s, obj.obstStates) && ...
                             ~ismember(s, obj.termStates))
                         [dx, dy] = obj.action2coord(policy(s));
-                        xarr = [xs(i)+0.5-dx*0.4, xs(i)+0.5+dx*0.4];
-                        yarr = [ys(j)+0.5-dy*0.4, ys(j)+0.5+dy*0.4];
-                        arr1 = annotation('arrow', 'headstyle', 'none');
-                        arr1.Parent = gca;
-                        arr1.X = [xs(i)+0.5-dx*0.4, xs(i)+0.5+dx*0.4];
-                        arr1.Y = [ys(j)+0.5-dy*0.4, ys(j)+0.5+dy*0.4];
-                        arr2 = annotation('arrow', 'linestyle', 'none');
-                        arr2.Parent = gca;
-                        arr2.X = [xs(i)+0.5+dx*0.3, xs(i)+0.5+dx*0.4];
-                        arr2.Y = [ys(j)+0.5+dy*0.3, ys(j)+0.5+dy*0.4];
+                        arr = annotation('arrow');
+                        arr.Parent = gca;
+                        arr.X = [xs(i)+0.5-dx*0.4, xs(i)+0.5+dx*0.4];
+                        arr.Y = [ys(j)+0.5-dy*0.4, ys(j)+0.5+dy*0.4];
                     end
                 end
             end
@@ -232,6 +241,7 @@ classdef MyGridWorld
 
         % Plot a value function on the grid world
         function plotValue(obj, value)
+            hold on;
             [xs, ys] = obj.plot();
             for i = 1 : numel(xs)
                 for j = 1 : numel(ys)
@@ -254,11 +264,11 @@ classdef MyGridWorld
 
         % Plot a value function on the grid world
         function plotPath(obj, states)
+            hold on;
             obj.plot();
             nS = numel(states);
             alphas = linspace(0.25, 1, nS);
             for s = 1 : nS
-                % Convert the state in cells
                 [x, y] = ind2sub([obj.nX, obj.nY], states(s));
                 r = rectangle('Position', [x-0.25, y-0.25, 0.5, 0.5], ...
                     'Curvature',[1 1]);
