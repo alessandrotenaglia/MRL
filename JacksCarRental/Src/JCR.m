@@ -108,7 +108,11 @@ classdef JCR
                     % n = 0:20; lambdas = 1:2:10;
                     % figure(); hold on;
                     % for l = lambdas; plot(poisspdf(n, l), 'o-'); end
-                    Pret(s, sp) = Pret(s, sp) + poisspdf(n, obj.lRet(loc));
+                    if (n < obj.maxCars(loc))
+                        Pret(s, sp) = Pret(s, sp) + poisspdf(n, obj.lRet(loc));
+                    else
+                        Pret(s, sp) = Pret(s, sp) + 1 - sum(Pret(s, :));
+                    end
                 end
             end
         end
@@ -129,7 +133,11 @@ classdef JCR
                     % Compute the new state
                     sp = obj.cars2state(newCars);
                     % Set probability
-                    Pren(s, sp) = Pren(s, sp) + poisspdf(n, obj.lRen(loc));
+                    if (n < obj.maxCars(loc))
+                        Pren(s, sp) = Pren(s, sp) + poisspdf(n, obj.lRet(loc));
+                    else
+                        Pren(s, sp) = Pren(s, sp) + 1 - sum(Pren(s, :));
+                    end
                 end
             end
         end
