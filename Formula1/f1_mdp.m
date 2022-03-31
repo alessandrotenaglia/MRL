@@ -33,4 +33,4 @@ end
 track = track.generateR();
 
 %% Save the track
-save([path, '/F1.mat'], 'track');
+save([path, '/F1_MDP.mat'], 'track');

@@ -22,12 +22,15 @@ else
     eps = 0.1;
     gamma = 0.9;
     nEpisodes = 1e3;
-    MC = Montecarlo(eps, gamma, nEpisodes);
+    MC = Montecarlo(track, eps, gamma, nEpisodes);
 end
 
 %% MC Control
-for e = 1 : 1e3
-    MC = MC.control(track);
+nRepetitions = 1e1;
+for r = 1 : nRepetitions
+    clc
+    fprintf('Repetions: %3.0f%%\n', (r / nRepetitions) * 100);
+    MC = MC.control();
     save([path, '/F1_MC.mat'], 'MC');
 end
 

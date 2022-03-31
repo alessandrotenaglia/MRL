@@ -10,7 +10,7 @@ clear; close all; clc;
 %% My Grid World
 nX = 6;
 nY = 6;
-nActions = 4;
+nActions = 8;
 initCell = [];
 termCells = [nX; nY];
 obstCells = [];

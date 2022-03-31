@@ -9,8 +9,8 @@ clear; close all; clc;
 
 %% Load/Create the track
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-if (exist([path, '/F1.mat'], 'file') == 2)
-    load([path, '/F1.mat'])
+if (exist([path, '/F1_MDP.mat'], 'file') == 2)
+    load([path, '/F1_MDP.mat'])
 else
     f1_mdp;
 end

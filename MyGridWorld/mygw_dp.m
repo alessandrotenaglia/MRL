@@ -1,5 +1,5 @@
 % ---------------------------------------- %
-%  File: mygw_mdp.m                        %
+%  File: mygw_dp.m                         %
 %  Date: March 22, 2022                    %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %
@@ -9,17 +9,17 @@ clear; close all; clc;
 
 %% Load/Create MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-if (exist([path, '/MYGW.mat'], 'file') == 2)
-    load([path, '/MYGW.mat'])
+if (exist([path, '/MYGW_MDP.mat'], 'file') == 2)
+    load([path, '/MYGW_MDP.mat'])
 else
-    f1_mdp;
+    mygw_mdp;
 end
 
 %% Policy Iteration
 % Start timer
 tic;
 %
-gamma = 0.9;
+gamma = 1;
 tol = 1e-6;
 PI = PolicyIter(mygw.P, mygw.R, gamma, tol);
 PI = PI.policyIter();
@@ -30,7 +30,7 @@ toc;
 % Start timer
 tic;
 %
-gamma = 0.9;
+gamma = 1;
 tol = 1e-6;
 VI = ValueIter(mygw.P, mygw.R, gamma, tol);
 VI = VI.valueIter();

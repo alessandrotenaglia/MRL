@@ -33,4 +33,4 @@ end
 mygw = mygw.generateR();
 
 %% Save MyGridWorld
-save([path, '/MYGW.mat'], 'mygw')
+save([path, '/MYGW_MDP.mat'], 'mygw')
