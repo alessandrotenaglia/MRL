@@ -19,8 +19,8 @@ end
 if (exist([path, '/MYGW_MC.mat'], 'file') == 2)
     load([path, '/MYGW_MC.mat']);
 else
-    eps = 0.1;
-    gamma = 1;
+    eps = 0.2;
+    gamma = 0.9;
     nEpisodes = 1e3;
     MC = Montecarlo(mygw, eps, gamma, nEpisodes);
 end

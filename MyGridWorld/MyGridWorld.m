@@ -7,19 +7,19 @@
 
 % My Grid World
 classdef MyGridWorld
-    
+
     properties
         nX;         % Number of cells along x-axis
         nY;         % Number of cells along y-axis
         nActions;   % Number of actions
         initStates; % Initial states
         termStates; % Terminal states
-        obstStates; % Ostacles states
+        obstStates; % Obstacles states
         nStates;    % Number of states
         P;          % Transition matrix
         R;          % Reward matrix
     end
-    
+
     methods
         % Class constructor
         function obj = MyGridWorld(nX, nY, nActions, ...
@@ -44,7 +44,7 @@ classdef MyGridWorld
             % Set the number of states
             obj.nStates = nX * nY;
         end
-        
+
         % Generate the transition matrix
         function obj = generateP(obj)
             % Initialize the matrix
@@ -71,7 +71,8 @@ classdef MyGridWorld
                         yp = max(1, min(obj.nY, y + dy));
                         % Convert the new position in the new state
                         sp = sub2ind([obj.nX, obj.nY], xp, yp);
-                        if (ismember(s, obj.obstStates))
+                        % Check the nature of the state
+                        if (ismember(sp, obj.obstStates))
                             % If it's an obstacle the state doesn't change
                             sp = s;
                         end
@@ -81,7 +82,7 @@ classdef MyGridWorld
                 end
             end
         end
-        
+
         % Generate the reward matrix
         function obj = generateR(obj)
             % Initialize the matrix
@@ -90,18 +91,34 @@ classdef MyGridWorld
             for s = 1 : obj.nStates
                 % Check the nature of the state
                 if (ismember(s, obj.termStates))
-                    % If it's a terminal state, the reward is 0
                     obj.R(s, :) = 0;
+                elseif (ismember(s, obj.obstStates))
+                    obj.R(s, :) = -1e6;
                 else
-                    % If it's not a terminal state, the reward is -1
-                    obj.R(s, :) = -1;
-                    if (obj.nActions == 8)
-                        obj.R(s, 5:end) = -sqrt(2);
+                    % Convert the state in cells
+                    [x, y] = ind2sub([obj.nX, obj.nY], s);
+                    % Iterate on actions
+                    for a = 1 : obj.nActions
+                        % Convert the action into axis movements
+                        [dx, dy] = obj.action2coord(a);
+                        % Set the new position
+                        xp = max(1, min(obj.nX, x + dx));
+                        yp = max(1, min(obj.nY, y + dy));
+                        % Convert the new position in the new state
+                        sp = sub2ind([obj.nX, obj.nY], xp, yp);
+                        % Check the nature of the state
+                        if (ismember(sp, obj.obstStates))
+                            % If it's a terminal state, the reward is -1e6
+                            obj.R(s, a) = -1e6;
+                        else
+                            % If it's not a terminal state, the reward is -1
+                            obj.R(s, a) = -vecnorm([dx, dy]);
+                        end
                     end
                 end
             end
         end
-        
+
         % Given a state and an action, compute the new postion and the
         % reward
         function [sp, r] = move(obj, s, a)
@@ -110,36 +127,31 @@ classdef MyGridWorld
                 % If it's a terminal state, the reward is 0
                 sp = s;
                 r = 0;
-                return
             elseif (ismember(s, obj.obstStates))
                 % If it's an obstacle, the reward is -1e6
                 sp = s;
                 r = -1e6;
-                return
-            end
-            % Convert the state in cells
-            [x, y] = ind2sub([obj.nX, obj.nY], s);
-            % Convert the action in cell movements
-            [dx, dy] = obj.action2coord(a);
-            % Compute new position
-            xp = max(1, min(obj.nX, x + dx));
-            yp = max(1, min(obj.nY, y + dy));
-            % Convert the new position in the new state
-            sp = sub2ind([obj.nX, obj.nY], xp, yp);
-            % Check the nature of the state
-            if (ismember(sp, obj.obstStates))
-                % If it's an obstacle, the reward is -1e6
-                r = -1e6;
             else
-                % If it's not a terminal state, the reward is -1
-                if (a <= 4)
-                    r = -1;
+                % Convert the state in cells
+                [x, y] = ind2sub([obj.nX, obj.nY], s);
+                % Convert the action in cell movements
+                [dx, dy] = obj.action2coord(a);
+                % Compute new position
+                xp = max(1, min(obj.nX, x + dx));
+                yp = max(1, min(obj.nY, y + dy));
+                % Convert the new position in the new state
+                sp = sub2ind([obj.nX, obj.nY], xp, yp);
+                % Check the nature of the state
+                if (ismember(sp, obj.obstStates))
+                    % If it's an obstacle, the reward is -1e6
+                    r = -1e6;
                 else
-                    r = -sqrt(2);
+                    % If it's not a terminal state, the reward is -1
+                    r = -vecnorm([dx, dy]);
                 end
             end
         end
-        
+
         % Generate the reward matrix
         function [sts, acts, rews] = run(obj, s0, policy, eps)
             % Initialize states
@@ -176,7 +188,7 @@ classdef MyGridWorld
                 rews = [rews, r];
             end
         end
-        
+
         % Polt the grid world
         function [xs, ys] = plot(obj)
             axis equal; hold on;
@@ -199,7 +211,7 @@ classdef MyGridWorld
                 end
             end
         end
-        
+
         % Plot the grid world with possible movements
         function plotGrid(obj)
             hold on;
@@ -221,7 +233,7 @@ classdef MyGridWorld
             end
             hold off;
         end
-        
+
         % Plot a policy on the grid world
         function plotPolicy(obj, policy)
             hold on;
@@ -241,7 +253,7 @@ classdef MyGridWorld
             end
             hold off;
         end
-        
+
         % Plot a value function on the grid world
         function plotValue(obj, value)
             hold on;
@@ -264,7 +276,7 @@ classdef MyGridWorld
             end
             hold off;
         end
-        
+
         % Plot a value function on the grid world
         function plotPath(obj, states)
             hold on;
@@ -279,7 +291,7 @@ classdef MyGridWorld
             end
             hold off;
         end
-        
+
         % Convert an action into axis movements
         function [dx, dy] = action2coord(~, a)
             if (a == 1)     % East

@@ -19,7 +19,7 @@ end
 % Start timer
 tic;
 %
-gamma = 1;
+gamma = 0.9;
 tol = 1e-6;
 PI = PolicyIter(mygw.P, mygw.R, gamma, tol);
 PI = PI.policyIter();
@@ -30,7 +30,7 @@ toc;
 % Start timer
 tic;
 %
-gamma = 1;
+gamma = 0.9;
 tol = 1e-6;
 VI = ValueIter(mygw.P, mygw.R, gamma, tol);
 VI = VI.valueIter();
@@ -58,4 +58,4 @@ title('VI - Optimal value function')
 mygw.plotValue(VI.value)
 
 %% Save MyGridWorld
-save([path, '/MYGW_DP.mat'], 'VI')
+save([path, '/MYGW_DP.mat'], 'PI', 'VI')

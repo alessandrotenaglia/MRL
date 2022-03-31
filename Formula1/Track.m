@@ -17,11 +17,11 @@ classdef Track < MyGridWorld
             for i = 1 : size(cells, 1)
                 for j = 1 : size(cells, 2)
                     if (cells(i, j) == 2)
-                        initCells = [initCells, [i;j]];
+                        initCells = [initCells, [i; j]];
                     elseif (cells(i, j) == 3)
-                        termCells = [termCells, [i;j]];
+                        termCells = [termCells, [i; j]];
                     elseif (cells(i, j) == 1)
-                        obstCells = [obstCells, [i;j]];
+                        obstCells = [obstCells, [i; j]];
                     end
                 end
             end

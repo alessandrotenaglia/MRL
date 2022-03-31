@@ -19,16 +19,16 @@ end
 if (exist([path, '/F1_MC.mat'], 'file') == 2)
     load([path, '/F1_MC.mat']);
 else
-    eps = 0.1;
+    eps = 0.2;
     gamma = 0.9;
-    nEpisodes = 1e3;
+    nEpisodes = 1e2;
     MC = Montecarlo(track, eps, gamma, nEpisodes);
 end
 
 %% MC Control
-nRepetitions = 1e1;
+nRepetitions = 1e2;
 for r = 1 : nRepetitions
-    clc
+    clc;
     fprintf('Repetions: %3.0f%%\n', (r / nRepetitions) * 100);
     MC = MC.control();
     save([path, '/F1_MC.mat'], 'MC');
