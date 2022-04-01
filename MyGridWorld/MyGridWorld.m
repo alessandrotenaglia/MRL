@@ -170,8 +170,7 @@ classdef MyGridWorld
             rews = [];
             % Generate the episode
             while (~ismember(sts(end), obj.obstStates) && ...
-                    ~ismember(sts(end), obj.termStates) && ...
-                    numel(sts) < obj.nStates)
+                    ~ismember(sts(end), obj.termStates))
                 % Eps-greedy policy
                 if (rand() < eps)
                     % Explorative choice (prob = eps)
@@ -186,6 +185,11 @@ classdef MyGridWorld
                 sts = [sts, sp];
                 acts = [acts, a];
                 rews = [rews, r];
+                %
+%                 if (ismember(sp, sts(1:end-1)))
+%                     rews(end) = -1e6;
+%                     break;
+%                 end
             end
         end
 

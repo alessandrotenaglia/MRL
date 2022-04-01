@@ -17,15 +17,15 @@ obstCells = [];
 mygw = MyGridWorld(nX, nY, nActions, initCell, termCells, obstCells);
 
 %% Plot Grid World
-figure();
-mygw.plotGrid();
+% figure();
+% mygw.plotGrid();
 
 %% Plot an episode
-policy = ones(mygw.nStates, 1);
-[sts, acts, rews] = mygw.run(0, policy, 0.0);
-figure();
-mygw.plotPolicy(policy);
-mygw.plotPath(sts);
+% policy = ones(mygw.nStates, 1);
+% [sts, acts, rews] = mygw.run(0, policy, 0.0);
+% figure();
+% mygw.plotPolicy(policy);
+% mygw.plotPath(sts);
 
 %% Save MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));

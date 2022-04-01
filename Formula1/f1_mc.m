@@ -21,12 +21,12 @@ if (exist([path, '/F1_MC.mat'], 'file') == 2)
 else
     eps = 0.2;
     gamma = 0.9;
-    nEpisodes = 1e2;
+    nEpisodes = 1e3;
     MC = Montecarlo(track, eps, gamma, nEpisodes);
 end
 
 %% MC Control
-nRepetitions = 1e2;
+nRepetitions = 1e3;
 for r = 1 : nRepetitions
     clc;
     fprintf('Repetions: %3.0f%%\n', (r / nRepetitions) * 100);
