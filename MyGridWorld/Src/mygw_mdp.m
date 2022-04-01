@@ -9,8 +9,8 @@ clear; close all; clc;
 
 %% Load/Create MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-if (exist([path, '/MYGW.mat'], 'file') == 2)
-    load([path, '/MYGW.mat']);
+if (exist([path, '/../Data/MYGW.mat'], 'file') == 2)
+    load([path, '/../Data/MYGW.mat']);
     fprintf("Loaded MYGW.mat\n");
 else
     mygw_main;
@@ -35,4 +35,4 @@ end
 mygw = mygw.generateR();
 
 %% Save MyGridWorld
-save([path, '/MYGW_MDP.mat'], 'mygw')
+save([path, '/../Data/MYGW_MDP.mat'], 'mygw')

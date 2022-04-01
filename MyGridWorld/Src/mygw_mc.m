@@ -9,8 +9,8 @@ clear; close all; clc;
 
 %% Load/Create MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-if (exist([path, '/MYGW.mat'], 'file') == 2)
-    load([path, '/MYGW.mat']);
+if (exist([path, '/../Data/MYGW.mat'], 'file') == 2)
+    load([path, '/../Data/MYGW.mat']);
     fprintf("Loaded MYGW.mat\n");
 else
     mygw_main;
@@ -29,8 +29,8 @@ else
 end
 
 %% Load/Create Montecarlo Epsilon greedy
-if (exist([path, '/MYGW_MC_EPS.mat'], 'file') == 2)
-    load([path, '/MYGW_MC_EPS.mat']);
+if (exist([path, '/../Data/MYGW_MC_EPS.mat'], 'file') == 2)
+    load([path, '/../Data/MYGW_MC_EPS.mat']);
     fprintf("Loaded MYGW_MC_EPS.mat\n");
 else
     gamma = 0.99;
@@ -47,10 +47,10 @@ for r = 1 : nRepetitions
     fprintf('\b\b\b\b%3.0f%%', (r / nRepetitions) * 100);
     % Montecarlo Exploring start
     MC_EXP = MC_EXP.controlExploring();
-    save([path, '/MYGW_MC_EXP.mat'], 'MC_EXP');
+    save([path, '/../Data/MYGW_MC_EXP.mat'], 'MC_EXP');
     % Montecarlo Epsilon greedy
     MC_EPS = MC_EPS.controlEpsilon(eps);
-    save([path, '/MYGW_MC_EPS.mat'], 'MC_EPS');
+    save([path, '/../Data/MYGW_MC_EPS.mat'], 'MC_EPS');
 end
 fprintf('\n');
 

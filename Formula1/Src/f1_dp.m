@@ -9,8 +9,8 @@ clear; close all; clc;
 
 %% Load/Create the track
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-if (exist([path, '/F1_MDP.mat'], 'file') == 2)
-    load([path, '/F1_MDP.mat']);
+if (exist([path, '/../Data/F1_MDP.mat'], 'file') == 2)
+    load([path, '/../Data/F1_MDP.mat']);
     fprintf("Loaded F1_MDP.mat\n");
 else
     f1_mdp;
@@ -54,4 +54,4 @@ title('VI - Optimal policy');
 track.plotPolicy(VI.policy);
 
 %% Save MyGridWorld
-save([path, '/F1_DP.mat'], 'PI', 'VI');
+save([path, '/../Data/F1_DP.mat'], 'PI', 'VI');

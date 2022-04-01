@@ -9,8 +9,8 @@ clear; close all; clc;
 
 %% Load/Create the track
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-if (exist([path, '/F1.mat'], 'file') == 2)
-    load([path, '/F1.mat']);
+if (exist([path, '/../Data/F1.mat'], 'file') == 2)
+    load([path, '/../Data/F1.mat']);
     fprintf("Loaded F1.mat\n");
 else
     f1_main;
@@ -18,8 +18,8 @@ else
 end
 
 %% Load/Create Montecarlo Exploring start
-if (exist([path, '/F1_MC_EXP.mat'], 'file') == 2)
-    load([path, '/F1_MC_EXP.mat']);
+if (exist([path, '/../Data/F1_MC_EXP.mat'], 'file') == 2)
+    load([path, '/../Data/F1_MC_EXP.mat']);
     fprintf("Loaded F1_MC_EXP.mat\n");
 else
     gamma = 0.99;
@@ -29,8 +29,8 @@ else
 end
 
 %% Load/Create Montecarlo Epsilon greedy
-if (exist([path, '/F1_MC_EPS.mat'], 'file') == 2)
-    load([path, '/F1_MC_EPS.mat']);
+if (exist([path, '/../Data/F1_MC_EPS.mat'], 'file') == 2)
+    load([path, '/../Data/F1_MC_EPS.mat']);
     fprintf("Loaded F1_MC_EPS.mat\n");
 else
     gamma = 0.99;
@@ -47,10 +47,10 @@ for r = 1 : nRepetitions
     fprintf('\b\b\b\b%3.0f%%', (r / nRepetitions) * 100);
     % Montecarlo Exploring start
     MC_EXP = MC_EXP.controlExploring();
-    save([path, '/F1_MC_EXP.mat'], 'MC_EXP');
+    save([path, '/../Data/F1_MC_EXP.mat'], 'MC_EXP');
     % Montecarlo Epsilon greedy
     MC_EPS = MC_EPS.controlEpsilon(eps);
-    save([path, '/F1_MC_EPS.mat'], 'MC_EPS');
+    save([path, '/../Data/F1_MC_EPS.mat'], 'MC_EPS');
 end
 fprintf('\n');
 

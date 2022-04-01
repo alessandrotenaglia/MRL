@@ -9,8 +9,8 @@ clear; close all; clc;
 
 %% Load/Create MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-if (exist([path, '/MYGW_MDP.mat'], 'file') == 2)
-    load([path, '/MYGW_MDP.mat']);
+if (exist([path, '/../Data/MYGW_MDP.mat'], 'file') == 2)
+    load([path, '/../Data/MYGW_MDP.mat']);
     fprintf("Loaded MYGW_MDP.mat\n");
 else
     mygw_mdp;
@@ -54,4 +54,4 @@ title('Value Iteration')
 mygw.plotPolicy(VI.policy)
 
 %% Save MyGridWorld
-save([path, '/MYGW_DP.mat'], 'PI', 'VI')
+save([path, '/../Data/MYGW_DP.mat'], 'PI', 'VI')

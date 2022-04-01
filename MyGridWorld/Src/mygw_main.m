@@ -29,4 +29,4 @@ mygw = MyGridWorld(nX, nY, nActions, initCell, termCells, obstCells);
 
 %% Save MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-save([path, '/MYGW.mat'], 'mygw');
+save([path, '/../Data/MYGW.mat'], 'mygw');

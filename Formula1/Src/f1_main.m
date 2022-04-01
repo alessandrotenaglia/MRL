@@ -9,7 +9,7 @@ clear; close all; clc;
 
 %% Load track
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-load([path, '/Monaco.mat']);
+load([path, '/../Data/Monaco.mat']);
 
 %% Generate the track
 nActions = 8;
@@ -27,4 +27,4 @@ track = Track(nActions, cells);
 % track.plotPath(sts);
 
 %% Save MyGridWorld
-save([path, '/F1.mat'], 'track');
+save([path, '/../Data/F1.mat'], 'track');

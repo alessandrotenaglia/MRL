@@ -9,8 +9,8 @@ clear; close all; clc;
 
 %% Load/Create the yrack
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-if (exist([path, '/F1.mat'], 'file') == 2)
-    load([path, '/F1.mat']);
+if (exist([path, '/../Data/F1.mat'], 'file') == 2)
+    load([path, '/../Data/F1.mat']);
     fprintf("Loaded F1.mat\n");
 else
     f1_main;
@@ -35,4 +35,4 @@ end
 track = track.generateR();
 
 %% Save the track
-save([path, '/F1_MDP.mat'], 'track');
+save([path, '/../Data/F1_MDP.mat'], 'track');
