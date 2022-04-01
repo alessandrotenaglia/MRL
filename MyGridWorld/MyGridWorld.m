@@ -108,10 +108,10 @@ classdef MyGridWorld
                         sp = sub2ind([obj.nX, obj.nY], xp, yp);
                         % Check the nature of the state
                         if (ismember(sp, obj.obstStates))
-                            % If it's a terminal state, the reward is -1e6
+                            % If it's an obstacle, the reward is -1e6
                             obj.R(s, a) = -1e6;
                         else
-                            % If it's not a terminal state, the reward is -1
+                            % If it's not an obstacle, the reward is the distance
                             obj.R(s, a) = -vecnorm([dx, dy]);
                         end
                     end
@@ -146,7 +146,7 @@ classdef MyGridWorld
                     % If it's an obstacle, the reward is -1e6
                     r = -1e6;
                 else
-                    % If it's not a terminal state, the reward is -1
+                    % If it's not an obstacle, the reward is the distance
                     r = -vecnorm([dx, dy]);
                 end
             end
@@ -154,9 +154,9 @@ classdef MyGridWorld
 
         % Generate the reward matrix
         function [sts, acts, rews] = run(obj, s0, policy, eps)
-            % Initialize states
+            % Set initial state
             if (s0 == 0)
-                % Initialize states and rewards
+                % Generate a randomic initial state
                 if (numel(obj.initStates) > 0)
                     sts = obj.initStates(randi(numel(obj.initStates)));
                 else
@@ -189,7 +189,7 @@ classdef MyGridWorld
             end
         end
 
-        % Polt the grid world
+        % Plot the grid world
         function [xs, ys] = plot(obj)
             axis equal; hold on;
             xlim([0.5 obj.nX+0.5]); ylim([0.5 obj.nY+0.5]);
