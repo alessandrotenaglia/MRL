@@ -7,19 +7,19 @@
 
 % My Grid World
 classdef MyGridWorld
-
+    
     properties
         nX;         % Number of cells along x-axis
         nY;         % Number of cells along y-axis
         nActions;   % Number of actions
+        nStates;    % Number of states
         initStates; % Initial states
         termStates; % Terminal states
         obstStates; % Obstacles states
-        nStates;    % Number of states
         P;          % Transition matrix
         R;          % Reward matrix
     end
-
+    
     methods
         % Class constructor
         function obj = MyGridWorld(nX, nY, nActions, ...
@@ -28,11 +28,11 @@ classdef MyGridWorld
             obj.nX = nX;
             obj.nY = nY;
             obj.nActions = nActions;
+            % Set the number of states
+            obj.nStates = nX * nY;
             % Convert the initial cells in states
-            if (size(initCells, 2) >  0)
-                obj.initStates = sub2ind([nX, nY], ...
-                    initCells(1, :), initCells(2, :));
-            end
+            obj.initStates = sub2ind([nX, nY], ...
+                initCells(1, :), initCells(2, :));
             % Convert the terminal cells in states
             obj.termStates = sub2ind([nX, nY], ...
                 termCells(1, :), termCells(2, :));
@@ -41,10 +41,8 @@ classdef MyGridWorld
                 obj.obstStates = sub2ind([nX, nY], ...
                     obstCells(1, :), obstCells(2, :));
             end
-            % Set the number of states
-            obj.nStates = nX * nY;
         end
-
+        
         % Generate the transition matrix
         function obj = generateP(obj)
             % Initialize the matrix
@@ -52,13 +50,13 @@ classdef MyGridWorld
             % Iterate on states
             for s = 1 : obj.nStates
                 % Check the nature of the state
-                if (ismember(s, obj.termStates))
-                    % If it's a terminal state, it doesn't change for any
-                    % action
-                    obj.P(s, :, s) = 1;
-                elseif (ismember(s, obj.obstStates))
-                    % If it's an obstacle, it doesn't change for any action
-                    obj.P(s, :, s) = 1;
+                if (ismember(s, obj.termStates) || ...
+                        ismember(s, obj.obstStates))
+                    % If it's a terminal state or an obstacle, ...
+                    % it doesn't change for any action
+                    for a = 1 : obj.nActions
+                        obj.P(s, a, s) = 1;
+                    end
                 else
                     % Convert the state in cells
                     [x, y] = ind2sub([obj.nX, obj.nY], s);
@@ -69,20 +67,16 @@ classdef MyGridWorld
                         % Set the new position
                         xp = max(1, min(obj.nX, x + dx));
                         yp = max(1, min(obj.nY, y + dy));
-                        % Convert the new position in the new state
+                        % Convert the new position in the corresponding
+                        % state
                         sp = sub2ind([obj.nX, obj.nY], xp, yp);
-                        % Check the nature of the state
-                        if (ismember(sp, obj.obstStates))
-                            % If it's an obstacle the state doesn't change
-                            sp = s;
-                        end
                         % Set the transition P(s, a, s')
                         obj.P(s, a, sp) = 1;
                     end
                 end
             end
         end
-
+        
         % Generate the reward matrix
         function obj = generateR(obj)
             % Initialize the matrix
@@ -95,30 +89,17 @@ classdef MyGridWorld
                 elseif (ismember(s, obj.obstStates))
                     obj.R(s, :) = -1e6;
                 else
-                    % Convert the state in cells
-                    [x, y] = ind2sub([obj.nX, obj.nY], s);
                     % Iterate on actions
                     for a = 1 : obj.nActions
                         % Convert the action into axis movements
                         [dx, dy] = obj.action2coord(a);
-                        % Set the new position
-                        xp = max(1, min(obj.nX, x + dx));
-                        yp = max(1, min(obj.nY, y + dy));
-                        % Convert the new position in the new state
-                        sp = sub2ind([obj.nX, obj.nY], xp, yp);
-                        % Check the nature of the state
-                        if (ismember(sp, obj.obstStates))
-                            % If it's an obstacle, the reward is -1e6
-                            obj.R(s, a) = -1e6;
-                        else
-                            % If it's not an obstacle, the reward is the distance
-                            obj.R(s, a) = -vecnorm([dx, dy]);
-                        end
+                        % The reward is equal to the distance traveled
+                        obj.R(s, a) = -vecnorm([dx, dy]);
                     end
                 end
             end
         end
-
+        
         % Given a state and an action, compute the new postion and the
         % reward
         function [sp, r] = move(obj, s, a)
@@ -151,18 +132,88 @@ classdef MyGridWorld
                 end
             end
         end
-
-        % Generate the reward matrix
-        function [sts, acts, rews] = run(obj, s0, policy, eps)
+        
+        % Run a deterministic episode
+        function [sts, acts, rews] = run(obj, s0, policy)
             % Set initial state
             if (s0 == 0)
                 % Generate a randomic initial state
-                if (numel(obj.initStates) > 0)
-                    sts = obj.initStates(randi(numel(obj.initStates)));
-                else
-                    sts = randi(obj.nStates);
-                end
+                sts = obj.initStates(randi(numel(obj.initStates)));
             else
+                % Set s0 as the initial state
+                sts = s0;
+            end
+            % Initialize actions and rewards
+            acts = [];
+            rews = [];
+            % Generate the episode
+            while (~ismember(sts(end), obj.obstStates) && ...
+                    ~ismember(sts(end), obj.termStates))
+                % Choose action following the policy
+                a = policy(sts(end));
+                % Move on grid world
+                [sp, r] = obj.move(sts(end), a);
+                % Store the movement
+                sts = [sts, sp];
+                acts = [acts, a];
+                rews = [rews, r];
+                % Detect loops and stop the episode to speed up ...
+                % the learning
+                if (ismember(sp, sts(1:end-1)))
+                    rews(end) = -1e6;
+                    break;
+                end
+            end
+        end
+        
+        
+        % Generate the reward matrix
+        function [sts, acts, rews] = runExploring(obj, s0, policy)
+            % Set initial state
+            if (s0 == 0)
+                % Generate a randomic initial state
+                sts = obj.initStates(randi(numel(obj.initStates)));
+            else
+                % Set s0 as the initial state
+                sts = s0;
+            end
+            % Initialize actions and rewards
+            acts = [];
+            rews = [];
+            % Generate the episode
+            while (~ismember(sts(end), obj.obstStates) && ...
+                    ~ismember(sts(end), obj.termStates))
+                % Exploring start
+                if (isempty(acts))
+                    % Choose the first action randomly
+                    a = randi(obj.nActions);
+                else
+                    % Choose action following the policy
+                    a = policy(sts(end));
+                end
+                % Move on grid world
+                [sp, r] = obj.move(sts(end), a);
+                % Store the movement
+                sts = [sts, sp];
+                acts = [acts, a];
+                rews = [rews, r];
+                % Detect loops and stop the episode to speed up ...
+                % the learning
+                if (ismember(sp, sts(1:end-1)))
+                    rews(end) = -1e6;
+                    break;
+                end
+            end
+        end
+        
+        % Generate the reward matrix
+        function [sts, acts, rews] = runEpsilon(obj, s0, policy, eps)
+            % Set initial state
+            if (s0 == 0)
+                % Generate a randomic initial state
+                sts = obj.initStates(randi(numel(obj.initStates)));
+            else
+                % Set s0 as the initial state
                 sts = s0;
             end
             % Initialize actions and rewards
@@ -185,14 +236,15 @@ classdef MyGridWorld
                 sts = [sts, sp];
                 acts = [acts, a];
                 rews = [rews, r];
-                %
-%                 if (ismember(sp, sts(1:end-1)))
-%                     rews(end) = -1e6;
-%                     break;
-%                 end
+                % Detect loops and stop the episode to speed up ...
+                % the learning
+                if (ismember(sp, sts(1:end-1)))
+                    rews(end) = -1e6;
+                    break;
+                end
             end
         end
-
+        
         % Plot the grid world
         function [xs, ys] = plot(obj)
             axis equal; hold on;
@@ -215,7 +267,7 @@ classdef MyGridWorld
                 end
             end
         end
-
+        
         % Plot the grid world with possible movements
         function plotGrid(obj)
             hold on;
@@ -237,7 +289,7 @@ classdef MyGridWorld
             end
             hold off;
         end
-
+        
         % Plot a policy on the grid world
         function plotPolicy(obj, policy)
             hold on;
@@ -257,7 +309,7 @@ classdef MyGridWorld
             end
             hold off;
         end
-
+        
         % Plot a value function on the grid world
         function plotValue(obj, value)
             hold on;
@@ -280,7 +332,7 @@ classdef MyGridWorld
             end
             hold off;
         end
-
+        
         % Plot a value function on the grid world
         function plotPath(obj, states)
             hold on;
@@ -295,7 +347,7 @@ classdef MyGridWorld
             end
             hold off;
         end
-
+        
         % Convert an action into axis movements
         function [dx, dy] = action2coord(~, a)
             if (a == 1)     % East

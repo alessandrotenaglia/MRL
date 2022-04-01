@@ -8,10 +8,10 @@
 clear; close all; clc;
 
 %% My Grid World
-nX = 6;
-nY = 6;
+nX = 20;
+nY = nX;
 nActions = 8;
-initCell = [];
+initCell = [1; 1];
 termCells = [nX; nY];
 obstCells = [];
 mygw = MyGridWorld(nX, nY, nActions, initCell, termCells, obstCells);

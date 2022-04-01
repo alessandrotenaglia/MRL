@@ -26,7 +26,7 @@ else
 end
 
 %% MC Control
-nRepetitions = 1e3;
+nRepetitions = 1e4;
 for r = 1 : nRepetitions
     clc;
     fprintf('Repetions: %3.0f%%\n', (r / nRepetitions) * 100);
@@ -37,9 +37,6 @@ end
 %% Plot
 figure()
 title('MC - Optimal policy');
-[sts, acts, rews] = track.run(0, MC.policy, 0.0);
 track.plotPolicy(MC.policy);
+[sts, acts, rews] = track.run(0, MC.policy, 0.0);
 track.plotPath(sts);
-
-%% Save MyGridWorld
-save([path, '/F1_MC.mat'], 'MC');

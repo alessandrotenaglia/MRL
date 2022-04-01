@@ -10,7 +10,6 @@ classdef Montecarlo
     
     properties
         env;        % Environment
-        eps;        % Degree of exploration
         gamma;      % Discount factor
         nEpisodes;  % Number of episodes
         policy;     % Current policy
@@ -21,10 +20,9 @@ classdef Montecarlo
     
     methods
         % Class constructor
-        function obj = Montecarlo(env, eps, gamma, nEpisodes)
+        function obj = Montecarlo(env, gamma, nEpisodes)
             % Set properties
             obj.env = env;
-            obj.eps = eps;
             obj.gamma = gamma;
             obj.nEpisodes = nEpisodes;
             % Initialize arrays
@@ -34,14 +32,42 @@ classdef Montecarlo
             obj.N = zeros(env.nStates, env.nActions);
         end
         
-        % Montecarlo Control
-        function obj = control(obj)
+        % Montecarlo Control Exploring start
+        function obj = controlExploring(obj)
             % Iterate on episodes
             fprintf('Episodes: %3d%%\n', 0);
             for e = 1 : obj.nEpisodes
                 fprintf('\b\b\b\b%3.0f%%', (e / obj.nEpisodes) * 100);
                 % Run an episode
-                [sts, acts, rews] = obj.env.run(0, obj.policy, obj.eps);
+                [sts, acts, rews] = obj.env.runExploring(0, obj.policy);
+                % Reset the cumulative reward
+                G = 0;
+                % Iterate backwards on the states of the episode
+                for t = numel(sts)-1 : -1 : 1
+                    % Update the cumulative reward
+                    G = rews(t) + obj.gamma * G;
+                    % Increment the counter
+                    obj.N(sts(t), acts(t)) = obj.N(sts(t), acts(t)) + 1;
+                    % Update the state-action value function
+                    obj.Q(sts(t), acts(t)) = obj.Q(sts(t), acts(t)) + ...
+                        (1 / obj.N(sts(t), acts(t))) * ...
+                        (G - obj.Q(sts(t), acts(t)));
+                    % Update the policy and the value function
+                    [obj.value(sts(t)), obj.policy(sts(t))] = ...
+                        max(obj.Q(sts(t), :));
+                end
+            end
+            fprintf('\n');
+        end
+        
+        % Montecarlo Control Epsilon greedy
+        function obj = controlEpsilon(obj, eps)
+            % Iterate on episodes
+            fprintf('Episodes: %3d%%\n', 0);
+            for e = 1 : obj.nEpisodes
+                fprintf('\b\b\b\b%3.0f%%', (e / obj.nEpisodes) * 100);
+                % Run an episode
+                [sts, acts, rews] = obj.env.runEpsilon(0, obj.policy, eps);
                 % Reset the cumulative reward
                 G = 0;
                 % Iterate backwards on the states of the episode
