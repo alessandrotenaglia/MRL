@@ -10,16 +10,19 @@ clear; close all; clc;
 %% Load/Create MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
 if (exist([path, '/MYGW_MDP.mat'], 'file') == 2)
-    load([path, '/MYGW_MDP.mat'])
+    load([path, '/MYGW_MDP.mat']);
+    fprintf("Loaded MYGW_MDP.mat\n");
 else
     mygw_mdp;
+    fprintf("Created MYGW_MDP.mat\n");
 end
 
 %% Policy Iteration
+fprintf("Running PI -> ");
 % Start timer
 tic;
 %
-gamma = 0.9;
+gamma = 0.99;
 tol = 1e-6;
 PI = PolicyIter(mygw.P, mygw.R, gamma, tol);
 PI = PI.policyIter();
@@ -27,10 +30,11 @@ PI = PI.policyIter();
 toc;
 
 %% Value Iteration
+fprintf("Running VI -> ");
 % Start timer
 tic;
 %
-gamma = 0.9;
+gamma = 0.99;
 tol = 1e-6;
 VI = ValueIter(mygw.P, mygw.R, gamma, tol);
 VI = VI.valueIter();
@@ -41,21 +45,13 @@ toc;
 figure()
 sgtitle('GridWorld - Dynamic Programming')
 % Plot the PI optimal policy
-subplot(2, 2, 1)
-title('PI - Optimal policy')
+subplot(1, 2, 1)
+title('Policy Iteration')
 mygw.plotPolicy(PI.policy)
 % Plot the VI optimal policy
-subplot(2, 2, 2)
-title('VI - Optimal policy')
+subplot(1, 2, 2)
+title('Value Iteration')
 mygw.plotPolicy(VI.policy)
-% Plot the PI optimal value function
-subplot(2, 2, 3)
-title('PI - Optimal value function')
-mygw.plotValue(PI.value)
-% Plot the VI optimal value function
-subplot(2, 2, 4)
-title('VI - Optimal value function')
-mygw.plotValue(VI.value)
 
 %% Save MyGridWorld
 save([path, '/MYGW_DP.mat'], 'PI', 'VI')

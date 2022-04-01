@@ -10,16 +10,19 @@ clear; close all; clc;
 %% Load/Create the track
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
 if (exist([path, '/F1_MDP.mat'], 'file') == 2)
-    load([path, '/F1_MDP.mat'])
+    load([path, '/F1_MDP.mat']);
+    fprintf("Loaded F1_MDP.mat\n");
 else
     f1_mdp;
+    fprintf("Created F1_MDP.mat\n");
 end
 
 %% Policy Iteration
+fprintf("Running PI -> ");
 % Start timer
 tic;
 %
-gamma = 0.9;
+gamma = 0.99;
 tol = 1e-6;
 PI = PolicyIter(track.P, track.R, gamma, tol);
 PI = PI.policyIter();
@@ -27,10 +30,11 @@ PI = PI.policyIter();
 toc;
 
 %% Value Iteration
+fprintf("Running VI -> ");
 % Start timer
 tic;
 %
-gamma = 0.9;
+gamma = 0.99;
 tol = 1e-6;
 VI = ValueIter(track.P, track.R, gamma, tol);
 VI = VI.valueIter();

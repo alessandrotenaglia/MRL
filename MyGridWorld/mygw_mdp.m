@@ -11,8 +11,10 @@ clear; close all; clc;
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
 if (exist([path, '/MYGW.mat'], 'file') == 2)
     load([path, '/MYGW.mat']);
+    fprintf("Loaded MYGW.mat\n");
 else
     mygw_main;
+    fprintf("Created MYGW.mat\n");
 end
 
 %% MDP - P

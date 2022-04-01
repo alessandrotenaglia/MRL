@@ -279,10 +279,10 @@ classdef MyGridWorld
                             ~ismember(s, obj.termStates))
                         for a = 1 : obj.nActions
                             [dx, dy] = obj.action2coord(a);
-                            arr = annotation('arrow');
-                            arr.Parent = gca;
-                            arr.X = [xs(i)+0.5-dx*0.45, xs(i)+0.5+dx*0.45];
-                            arr.Y = [ys(j)+0.5-dy*0.45, ys(j)+0.5+dy*0.45];
+                            arr = quiver(xs(i)+0.5-dx*0.4, ys(j)+0.5-dy*0.4, ...
+                                dx*0.8, dy*0.8, 'k');
+                            set(arr, 'AutoScale', 'off', ...
+                                'MaxHeadSize', 0.5);
                         end
                     end
                 end
@@ -300,10 +300,10 @@ classdef MyGridWorld
                     if (~ismember(s, obj.obstStates) && ...
                             ~ismember(s, obj.termStates))
                         [dx, dy] = obj.action2coord(policy(s));
-                        arr = annotation('arrow');
-                        arr.Parent = gca;
-                        arr.X = [xs(i)+0.5-dx*0.4, xs(i)+0.5+dx*0.4];
-                        arr.Y = [ys(j)+0.5-dy*0.4, ys(j)+0.5+dy*0.4];
+                        arr = quiver(xs(i)+0.5-dx*0.4, ys(j)+0.5-dy*0.4, ...
+                            dx*0.8, dy*0.8, 'k');
+                        set(arr, 'AutoScale', 'off', ...
+                            'MaxHeadSize', 0.5);
                     end
                 end
             end

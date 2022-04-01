@@ -11,8 +11,10 @@ clear; close all; clc;
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
 if (exist([path, '/F1.mat'], 'file') == 2)
     load([path, '/F1.mat']);
+    fprintf("Loaded F1.mat\n");
 else
     f1_main;
+    fprintf("Created F1.mat\n");
 end
 
 %% MDP - P

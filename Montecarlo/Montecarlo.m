@@ -35,9 +35,7 @@ classdef Montecarlo
         % Montecarlo Control Exploring start
         function obj = controlExploring(obj)
             % Iterate on episodes
-            fprintf('Episodes: %3d%%\n', 0);
             for e = 1 : obj.nEpisodes
-                fprintf('\b\b\b\b%3.0f%%', (e / obj.nEpisodes) * 100);
                 % Run an episode
                 [sts, acts, rews] = obj.env.runExploring(0, obj.policy);
                 % Reset the cumulative reward
@@ -57,15 +55,12 @@ classdef Montecarlo
                         max(obj.Q(sts(t), :));
                 end
             end
-            fprintf('\n');
         end
         
         % Montecarlo Control Epsilon greedy
         function obj = controlEpsilon(obj, eps)
             % Iterate on episodes
-            fprintf('Episodes: %3d%%\n', 0);
             for e = 1 : obj.nEpisodes
-                fprintf('\b\b\b\b%3.0f%%', (e / obj.nEpisodes) * 100);
                 % Run an episode
                 [sts, acts, rews] = obj.env.runEpsilon(0, obj.policy, eps);
                 % Reset the cumulative reward
@@ -85,7 +80,6 @@ classdef Montecarlo
                         max(obj.Q(sts(t), :));
                 end
             end
-            fprintf('\n');
         end
     end
 end

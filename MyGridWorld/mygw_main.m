@@ -8,7 +8,7 @@
 clear; close all; clc;
 
 %% My Grid World
-nX = 20;
+nX = 7;
 nY = nX;
 nActions = 8;
 initCell = [1; 1];
@@ -22,7 +22,7 @@ mygw = MyGridWorld(nX, nY, nActions, initCell, termCells, obstCells);
 
 %% Plot an episode
 % policy = ones(mygw.nStates, 1);
-% [sts, acts, rews] = mygw.run(0, policy, 0.0);
+% [sts, acts, rews] = mygw.run(0, policy);
 % figure();
 % mygw.plotPolicy(policy);
 % mygw.plotPath(sts);
