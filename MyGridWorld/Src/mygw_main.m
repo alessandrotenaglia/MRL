@@ -7,25 +7,40 @@
 
 clear; close all; clc;
 
-%% My Grid World
-nX = 7;
+%% Create the Grid World
+nX = 5;
 nY = nX;
-nActions = 8;
+moves = 'Kings';
 initCell = [1; 1];
 termCells = [nX; nY];
 obstCells = [];
-mygw = MyGridWorld(nX, nY, nActions, initCell, termCells, obstCells);
+mygw = MyGridWorld(nX, nY, moves, initCell, termCells, obstCells);
 
-%% Plot Grid World
-% figure();
-% mygw.plotGrid();
+%% Plot the Grid World
+figure(); ax = axes('Parent', gcf);
+mygw.plot(ax);
+mygw.plotGrid(ax);
+
+%% Plot a move
+s = randi(mygw.nStates);
+policy = zeros(mygw.nStates, 1);
+policy(s) = randi(mygw.nActions);
+[sp, r] = mygw.move(s, policy(s));
+
+figure(); ax = axes('Parent', gcf);
+mygw.plot(ax);
+mygw.plotPath(ax, [s, sp]);
+mygw.plotPolicy(ax, policy);
 
 %% Plot an episode
-% policy = ones(mygw.nStates, 1);
-% [sts, acts, rews] = mygw.run(0, policy);
-% figure();
-% mygw.plotPolicy(policy);
-% mygw.plotPath(sts);
+% policy = randi(mygw.nActions, mygw.nStates, 1);
+policy = 3 * ones(mygw.nActions, mygw.nStates, 1);
+[sts, acts, rews] = mygw.run(0, policy);
+% Plot
+figure(); ax = axes('Parent', gcf);
+mygw.plot(ax);
+mygw.plotPath(ax, sts);
+mygw.plotPolicy(ax, policy);
 
 %% Save MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));

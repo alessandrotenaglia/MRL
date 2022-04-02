@@ -42,16 +42,18 @@ VI = VI.valueIter();
 toc;
 
 %% Plots PI vs VI
-figure()
+figure();
 sgtitle('GridWorld - Dynamic Programming')
 % Plot the PI optimal policy
-subplot(1, 2, 1)
+ax1 = subplot(1, 2, 1);
 title('Policy Iteration')
-mygw.plotPolicy(PI.policy)
+mygw.plot(ax1);
+mygw.plotPolicy(ax1, PI.pi);
 % Plot the VI optimal policy
-subplot(1, 2, 2)
+ax2 = subplot(1, 2, 2);
 title('Value Iteration')
-mygw.plotPolicy(VI.policy)
+mygw.plot(ax2);
+mygw.plotPolicy(ax2, VI.pi);
 
 %% Save MyGridWorld
 save([path, '/../Data/MYGW_DP.mat'], 'PI', 'VI')

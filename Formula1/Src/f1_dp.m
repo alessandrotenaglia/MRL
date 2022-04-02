@@ -22,7 +22,7 @@ fprintf("Running PI -> ");
 % Start timer
 tic;
 %
-gamma = 0.99;
+gamma = 0.9;
 tol = 1e-6;
 PI = PolicyIter(track.P, track.R, gamma, tol);
 PI = PI.policyIter();
@@ -34,24 +34,26 @@ fprintf("Running VI -> ");
 % Start timer
 tic;
 %
-gamma = 0.99;
+gamma = 0.9;
 tol = 1e-6;
 VI = ValueIter(track.P, track.R, gamma, tol);
 VI = VI.valueIter();
 % Stop timer
 toc;
 
-%% Plot PI vs VI
+%% Plots PI vs VI
 figure();
-sgtitle('GridWorld - Dynamic Programming');
+sgtitle('GridWorld - Dynamic Programming')
 % Plot the PI optimal policy
-subplot(1, 2, 1);
-title('PI - Optimal policy');
-track.plotPolicy(PI.policy);
+ax1 = subplot(1, 2, 1);
+title('Policy Iteration')
+track.plot(ax1);
+track.plotPolicy(ax1, PI.pi);
 % Plot the VI optimal policy
-subplot(1, 2, 2);
-title('VI - Optimal policy');
-track.plotPolicy(VI.policy);
+ax2 = subplot(1, 2, 2);
+title('Value Iteration')
+track.plot(ax2);
+track.plotPolicy(ax2, VI.pi);
 
 %% Save MyGridWorld
 save([path, '/../Data/F1_DP.mat'], 'PI', 'VI');
