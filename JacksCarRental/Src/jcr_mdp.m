@@ -12,7 +12,7 @@ maxCars = [20, 20];
 maxMoves = 5;
 gain = 10;
 loss = 2;
-lRet = [4, 3];
+lRet = [3, 3];
 lRen = [3, 3];
 jcr = JCR(maxCars, maxMoves, gain, loss, lRet, lRen);
 
@@ -53,4 +53,4 @@ jcr = jcr.generateR();
 
 %% Save JCR
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-save([path, '/JCR.mat'], 'jcr')
+save([path, '/../Data/JCR_MDP.mat'], 'jcr')
