@@ -74,15 +74,9 @@ for r = 1 : nRepetitions
     sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: %d/%d', ...
         r, nRepetitions));
 
-    sols = cell(1,2) ;
-    parfor i = 1:2
-        if (i == 1)
-            sols{i} = MC_EXP.controlExploring();
-        else
-            sols{i} = MC_EPS.controlEpsilon(0.1);
-        end
-    end
-    MC_EXP = sols{1} ; MC_EPS = sols{2} ;
+    % Run a repetition
+    MC_EXP = MC_EXP.controlExploring();
+    MC_EPS = MC_EPS.controlEpsilon(0.1);
 
     % Delete old plots
     delete(rects_exp); delete(arrs_exp);
