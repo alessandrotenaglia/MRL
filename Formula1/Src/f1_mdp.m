@@ -14,7 +14,7 @@ if (exist([path, '/../Data/F1.mat'], 'file') == 2)
     fprintf("Loaded F1.mat\n");
 else
     f1_main;
-    fprintf("Created F1.mat\n");
+    fprintf("Created F1\n");
 end
 
 %% MDP - P

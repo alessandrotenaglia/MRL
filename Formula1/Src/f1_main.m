@@ -12,11 +12,11 @@ clear; close all; clc;
 if (exist([path, '/../Data/Monaco.mat'], 'file') == 2)
     % Load the track
     load([path, '/../Data/Monaco.mat']);
-    fprintf("Loaded track image\n");
+    fprintf("Loaded Monaco.mat\n");
 else
     % Create the track
     f1_track;
-    fprintf("Created track image\n");
+    fprintf("Created Monaco track image\n");
 end
 
 %% Create the Grid World

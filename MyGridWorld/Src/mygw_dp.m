@@ -16,7 +16,7 @@ if (exist([path, '/../Data/MYGW_MDP.mat'], 'file') == 2)
 else
     % Create MyGridWorld MDP
     mygw_mdp;
-    fprintf("Created MYGW_MDP.mat\n");
+    fprintf("Created MYGW_MDP\n");
 end
 
 %% Policy Iteration

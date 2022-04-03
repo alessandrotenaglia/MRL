@@ -16,23 +16,23 @@ if (exist([path, '/../Data/MYGW.mat'], 'file') == 2)
 else
     % Create MyGridWorld
     mygw_main;
-    fprintf("Created MYGW.mat\n");
+    fprintf("Created MYGW\n");
 end
 
-%% Create Montecarlo Exploring start
+%% Create Monte Carlo Exploring start
 gamma = 0.99;
 nEpisodes = 1e1;
-MC_EXP = Montecarlo(mygw, gamma, nEpisodes);
+MC_EXP = MonteCarlo(mygw, gamma, nEpisodes);
 
-%% Create Montecarlo Epsilon-greedy
+%% Create Monte Carlo Epsilon-greedy
 gamma = 0.99;
 nEpisodes = 1e1;
-MC_EPS = Montecarlo(mygw, gamma, nEpisodes);
+MC_EPS = MonteCarlo(mygw, gamma, nEpisodes);
 
 %% MC Control: Exploring start vs Epsilon-greedy
 % Plot MC EXP vs MC EPS
 fig = figure();
-sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: STOP'));
+sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: STOP'));
 % MC EXP subfigure
 ax1 = subplot(1, 2, 1);
 title('Exploring start');
@@ -51,14 +51,14 @@ pause();
 nRepetitions = 1e2;
 fprintf('Repetions:  %3d%\n', 0);
 for r = 1 : nRepetitions
-    % Montecarlo Exploring start
+    % Monte Carlo Exploring start
     MC_EXP = MC_EXP.controlExploring();
-    % Montecarlo Epsilon greedy
+    % Monte Carlo Epsilon greedy
     MC_EPS = MC_EPS.controlEpsilon(0.1);
     
     % Update repetition number
     fprintf('\b\b\b\b%3.0f%%', (r / nRepetitions) * 100);
-    sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: %d/%d', ...
+    sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: %d/%d', ...
         r, nRepetitions));
     % Delete old plots
     delete(rects_exp); delete(arrs_exp);
@@ -73,5 +73,5 @@ for r = 1 : nRepetitions
     % Force drawing
     drawnow
 end
-sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: END'));
+sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: END'));
 fprintf('\n');

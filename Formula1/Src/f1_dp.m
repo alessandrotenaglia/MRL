@@ -14,7 +14,7 @@ if (exist([path, '/../Data/F1_MDP.mat'], 'file') == 2)
     fprintf("Loaded F1_MDP.mat\n");
 else
     f1_mdp;
-    fprintf("Created F1_MDP.mat\n");
+    fprintf("Created F1_MDP\n");
 end
 
 %% Policy Iteration

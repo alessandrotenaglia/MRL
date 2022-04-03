@@ -16,7 +16,7 @@ if (exist([path, '/../Data/MYGW.mat'], 'file') == 2)
 else
     % Create MyGridWorld
     mygw_main;
-    fprintf("Created MYGW.mat\n");
+    fprintf("Created MYGW\n");
 end
 
 %% Generate the transition matrix P

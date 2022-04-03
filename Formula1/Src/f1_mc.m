@@ -16,39 +16,39 @@ if (exist([path, '/../Data/F1.mat'], 'file') == 2)
 else
     % Create the track
     f1_main;
-    fprintf("Created F1.mat\n");
+    fprintf("Created F1\n");
 end
 
-%% Montecarlo Exploring start
+%% Monte Carlo Exploring start
 if (exist([path, '/../Data/F1_MC_EXP.mat'], 'file') == 2)
-    % Load Montecarlo Exploring start
+    % Load Monte Carlo Exploring start
     load([path, '/../Data/F1_MC_EXP.mat']);
     fprintf("Loaded F1_MC_EXP.mat\n");
 else
-    % Create Montecarlo Exploring start
+    % Create Monte Carlo Exploring start
     gamma = 0.99;
     nEpisodes = 1e2;
-    MC_EXP = Montecarlo(track, gamma, nEpisodes);
-    fprintf("Created F1_MC_EXP.mat\n");
+    MC_EXP = MonteCarlo(track, gamma, nEpisodes);
+    fprintf("Created F1_MC_EXP\n");
 end
 
-%% Montecarlo Epsilon greedy
+%% Monte Carlo Epsilon greedy
 if (exist([path, '/../Data/F1_MC_EPS.mat'], 'file') == 2)
-    % Load Montecarlo Epsilon greedy
+    % Load Monte Carlo Epsilon greedy
     load([path, '/../Data/F1_MC_EPS.mat']);
     fprintf("Loaded F1_MC_EPS.mat\n");
 else
-    % Create Montecarlo Epsilon greedy
+    % Create Monte Carlo Epsilon greedy
     gamma = 0.99;
     nEpisodes = 1e2;
-    MC_EPS = Montecarlo(track, gamma, nEpisodes);
-    fprintf("Created F1_MC_EPS.mat\n");
+    MC_EPS = MonteCarlo(track, gamma, nEpisodes);
+    fprintf("Created F1_MC_EPS\n");
 end
 
 %% MC Control: Exploring start vs Epsilon-greedy
 % Plot MC EXP vs MC EPS
 fig = figure();
-sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: STOP'));
+sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: STOP'));
 % MC EXP subfigure
 ax1 = subplot(1, 2, 1);
 title('Exploring start');
@@ -73,7 +73,7 @@ for r = 1 : nRepetitions
 
     % Update repetition number
     fprintf('\b\b\b\b%3.0f%%', (r / nRepetitions) * 100);
-    sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: %d/%d', ...
+    sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: %d/%d', ...
         r, nRepetitions));
     % Delete old plots
     delete(rects_exp); delete(arrs_exp);
@@ -92,4 +92,4 @@ for r = 1 : nRepetitions
     save([path, '/../Data/F1_MC_EPS.mat'], 'MC_EPS');
 end
 fprintf('\n');
-sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: END'));
+sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: END'));
