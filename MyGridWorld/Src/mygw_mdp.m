@@ -7,18 +7,19 @@
 
 clear; close all; clc;
 
-%% Load/Create MyGridWorld
+%% MyGridWorld
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
 if (exist([path, '/../Data/MYGW.mat'], 'file') == 2)
+    % Load MyGridWorld
     load([path, '/../Data/MYGW.mat']);
     fprintf("Loaded MYGW.mat\n");
 else
+    % Create MyGridWorld
     mygw_main;
     fprintf("Created MYGW.mat\n");
 end
 
-%% MDP - P
-% Generate the transition matrix
+%% Generate the transition matrix P
 mygw = mygw.generateP();
 % Check that P is a stochastic matrix
 S = round(sum(mygw.P, 3), 3);
@@ -30,8 +31,7 @@ for s = 1 : mygw.nStates
     end
 end
 
-%% MDP - R
-% Generate the reward matrix
+%% Generate the reward matrix R
 mygw = mygw.generateR();
 
 %% Save MyGridWorld

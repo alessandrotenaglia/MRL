@@ -11,30 +11,28 @@ clear; close all; clc;
 nX = 5;
 nY = nX;
 moves = 'Kings';
-initCell = [1; 1];
+initCells = [1; 1];
 termCells = [nX; nY];
 obstCells = [];
-mygw = MyGridWorld(nX, nY, moves, initCell, termCells, obstCells);
-
-%% Plot the Grid World
+mygw = MyGridWorld(nX, nY, moves, initCells, termCells, obstCells);
+% Plot the Grid World
 figure(); ax = axes('Parent', gcf);
 mygw.plot(ax);
 mygw.plotGrid(ax);
 
-%% Plot a move
+%% Single move
+policy = ones(mygw.nActions, mygw.nStates, 1);
 s = 1;
-policy = zeros(mygw.nStates, 1);
-policy(s) = 1;
 [sp, r] = mygw.move(s, policy(s));
-
+% Plot
 figure(); ax = axes('Parent', gcf);
 mygw.plot(ax);
 mygw.plotPath(ax, [s, sp]);
 mygw.plotPolicy(ax, policy);
 
-%% Plot an episode
-policy = 3 * ones(mygw.nActions, mygw.nStates, 1);
-[sts, acts, rews] = mygw.run(0, policy);
+%% Episode
+policy = ones(mygw.nActions, mygw.nStates, 1);
+sts = mygw.run(0, policy);
 % Plot
 figure(); ax = axes('Parent', gcf);
 mygw.plot(ax);

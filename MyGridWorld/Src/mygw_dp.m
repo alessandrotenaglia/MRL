@@ -7,12 +7,14 @@
 
 clear; close all; clc;
 
-%% Load/Create MyGridWorld
+%% MyGridWorld MDP
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
 if (exist([path, '/../Data/MYGW_MDP.mat'], 'file') == 2)
+    % Load MyGridWorld MDP
     load([path, '/../Data/MYGW_MDP.mat']);
     fprintf("Loaded MYGW_MDP.mat\n");
 else
+    % Create MyGridWorld MDP
     mygw_mdp;
     fprintf("Created MYGW_MDP.mat\n");
 end
@@ -21,7 +23,7 @@ end
 fprintf("Running PI -> ");
 % Start timer
 tic;
-%
+% Create PI
 gamma = 0.99;
 tol = 1e-6;
 PI = PolicyIter(mygw.P, mygw.R, gamma, tol);
@@ -33,7 +35,7 @@ toc;
 fprintf("Running VI -> ");
 % Start timer
 tic;
-%
+% Create VI
 gamma = 0.99;
 tol = 1e-6;
 VI = ValueIter(mygw.P, mygw.R, gamma, tol);

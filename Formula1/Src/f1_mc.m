@@ -27,7 +27,7 @@ if (exist([path, '/../Data/F1_MC_EXP.mat'], 'file') == 2)
 else
     % Create Montecarlo Exploring start
     gamma = 0.99;
-    nEpisodes = 1e1;
+    nEpisodes = 1e2;
     MC_EXP = Montecarlo(track, gamma, nEpisodes);
     fprintf("Created F1_MC_EXP.mat\n");
 end
@@ -40,7 +40,7 @@ if (exist([path, '/../Data/F1_MC_EPS.mat'], 'file') == 2)
 else
     % Create Montecarlo Epsilon greedy
     gamma = 0.99;
-    nEpisodes = 1e1;
+    nEpisodes = 1e2;
     MC_EPS = Montecarlo(track, gamma, nEpisodes);
     fprintf("Created F1_MC_EPS.mat\n");
 end
@@ -53,26 +53,24 @@ sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: STOP'));
 ax1 = subplot(1, 2, 1);
 title('Exploring start');
 track.plot(ax1);
-[sts_exp, ~, ~] = track.run(0, MC_EXP.pi);
-rects_exp = track.plotPath(ax1, sts_exp);
+rects_exp = track.plotPath(ax1, track.run(0, MC_EXP.pi));
 arrs_exp = track.plotPolicy(ax1, MC_EXP.pi);
 % MC EPS subfigure
 ax2 = subplot(1, 2, 2);
 title('Epsilon greedy');
 track.plot(ax2);
-[sts_eps, ~, ~] = track.run(0, MC_EPS.pi);
-rects_eps = track.plotPath(ax2, sts_eps);
+rects_eps = track.plotPath(ax2, track.run(0, MC_EPS.pi));
 arrs_eps = track.plotPolicy(ax2, MC_EPS.pi);
 pause();
 
-% Number of repetitions
-nRepetitions = 1e1;
 % Iterate on repetition
 fprintf('Repetions:  %3d%\n', 0);
+nRepetitions = 1e2;
 for r = 1 : nRepetitions
     % Run a repetition
     MC_EXP = MC_EXP.controlExploring();
     MC_EPS = MC_EPS.controlEpsilon(0.1);
+
     % Update repetition number
     fprintf('\b\b\b\b%3.0f%%', (r / nRepetitions) * 100);
     sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: %d/%d', ...
@@ -80,14 +78,12 @@ for r = 1 : nRepetitions
     % Delete old plots
     delete(rects_exp); delete(arrs_exp);
     % Plot Exploring start optimal policy
-    [sts_exp, ~, ~] = track.run(0, MC_EXP.pi);
-    rects_exp = track.plotPath(ax1, sts_exp);
+    rects_exp = track.plotPath(ax1, track.run(0, MC_EXP.pi));
     arrs_exp = track.plotPolicy(ax1, MC_EXP.pi);
     % Delete old plots
     delete(rects_eps); delete(arrs_eps);
     % Plot Epsilon greedy optimal policy
-    [sts_eps, ~, ~] = track.run(0, MC_EPS.pi);
-    rects_eps = track.plotPath(ax2, sts_eps);
+    rects_eps = track.plotPath(ax2, track.run(0, MC_EPS.pi));
     arrs_eps = track.plotPolicy(ax2, MC_EPS.pi);
     % Force drawing
     drawnow

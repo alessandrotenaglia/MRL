@@ -22,7 +22,7 @@ end
 %% Create the Grid World
 Monaco = rot90(Monaco, -1);
 [nX, nY] = size(Monaco);
-moves = 'Kings';
+moves = 'kings';
 [obstCellsX, obstCellsY] = find(Monaco == 1);
 [initCellsX, initCellsY] = find(Monaco == 2);
 [termCellsX, termCellsY] = find(Monaco == 3);
@@ -38,7 +38,7 @@ track.plotGrid(ax);
 
 %% Plot an episode
 policy = 3 * ones(track.nActions, track.nStates, 1);
-[sts, acts, rews] = track.run(0, policy);
+sts = track.run(0, policy);
 % Plot
 figure(); ax = axes('Parent', gcf);
 track.plot(ax);

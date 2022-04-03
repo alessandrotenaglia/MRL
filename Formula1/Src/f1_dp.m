@@ -21,8 +21,8 @@ end
 fprintf("Running PI -> ");
 % Start timer
 tic;
-%
-gamma = 0.99;
+% Create PI
+gamma = 0.9;
 tol = 1e-6;
 PI = PolicyIter(track.P, track.R, gamma, tol);
 PI = PI.policyIter();
@@ -33,8 +33,8 @@ toc;
 fprintf("Running VI -> ");
 % Start timer
 tic;
-%
-gamma = 0.99;
+% Create VI
+gamma = 0.9;
 tol = 1e-6;
 VI = ValueIter(track.P, track.R, gamma, tol);
 VI = VI.valueIter();
