@@ -33,7 +33,6 @@ mygw.plotPath(ax, [s, sp]);
 mygw.plotPolicy(ax, policy);
 
 %% Plot an episode
-% policy = randi(mygw.nActions, mygw.nStates, 1);
 policy = 3 * ones(mygw.nActions, mygw.nStates, 1);
 [sts, acts, rews] = mygw.run(0, policy);
 % Plot

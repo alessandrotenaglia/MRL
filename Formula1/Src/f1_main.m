@@ -37,7 +37,6 @@ track.plot(ax);
 track.plotGrid(ax);
 
 %% Plot an episode
-policy = randi(mygw.nActions, mygw.nStates, 1);
 policy = 3 * ones(track.nActions, track.nStates, 1);
 [sts, acts, rews] = track.run(0, policy);
 % Plot
