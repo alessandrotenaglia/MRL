@@ -7,9 +7,17 @@
 
 clear; close all; clc;
 
-%% Load Monaco track
+%% Load Monaco track image
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-load([path, '/../Data/Monaco.mat']);
+if (exist([path, '/../Data/Monaco.mat'], 'file') == 2)
+    % Load the track
+    load([path, '/../Data/Monaco.mat']);
+    fprintf("Loaded track image\n");
+else
+    % Create the track
+    f1_track;
+    fprintf("Created track image\n");
+end
 
 %% Create the Grid World
 Monaco = rot90(Monaco, -1);
@@ -29,14 +37,14 @@ track.plot(ax);
 track.plotGrid(ax);
 
 %% Plot an episode
-% policy = randi(mygw.nActions, mygw.nStates, 1);
-% policy = 3 * ones(track.nActions, track.nStates, 1);
-% [sts, acts, rews] = track.run(0, policy);
-% % Plot
-% figure(); ax = axes('Parent', gcf);
-% track.plot(ax);
-% track.plotPath(ax, sts);
-% track.plotPolicy(ax, policy);
+policy = randi(mygw.nActions, mygw.nStates, 1);
+policy = 3 * ones(track.nActions, track.nStates, 1);
+[sts, acts, rews] = track.run(0, policy);
+% Plot
+figure(); ax = axes('Parent', gcf);
+track.plot(ax);
+track.plotPath(ax, sts);
+track.plotPolicy(ax, policy);
 
-%% Save MyGridWorld
+%% Save the track
 save([path, '/../Data/F1.mat'], 'track');

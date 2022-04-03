@@ -27,7 +27,7 @@ if (exist([path, '/../Data/F1_MC_EXP.mat'], 'file') == 2)
 else
     % Create Montecarlo Exploring start
     gamma = 0.99;
-    nEpisodes = 1e5;
+    nEpisodes = 1e1;
     MC_EXP = Montecarlo(track, gamma, nEpisodes);
     fprintf("Created F1_MC_EXP.mat\n");
 end
@@ -40,17 +40,15 @@ if (exist([path, '/../Data/F1_MC_EPS.mat'], 'file') == 2)
 else
     % Create Montecarlo Epsilon greedy
     gamma = 0.99;
-    nEpisodes = 1e5;
+    nEpisodes = 1e1;
     MC_EPS = Montecarlo(track, gamma, nEpisodes);
     fprintf("Created F1_MC_EPS.mat\n");
 end
 
 %% MC Control: Exploring start vs Epsilon-greedy
-% Number of repetitions
-nRepetitions = 1e1;
 % Plot MC EXP vs MC EPS
 fig = figure();
-sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: 0/%d', nRepetitions));
+sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: STOP'));
 % MC EXP subfigure
 ax1 = subplot(1, 2, 1);
 title('Exploring start');
@@ -66,6 +64,9 @@ track.plot(ax2);
 rects_eps = track.plotPath(ax2, sts_eps);
 arrs_eps = track.plotPolicy(ax2, MC_EPS.pi);
 pause();
+
+% Number of repetitions
+nRepetitions = 1e1;
 % Iterate on repetition
 fprintf('Repetions:  %3d%\n', 0);
 for r = 1 : nRepetitions
@@ -92,6 +93,7 @@ for r = 1 : nRepetitions
     drawnow
     % Save data
     save([path, '/../Data/F1_MC_EXP.mat'], 'MC_EXP');
-    save([path, '/../Data/F1_MC_EXP.mat'], 'MC_EPS');
+    save([path, '/../Data/F1_MC_EPS.mat'], 'MC_EPS');
 end
 fprintf('\n');
+sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: END'));

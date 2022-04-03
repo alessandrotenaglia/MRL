@@ -29,7 +29,7 @@ classdef MyGridWorld
             obj.nY = nY;
             % Set the number of states
             obj.nStates = nX * nY;
-            % Set number of actionss
+            % Set the number of actions
             if (strcmpi(moves, 'kings'))
                 obj.nActions = 8;
             else
@@ -74,7 +74,7 @@ classdef MyGridWorld
             elseif (a == 8) % South-West
                 dx = -1;
                 dy = -1;
-            else
+            else            % Otherwise
                 dx = 0;
                 dy = 0;
             end

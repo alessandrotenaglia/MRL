@@ -22,9 +22,9 @@ mygw.plot(ax);
 mygw.plotGrid(ax);
 
 %% Plot a move
-s = randi(mygw.nStates);
+s = 1;
 policy = zeros(mygw.nStates, 1);
-policy(s) = randi(mygw.nActions);
+policy(s) = 1;
 [sp, r] = mygw.move(s, policy(s));
 
 figure(); ax = axes('Parent', gcf);

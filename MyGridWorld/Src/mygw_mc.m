@@ -50,23 +50,23 @@ mygw.plot(ax2);
 rects_eps = mygw.plotPath(ax2, sts_eps);
 arrs_eps = mygw.plotPolicy(ax2, MC_EPS.pi);
 pause();
-
+% Iterate on repetitions
 fprintf('Repetions:  %3d%\n', 0);
 for r = 1 : nRepetitions
+    % Montecarlo Exploring start
+    MC_EXP = MC_EXP.controlExploring();
+    % Montecarlo Epsilon greedy
+    MC_EPS = MC_EPS.controlEpsilon(0.1);
     % Update repetition number
     fprintf('\b\b\b\b%3.0f%%', (r / nRepetitions) * 100);
     sgtitle(sprintf('GridWorld - Montecarlo\nRepetitions: %d/%d', ...
         r, nRepetitions));
-    % Montecarlo Exploring start
-    MC_EXP = MC_EXP.controlExploring();
     % Delete old plots
     delete(rects_exp); delete(arrs_exp);
     % Plot Exploring start optimal policy
     [sts_exp, ~, ~] = mygw.run(0, MC_EXP.pi);
     rects_exp = mygw.plotPath(ax1, sts_exp);
     arrs_exp = mygw.plotPolicy(ax1, MC_EXP.pi);
-    % Montecarlo Epsilon greedy
-    MC_EPS = MC_EPS.controlEpsilon(0.1);
     % Delete old plots
     delete(rects_eps); delete(arrs_eps);
     % Plot Epsilon greedy optimal policy

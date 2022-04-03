@@ -1,5 +1,5 @@
 % ---------------------------------------- %
-%  File: f1_mdp.m                          %
+%  File: f1_track.m                        %
 %  Date: March 30, 2022                    %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %
@@ -7,36 +7,39 @@
 
 clear; close all; clc;
 
-%% Loadtrack image
+%% Load the image
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
-Monaco = imread([path, '/../Data/Monaco.png']);
+RGB = imread([path, '/../Data/Monaco.png']);
 figure()
-imshow(Monaco)
+imshow(RGB)
 
-Monaco = imresize(Monaco, [30, 20]);
+%% Resize the image
+RGB = imresize(RGB, [30, 20]);
 figure()
-imshow(Monaco)
+imshow(RGB)
 
-Monaco = double(im2bw(Monaco));
+%% Convert the image to grey scale
+GS = rgb2gray(RGB);
 figure()
-imshow(Monaco)
+imshow(GS)
 
-Monaco(7, 1:3) = 1;
-Monaco(3, 2:7) = 0;
-Monaco(2, 8:15) = 0;
-Monaco(3, 16:17) = 0;
-Monaco(4, 2) = 0;
-Monaco(30, 8) = 1;
-Monaco(16, 17:20) = 0;
-Monaco(20, 20) = 1;
-Monaco(26, 8:9) = 0;
+%% Convert the image to black and white
+BW = imbinarize(GS);
+figure()
+imshow(BW)
+
+%% Arrange the image
+Monaco = double(BW);
+% Starting line
+Monaco(4:7, 1) = 2;
+% Finisching line
 Monaco(16:19, 20) = 3;
-Monaco(22:23, 4) = 0;
-Monaco(6, 8:9) = 1;
-Monaco(:, 2) = [];
-Monaco(3:6, 1) = 2;
-Monaco(2, 6) = 1;
-Monaco(3, 7) = 0;
-
+% Some fixes
+Monaco(30, [1, 20]) = 1;
+Monaco(20, 20) = 1;
+Monaco = [Monaco(2:end, :); Monaco(1, :)];
 figure()
 heatmap(Monaco)
+
+%% Save the track image
+save([path, '/../Data/Monaco.mat'], 'Monaco');
