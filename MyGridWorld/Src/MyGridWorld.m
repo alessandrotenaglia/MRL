@@ -50,7 +50,7 @@ classdef MyGridWorld
             end
         end
 
-        % Convert an action into axis movements
+        % Convert an action into corresponding axis movements
         function [dx, dy] = action2coord(~, a)
             if (a == 1)     % North
                 dx = 0;
@@ -82,51 +82,6 @@ classdef MyGridWorld
             end
         end
 
-        % Generate the transition matrix
-        function obj = generateMDP(obj)
-            % Initialize the transition and reward matrix
-            obj.P = zeros(obj.nStates, obj.nActions, obj.nStates);
-            obj.R = zeros(obj.nStates, obj.nActions);
-            % Iterate on states
-            for s = 1 : obj.nStates
-                % Check the nature of the state
-                if (ismember(s, obj.termStates))
-                    % If it's a terminal state, ...
-                    % it doesn't change for any action and ...
-                    % the reward is always 0
-                    for a = 1 : obj.nActions
-                        obj.P(s, a, s) = 1;
-                        obj.R(s, a) = 0;
-                    end
-                elseif (ismember(s, obj.obstStates))
-                    % If it's an obstacle, ...
-                    % it doesn't change for any action and ...
-                    % the reward is always -1e6
-                    for a = 1 : obj.nActions
-                        obj.P(s, a, s) = 1;
-                        obj.R(s, a) = -1e6;
-                    end
-                else
-                    % Convert the state in cells
-                    [x, y] = ind2sub([obj.nX, obj.nY], s);
-                    % Iterate on actions
-                    for a = 1 : obj.nActions
-                        % Convert the action into axis movements
-                        [dx, dy] = obj.action2coord(a);
-                        % Set the new position
-                        xp = max(1, min(x + dx, obj.nX));
-                        yp = max(1, min(y + dy, obj.nY));
-                        % Convert the new position in the corresponding
-                        % state
-                        sp = sub2ind([obj.nX, obj.nY], xp, yp);
-                        % Set the transition P(s, a, s')
-                        obj.P(s, a, sp) = 1;
-                        obj.R(s, a) = -vecnorm([dx, dy]);
-                    end
-                end
-            end
-        end
-
         % Given a state and an action, compute the new position and the
         % reward
         function [sp, r] = move(obj, s, a)
@@ -142,9 +97,9 @@ classdef MyGridWorld
                 sp = s;
                 r = -1e6;
             else
-                % Convert the state in cells
+                % Convert the state in the corresponding position
                 [x, y] = ind2sub([obj.nX, obj.nY], s);
-                % Convert the action in cell movements
+                % Convert the action into axis movements
                 [dx, dy] = obj.action2coord(a);
                 % Compute new position
                 xp = max(1, min(x + dx, obj.nX));
@@ -159,6 +114,25 @@ classdef MyGridWorld
                     % If it's not an obstacle, the reward is the ...
                     % distance traveled
                     r = -vecnorm([dx, dy]);
+                end
+            end
+        end
+
+        % Generate the transition matrix
+        function obj = generateMDP(obj)
+            % Initialize the transition and reward matrix
+            obj.P = zeros(obj.nStates, obj.nActions, obj.nStates);
+            obj.R = zeros(obj.nStates, obj.nActions);
+            % Iterate on states
+            for s = 1 : obj.nStates
+                % Iterate on actions
+                for a = 1 : obj.nActions
+                    % Simulate the move
+                    [sp, r] = move(obj, s, a);
+                    % Set the transition
+                    obj.P(s, a, sp) = 1;
+                    % Set the reward
+                    obj.R(s, a) = r;
                 end
             end
         end
