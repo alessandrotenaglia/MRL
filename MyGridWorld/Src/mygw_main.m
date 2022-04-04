@@ -10,7 +10,7 @@ clear; close all; clc;
 %% Create the Grid World
 nX = 5;
 nY = nX;
-moves = 'Kings';
+moves = 'kings';
 initCells = [1; 1];
 termCells = [nX; nY];
 obstCells = [];

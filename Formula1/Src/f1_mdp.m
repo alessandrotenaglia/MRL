@@ -7,19 +7,20 @@
 
 clear; close all; clc;
 
-%% Load/Create the yrack
+%% Track
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
 if (exist([path, '/../Data/F1.mat'], 'file') == 2)
+    % Load the track
     load([path, '/../Data/F1.mat']);
     fprintf("Loaded F1.mat\n");
 else
+    % Create the track
     f1_main;
     fprintf("Created F1\n");
 end
 
-%% MDP - P
-% Generate the transition matrix
-track = track.generateP();
+%% Generate the MDP
+track = track.generateMDP();
 % Check that P is a stochastic matrix
 S = round(sum(track.P, 3), 3);
 for s = 1 : track.nStates
@@ -29,10 +30,6 @@ for s = 1 : track.nStates
         end
     end
 end
-
-%% MDP - R
-% Generate the reward matrix
-track = track.generateR();
 
 %% Save the track
 save([path, '/../Data/F1_MDP.mat'], 'track');

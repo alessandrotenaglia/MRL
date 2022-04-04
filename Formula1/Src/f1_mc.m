@@ -27,7 +27,7 @@ if (exist([path, '/../Data/F1_MC_EXP.mat'], 'file') == 2)
 else
     % Create Monte Carlo Exploring start
     gamma = 0.99;
-    nEpisodes = 1e2;
+    nEpisodes = 1e4;
     MC_EXP = MonteCarlo(track, gamma, nEpisodes);
     fprintf("Created F1_MC_EXP\n");
 end
@@ -40,7 +40,7 @@ if (exist([path, '/../Data/F1_MC_EPS.mat'], 'file') == 2)
 else
     % Create Monte Carlo Epsilon greedy
     gamma = 0.99;
-    nEpisodes = 1e2;
+    nEpisodes = 1e4;
     MC_EPS = MonteCarlo(track, gamma, nEpisodes);
     fprintf("Created F1_MC_EPS\n");
 end
@@ -88,8 +88,8 @@ for r = 1 : nRepetitions
     % Force drawing
     drawnow
     % Save data
-    save([path, '/../Data/F1_MC_EXP.mat'], 'MC_EXP');
-    save([path, '/../Data/F1_MC_EPS.mat'], 'MC_EPS');
+%     save([path, '/../Data/F1_MC_EXP.mat'], 'MC_EXP');
+%     save([path, '/../Data/F1_MC_EPS.mat'], 'MC_EPS');
 end
 fprintf('\n');
 sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: END'));

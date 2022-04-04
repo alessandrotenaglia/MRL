@@ -35,7 +35,7 @@ classdef MyGridWorld
             elseif (strcmpi(moves, 'kings'))
                 obj.nActions = 8;
             else
-                error('ERROR: Type of moves entered is invalid!')
+                error('ERROR: Possible moves are `nsew` or `kings`');
             end
             % Convert the initial cells in states
             obj.initStates = sub2ind([nX, nY], ...
@@ -83,18 +83,28 @@ classdef MyGridWorld
         end
 
         % Generate the transition matrix
-        function obj = generateP(obj)
-            % Initialize the matrix
+        function obj = generateMDP(obj)
+            % Initialize the transition and reward matrix
             obj.P = zeros(obj.nStates, obj.nActions, obj.nStates);
+            obj.R = zeros(obj.nStates, obj.nActions);
             % Iterate on states
             for s = 1 : obj.nStates
                 % Check the nature of the state
-                if (ismember(s, obj.termStates) || ...
-                        ismember(s, obj.obstStates))
-                    % If it's a terminal state or an obstacle, ...
-                    % it doesn't change for any action
+                if (ismember(s, obj.termStates))
+                    % If it's a terminal state, ...
+                    % it doesn't change for any action and ...
+                    % the reward is always 0
                     for a = 1 : obj.nActions
                         obj.P(s, a, s) = 1;
+                        obj.R(s, a) = 0;
+                    end
+                elseif (ismember(s, obj.obstStates))
+                    % If it's an obstacle, ...
+                    % it doesn't change for any action and ...
+                    % the reward is always -1e6
+                    for a = 1 : obj.nActions
+                        obj.P(s, a, s) = 1;
+                        obj.R(s, a) = -1e6;
                     end
                 else
                     % Convert the state in cells
@@ -111,30 +121,6 @@ classdef MyGridWorld
                         sp = sub2ind([obj.nX, obj.nY], xp, yp);
                         % Set the transition P(s, a, s')
                         obj.P(s, a, sp) = 1;
-                    end
-                end
-            end
-        end
-
-        % Generate the reward matrix
-        function obj = generateR(obj)
-            % Initialize the matrix
-            obj.R = zeros(obj.nStates, obj.nActions);
-            % Iterate on states
-            for s = 1 : obj.nStates
-                % Check the nature of the state
-                if (ismember(s, obj.termStates))
-                    % If it's a terminal state, the reward is 0
-                    obj.R(s, :) = 0;
-                elseif (ismember(s, obj.obstStates))
-                    % If it's an obstacle, the reward is -1e6
-                    obj.R(s, :) = -1e6;
-                else
-                    % Iterate on actions
-                    for a = 1 : obj.nActions
-                        % Convert the action into axis movements
-                        [dx, dy] = obj.action2coord(a);
-                        % The reward is equal to the distance traveled
                         obj.R(s, a) = -vecnorm([dx, dy]);
                     end
                 end

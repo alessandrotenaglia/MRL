@@ -39,7 +39,9 @@ Monaco(30, [1, 20]) = 1;
 Monaco(20, 20) = 1;
 Monaco = [Monaco(2:end, :); Monaco(1, :)];
 figure()
-heatmap(Monaco)
+h = heatmap(Monaco);
+h.ColorbarVisible = 'off';
 
 %% Save the track image
+Monaco = rot90(Monaco, -1);
 save([path, '/../Data/Monaco.mat'], 'Monaco');

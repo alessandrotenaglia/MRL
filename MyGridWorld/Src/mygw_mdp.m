@@ -19,8 +19,8 @@ else
     fprintf("Created MYGW\n");
 end
 
-%% Generate the transition matrix P
-mygw = mygw.generateP();
+%% Generate the MDP
+mygw = mygw.generateMDP();
 % Check that P is a stochastic matrix
 S = round(sum(mygw.P, 3), 3);
 for s = 1 : mygw.nStates
@@ -30,9 +30,6 @@ for s = 1 : mygw.nStates
         end
     end
 end
-
-%% Generate the reward matrix R
-mygw = mygw.generateR();
 
 %% Save MyGridWorld
 save([path, '/../Data/MYGW_MDP.mat'], 'mygw')

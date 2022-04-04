@@ -19,8 +19,7 @@ else
     fprintf("Created Monaco track image\n");
 end
 
-%% Create the Grid World
-Monaco = rot90(Monaco, -1);
+%% Create the track
 [nX, nY] = size(Monaco);
 moves = 'kings';
 [obstCellsX, obstCellsY] = find(Monaco == 1);
@@ -34,7 +33,6 @@ track = MyGridWorld(nX, nY, moves, ...
 %% Plot the track
 figure(); ax = axes('Parent', gcf);
 track.plot(ax);
-track.plotGrid(ax);
 
 %% Plot an episode
 policy = 3 * ones(track.nActions, track.nStates, 1);
