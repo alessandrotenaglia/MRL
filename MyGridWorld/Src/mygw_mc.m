@@ -51,15 +51,16 @@ pause();
 nRepetitions = 1e2;
 fprintf('Repetions:  %3d%\n', 0);
 for r = 1 : nRepetitions
+    % Update repetition number
+    fprintf('\b\b\b\b%3.0f%%', (r / nRepetitions) * 100);
+    sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: %d/%d', ...
+        r, nRepetitions));
+    
     % Monte Carlo Exploring start
     MC_EXP = MC_EXP.controlExploring();
     % Monte Carlo Epsilon greedy
     MC_EPS = MC_EPS.controlEpsilon(0.1);
     
-    % Update repetition number
-    fprintf('\b\b\b\b%3.0f%%', (r / nRepetitions) * 100);
-    sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: %d/%d', ...
-        r, nRepetitions));
     % Delete old plots
     delete(rects_exp); delete(arrs_exp);
     % Plot Exploring start optimal policy

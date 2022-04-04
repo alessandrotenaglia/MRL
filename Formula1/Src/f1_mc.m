@@ -27,7 +27,7 @@ if (exist([path, '/../Data/F1_MC_EXP.mat'], 'file') == 2)
 else
     % Create Monte Carlo Exploring start
     gamma = 0.99;
-    nEpisodes = 1e4;
+    nEpisodes = 1e3;
     MC_EXP = MonteCarlo(track, gamma, nEpisodes);
     fprintf("Created F1_MC_EXP\n");
 end
@@ -40,7 +40,7 @@ if (exist([path, '/../Data/F1_MC_EPS.mat'], 'file') == 2)
 else
     % Create Monte Carlo Epsilon greedy
     gamma = 0.99;
-    nEpisodes = 1e4;
+    nEpisodes = 1e3;
     MC_EPS = MonteCarlo(track, gamma, nEpisodes);
     fprintf("Created F1_MC_EPS\n");
 end
@@ -67,14 +67,15 @@ pause();
 fprintf('Repetions:  %3d%\n', 0);
 nRepetitions = 1e2;
 for r = 1 : nRepetitions
-    % Run a repetition
-    MC_EXP = MC_EXP.controlExploring();
-    MC_EPS = MC_EPS.controlEpsilon(0.1);
-
     % Update repetition number
     fprintf('\b\b\b\b%3.0f%%', (r / nRepetitions) * 100);
     sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: %d/%d', ...
         r, nRepetitions));
+    
+    % Run a repetition
+    MC_EXP = MC_EXP.controlExploring();
+    MC_EPS = MC_EPS.controlEpsilon(0.2);
+
     % Delete old plots
     delete(rects_exp); delete(arrs_exp);
     % Plot Exploring start optimal policy
