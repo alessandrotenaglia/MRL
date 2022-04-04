@@ -7,12 +7,14 @@
 
 clear; close all; clc;
 
-%% Load/Create the track
+%% Track
 [path,~,~] = fileparts(which(matlab.desktop.editor.getActiveFilename));
 if (exist([path, '/../Data/F1_MDP.mat'], 'file') == 2)
+    % Load the track
     load([path, '/../Data/F1_MDP.mat']);
     fprintf("Loaded F1_MDP.mat\n");
 else
+    % Create the track
     f1_mdp;
     fprintf("Created F1_MDP\n");
 end
