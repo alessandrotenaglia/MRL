@@ -36,8 +36,35 @@ classdef MonteCarlo
         function obj = controlExploring(obj)
             % Iterate on episodes
             for e = 1 : obj.nEpisodes
-                % Run an episode
-                [sts, acts, rews] = obj.env.runExploring(0, obj.pi);
+                % Set a randomic initial state
+                sts = obj.env.initStates(randi(numel(obj.env.initStates)));
+                % Initialize actions and rewards
+                acts = [];
+                rews = [];
+                % Generate the episode
+                while (~ismember(sts(end), obj.env.obstStates) && ...
+                        ~ismember(sts(end), obj.env.termStates))
+                    % Exploring start
+                    if (isempty(acts))
+                        % Choose the first action randomly
+                        a = randi(obj.env.nActions);
+                    else
+                        % Choose the action following the policy
+                        a = obj.pi(sts(end));
+                    end
+                    % Move on the grid world
+                    [sp, r] = obj.env.move(sts(end), a);
+                    % Store data
+                    sts = [sts, sp];
+                    acts = [acts, a];
+                    rews = [rews, r];
+                    % Detect loops and stop the episode to speed up ...
+                    % the learning
+                    if (ismember(sp, sts(1:end-1)))
+                        rews(end) = -1e6;
+                        break;
+                    end
+                end
                 % Update data with episode information
                 obj = obj.update(sts, acts, rews);
             end
@@ -47,8 +74,35 @@ classdef MonteCarlo
         function obj = controlEpsilon(obj, eps)
             % Iterate on episodes
             for e = 1 : obj.nEpisodes
-                % Run an episode
-                [sts, acts, rews] = obj.env.runEpsilon(0, obj.pi, eps);
+                % Set a randomic initial state
+                sts = obj.env.initStates(randi(numel(obj.env.initStates)));
+                % Initialize actions and rewards
+                acts = [];
+                rews = [];
+                % Generate the episode
+                while (~ismember(sts(end), obj.env.obstStates) && ...
+                        ~ismember(sts(end), obj.env.termStates))
+                    % Eps-greedy policy
+                    if (rand() < eps)
+                        % Explorative choice (prob = eps)
+                        a = randi(obj.env.nActions);
+                    else
+                        % Greedy choice (prob = 1-eps)
+                        a = obj.pi(sts(end));
+                    end
+                    % Move on the grid world
+                    [sp, r] = obj.env.move(sts(end), a);
+                    % Store data
+                    sts = [sts, sp];
+                    acts = [acts, a];
+                    rews = [rews, r];
+                    % Detect loops and stop the episode to speed up ...
+                    % the learning
+                    if (ismember(sp, sts(1:end-1)))
+                        rews(end) = -1e6;
+                        break;
+                    end
+                end
                 % Update data with episode information
                 obj = obj.update(sts, acts, rews);
             end
