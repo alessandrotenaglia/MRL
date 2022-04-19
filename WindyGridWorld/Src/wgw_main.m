@@ -8,13 +8,13 @@
 clear; close all; clc;
 
 %% Create the Grid World
-nX = 5;
-nY = nX;
+nX = 10;
+nY = 7;
 moves = 'kings';
 initCells = [1; 1];
-termCells = [nX; nY];
+termCells = [nX-2; nY-2];
 obstCells = [];
-wind = [ones(nX, 1), ones(nY, 1)];
+wind = [0 0 0 1 1 1 2 2 1 0];
 wgw = WindyGridWorld(nX, nY, moves, initCells, termCells, obstCells, wind);
 % Plot the Grid World
 figure(); ax = axes('Parent', gcf);
@@ -22,9 +22,9 @@ wgw.plot(ax);
 wgw.plotGrid(ax);
 
 %% Single move
-policy = ones(wgw.nActions, wgw.nStates, 1);
+policy = 3*ones(wgw.nActions, wgw.nStates, 1);
 s = 1;
-[sp, r] = wgw.move(s, policy(s));
+[sp, r] = wgw.step(s, policy(s));
 % Plot
 figure(); ax = axes('Parent', gcf);
 wgw.plot(ax);
@@ -32,7 +32,6 @@ wgw.plotPath(ax, [s, sp]);
 wgw.plotPolicy(ax, policy);
 
 %% Episode
-policy = ones(wgw.nActions, wgw.nStates, 1);
 sts = wgw.run(0, policy);
 % Plot
 figure(); ax = axes('Parent', gcf);

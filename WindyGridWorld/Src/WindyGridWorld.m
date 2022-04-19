@@ -23,7 +23,7 @@ classdef WindyGridWorld < MyGridWorld
 
         % Given a state and an action, compute the new position and the
         % reward
-        function [sp, r] = move(obj, s, a)
+        function [sp, r] = step(obj, s, a)
             % Check the nature of the state
             if (ismember(s, obj.termStates))
                 % If it's a terminal state, the state dosn't change and ...
@@ -43,20 +43,75 @@ classdef WindyGridWorld < MyGridWorld
                 % Compute new position
                 xp = max(1, min(x + dx, obj.nX));
                 yp = max(1, min(y + dy, obj.nY));
-                % Compute new position after the action of the wind
-                xp = max(1, min(xp + obj.wind(xp, 1), obj.nX));
-                yp = max(1, min(yp + obj.wind(yp, 2), obj.nY));
-                % Convert the new position in the corresponding state
+                % Convert the intermediate position in the
+                % corresponding state
                 sp = sub2ind([obj.nX, obj.nY], xp, yp);
                 % Check the nature of the state
                 if (ismember(sp, obj.obstStates))
                     % If it's an obstacle, the reward is -1e6
                     r = -1e6;
                 else
-                    % If it's not an obstacle, the reward is the ...
-                    % distance traveled
-                    r = -1;
+                    % Compute new position after the action of the wind
+                    yp = max(1, min(yp + obj.wind(xp), obj.nY));
+                    % Convert the new position in the corresponding state
+                    sp = sub2ind([obj.nX, obj.nY], xp, yp);
+                    % Check the nature of the state
+                    if (ismember(sp, obj.obstStates))
+                        % If it's an obstacle, the reward is -1e6
+                        r = -1e6;
+                    else
+                        % If it's not an obstacle, the reward is the ...
+                        % distance traveled
+                        r = -1;
+                    end
                 end
+            end
+        end
+
+
+        % Generate the transition matrix
+        function obj = generateMDP(obj)
+            % Initialize the transition and reward matrix
+            obj.P = zeros(obj.nStates, obj.nActions, obj.nStates);
+            obj.R = zeros(obj.nStates, obj.nActions);
+            % Iterate on states
+            for s = 1 : obj.nStates
+                % Iterate on actions
+                for a = 1 : obj.nActions
+                    % Simulate the move
+                    [sp, r] = step(obj, s, a);
+                    % Set the transition
+                    obj.P(s, a, sp) = 1;
+                    % Set the reward
+                    obj.R(s, a) = r;
+                end
+            end
+        end
+
+        % Plot the grid world
+        function plot(obj, ax)
+            axis equal; hold on;
+            ax.XTick = []; ax.YTick = [];
+            ax.XTickLabel = []; ax.YTickLabel = [];
+            ax.XLim = [0.5 obj.nX+0.5]; ax.YLim = [0.5 obj.nY+0.5];
+            xs = 0.5 : 1 : obj.nX; ys = 0.5 : 1 : obj.nY;
+            for i = 1 : numel(xs)
+                for j = 1 : numel(ys)
+                    r = rectangle(ax, 'Position', [xs(i) ys(j) 1 1]);
+                    s = sub2ind([obj.nX, obj.nY], xs(i)+0.5, ys(j)+0.5);
+                    if (ismember(s, obj.initStates))
+                        r.FaceColor = 'c';
+                    elseif (ismember(s, obj.obstStates))
+                        r.FaceColor = 'k';
+                    elseif (ismember(s, obj.termStates))
+                        r.FaceColor = 'g';
+                    end
+                end
+            end
+            for i = 1 : numel(xs)
+                t = text(xs(i)+0.5, 0.25, num2str(obj.wind(i)));
+                set(t,'HorizontalAlignment','center','VerticalAlignment','middle')
+
             end
         end
     end
