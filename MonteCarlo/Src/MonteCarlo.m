@@ -52,8 +52,8 @@ classdef MonteCarlo
                         % Choose the action following the policy
                         a = obj.pi(sts(end));
                     end
-                    % Move on the grid world
-                    [sp, r] = obj.env.move(sts(end), a);
+                    % Execute a step
+                    [sp, r] = obj.env.step(sts(end), a);
                     % Store data
                     sts = [sts, sp];
                     acts = [acts, a];
@@ -90,8 +90,8 @@ classdef MonteCarlo
                         % Greedy choice (prob = 1-eps)
                         a = obj.pi(sts(end));
                     end
-                    % Move on the grid world
-                    [sp, r] = obj.env.move(sts(end), a);
+                    % Execute a step
+                    [sp, r] = obj.env.step(sts(end), a);
                     % Store data
                     sts = [sts, sp];
                     acts = [acts, a];
