@@ -20,10 +20,10 @@ figure(); ax = axes('Parent', gcf);
 mygw.plot(ax);
 mygw.plotGrid(ax);
 
-%% Single move
+%% Single step
 policy = ones(mygw.nActions, mygw.nStates, 1);
 s = 1;
-[sp, r] = mygw.move(s, policy(s));
+[sp, r] = mygw.step(s, policy(s));
 % Plot
 figure(); ax = axes('Parent', gcf);
 mygw.plot(ax);

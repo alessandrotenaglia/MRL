@@ -19,18 +19,18 @@ else
     fprintf("Created MYGW\n");
 end
 
-%% Create Monte Carlo Exploring start
+%% Monte Carlo params
 gamma = 0.99;
 nEpisodes = 1e1;
+
+% Exploring start
 MC_EXP = MonteCarlo(mygw, gamma, nEpisodes);
 
-%% Create Monte Carlo Epsilon-greedy
-gamma = 0.99;
-nEpisodes = 1e1;
+% Epsilon-greedy
 MC_EPS = MonteCarlo(mygw, gamma, nEpisodes);
 
 %% MC Control: Exploring start vs Epsilon-greedy
-% Plot MC EXP vs MC EPS
+% Plots
 fig = figure();
 sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: STOP'));
 % MC EXP subfigure
@@ -56,21 +56,22 @@ for r = 1 : nRepetitions
     sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: %d/%d', ...
         r, nRepetitions));
     
-    % Monte Carlo Exploring start
+    % Exploring start
     MC_EXP = MC_EXP.controlExploring();
-    % Monte Carlo Epsilon greedy
-    MC_EPS = MC_EPS.controlEpsilon(0.1);
-    
     % Delete old plots
     delete(rects_exp); delete(arrs_exp);
     % Plot Exploring start optimal policy
     rects_exp = mygw.plotPath(ax1, mygw.run(0, MC_EXP.pi));
     arrs_exp = mygw.plotPolicy(ax1, MC_EXP.pi);
+
+    % Epsilon greedy
+    MC_EPS = MC_EPS.controlEpsilon(0.1);
     % Delete old plots
     delete(rects_eps); delete(arrs_eps);
     % Plot Epsilon greedy optimal policy
     rects_eps = mygw.plotPath(ax2, mygw.run(0, MC_EPS.pi));
     arrs_eps = mygw.plotPolicy(ax2, MC_EPS.pi);
+    
     % Force drawing
     drawnow
 end
