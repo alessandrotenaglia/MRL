@@ -19,34 +19,34 @@ else
     fprintf("Created F1\n");
 end
 
-%% Monte Carlo Exploring start
+%% Monte Carlo params
+gamma = 0.99;
+nEpisodes = 1e3;
+
+% Exploring start
 if (exist([path, '/../Data/F1_MC_EXP.mat'], 'file') == 2)
-    % Load Monte Carlo Exploring start
+    % Load Exploring start
     load([path, '/../Data/F1_MC_EXP.mat']);
     fprintf("Loaded F1_MC_EXP.mat\n");
 else
-    % Create Monte Carlo Exploring start
-    gamma = 0.99;
-    nEpisodes = 1e3;
+    % Create Exploring start
     MC_EXP = MonteCarlo(track, gamma, nEpisodes);
     fprintf("Created F1_MC_EXP\n");
 end
 
-%% Monte Carlo Epsilon greedy
+% Epsilon greedy
 if (exist([path, '/../Data/F1_MC_EPS.mat'], 'file') == 2)
-    % Load Monte Carlo Epsilon greedy
+    % Load Epsilon greedy
     load([path, '/../Data/F1_MC_EPS.mat']);
     fprintf("Loaded F1_MC_EPS.mat\n");
 else
-    % Create Monte Carlo Epsilon greedy
-    gamma = 0.99;
-    nEpisodes = 1e3;
+    % Create Epsilon greedy
     MC_EPS = MonteCarlo(track, gamma, nEpisodes);
     fprintf("Created F1_MC_EPS\n");
 end
 
 %% MC Control: Exploring start vs Epsilon-greedy
-% Plot MC EXP vs MC EPS
+% Plots
 fig = figure();
 sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: STOP'));
 % MC EXP subfigure
@@ -72,25 +72,28 @@ for r = 1 : nRepetitions
     sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: %d/%d', ...
         r, nRepetitions));
     
-    % Run a repetition
+    % Exploring start
     MC_EXP = MC_EXP.controlExploring();
-    MC_EPS = MC_EPS.controlEpsilon(0.2);
-
     % Delete old plots
     delete(rects_exp); delete(arrs_exp);
     % Plot Exploring start optimal policy
     rects_exp = track.plotPath(ax1, track.run(0, MC_EXP.pi));
     arrs_exp = track.plotPolicy(ax1, MC_EXP.pi);
+    % Save data
+    save([path, '/../Data/F1_MC_EXP.mat'], 'MC_EXP');
+
+    % Epsilon greedy
+    MC_EPS = MC_EPS.controlEpsilon(0.1);
     % Delete old plots
     delete(rects_eps); delete(arrs_eps);
     % Plot Epsilon greedy optimal policy
     rects_eps = track.plotPath(ax2, track.run(0, MC_EPS.pi));
     arrs_eps = track.plotPolicy(ax2, MC_EPS.pi);
+    % Save data
+    save([path, '/../Data/F1_MC_EPS.mat'], 'MC_EPS');
+
     % Force drawing
     drawnow
-    % Save data
-%     save([path, '/../Data/F1_MC_EXP.mat'], 'MC_EXP');
-%     save([path, '/../Data/F1_MC_EPS.mat'], 'MC_EPS');
 end
-fprintf('\n');
 sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: END'));
+fprintf('\n');
