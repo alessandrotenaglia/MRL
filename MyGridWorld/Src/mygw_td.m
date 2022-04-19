@@ -23,18 +23,21 @@ end
 alpha = 0.1;
 eps = 0.1;
 gamma = 0.99;
-nEpisodes = 1e3;
+nEpisodes = 1e1;
 
 % SARSA
 TD_SARSA = TempDiff(mygw, alpha, eps, gamma, nEpisodes);
+
 % ESARSA
 TD_ESARSA = TempDiff(mygw, alpha, eps, gamma, nEpisodes);
+
 % Q-Learning
 TD_QL = TempDiff(mygw, alpha, eps, gamma, nEpisodes);
+
 % Double Q-Learning
 TD_DQL = TempDiff(mygw, alpha, eps, gamma, nEpisodes);
 
-%% Temporal Difference SARSA vs ESARSA vs QL vs DQL
+%% Temporal Difference: SARSA vs ESARSA vs QL vs DQL
 % Plots
 fig = figure();
 sgtitle(sprintf('GridWorld - Temporal Difference\nRepetitions: STOP'));
@@ -73,7 +76,7 @@ for r = 1 : nRepetitions
     sgtitle(sprintf('GridWorld - Temporal Difference\nRepetitions: %d/%d', ...
         r, nRepetitions));
 
-    % Temporal Difference SARSA
+    % SARSA
     TD_SARSA = TD_SARSA.SARSA();
     % Delete old plots
     delete(rects_sarsa); delete(arrs_sarsa);
@@ -81,7 +84,7 @@ for r = 1 : nRepetitions
     rects_sarsa = mygw.plotPath(ax1, mygw.run(0, TD_SARSA.pi));
     arrs_sarsa = mygw.plotPolicy(ax1, TD_SARSA.pi);
 
-    % Temporal Difference ESARSA
+    % ESARSA
     TD_ESARSA = TD_ESARSA.ESARSA();
     % Delete old plots
     delete(rects_esarsa); delete(arrs_esarsa);
@@ -89,7 +92,7 @@ for r = 1 : nRepetitions
     rects_esarsa = mygw.plotPath(ax2, mygw.run(0, TD_ESARSA.pi));
     arrs_esarsa = mygw.plotPolicy(ax2, TD_ESARSA.pi);
 
-    % Temporal Difference QL
+    % QL
     TD_QL = TD_QL.Qlearning();
     % Delete old plots
     delete(rects_ql); delete(arrs_ql);
@@ -97,7 +100,7 @@ for r = 1 : nRepetitions
     rects_ql = mygw.plotPath(ax3, mygw.run(0, TD_QL.pi));
     arrs_ql = mygw.plotPolicy(ax3, TD_QL.pi);
 
-    % Temporal Difference DQL
+    % DQL
     TD_DQL = TD_DQL.DQlearning();
     % Delete old plots
     delete(rects_dql); delete(arrs_dql);
