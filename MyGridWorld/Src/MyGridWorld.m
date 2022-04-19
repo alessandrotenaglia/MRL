@@ -84,7 +84,7 @@ classdef MyGridWorld
 
         % Given a state and an action, compute the new position and the
         % reward
-        function [sp, r] = move(obj, s, a)
+        function [sp, r] = step(obj, s, a)
             % Check the nature of the state
             if (ismember(s, obj.termStates))
                 % If it's a terminal state, the state dosn't change and ...
@@ -118,25 +118,6 @@ classdef MyGridWorld
             end
         end
 
-        % Generate the transition matrix
-        function obj = generateMDP(obj)
-            % Initialize the transition and reward matrix
-            obj.P = zeros(obj.nStates, obj.nActions, obj.nStates);
-            obj.R = zeros(obj.nStates, obj.nActions);
-            % Iterate on states
-            for s = 1 : obj.nStates
-                % Iterate on actions
-                for a = 1 : obj.nActions
-                    % Simulate the move
-                    [sp, r] = move(obj, s, a);
-                    % Set the transition
-                    obj.P(s, a, sp) = 1;
-                    % Set the reward
-                    obj.R(s, a) = r;
-                end
-            end
-        end
-
         % Run an episode following a determinitic policy
         function sts = run(obj, s0, policy)
             % Set initial state
@@ -153,12 +134,31 @@ classdef MyGridWorld
                 % Choose the action according to the given policy
                 a = policy(sts(end));
                 % Move on the grid world
-                [sp, ~] = obj.move(sts(end), a);
+                [sp, ~] = obj.step(sts(end), a);
                 % Store data
                 sts = [sts, sp];
                 % Detect loops and stop the episode
                 if (ismember(sp, sts(1:end-1)))
                     break;
+                end
+            end
+        end
+
+        % Generate the transition matrix
+        function obj = generateMDP(obj)
+            % Initialize the transition and reward matrix
+            obj.P = zeros(obj.nStates, obj.nActions, obj.nStates);
+            obj.R = zeros(obj.nStates, obj.nActions);
+            % Iterate on states
+            for s = 1 : obj.nStates
+                % Iterate on actions
+                for a = 1 : obj.nActions
+                    % Simulate the move
+                    [sp, r] = step(obj, s, a);
+                    % Set the transition
+                    obj.P(s, a, sp) = 1;
+                    % Set the reward
+                    obj.R(s, a) = r;
                 end
             end
         end
