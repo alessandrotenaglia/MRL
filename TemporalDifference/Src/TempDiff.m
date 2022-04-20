@@ -17,6 +17,8 @@ classdef TempDiff
         pi;         % Current policy
         V;          % Current state value function
         Q;          % Current state-action value function
+        Q1;         % Fisrt state-action value function for DQL
+        Q2;         % Second state-action value function for DQL
     end
 
     methods
@@ -32,6 +34,8 @@ classdef TempDiff
             obj.pi = randi(env.nActions, env.nStates, 1);
             obj.V = zeros(env.nStates, 1);
             obj.Q = zeros(env.nStates, env.nActions);
+            obj.Q1 = zeros(env.nStates, env.nActions);
+            obj.Q2 = zeros(env.nStates, env.nActions);
         end
 
         % Choose the action using the epsilon-greedy method
@@ -139,9 +143,6 @@ classdef TempDiff
 
         % Double Q-Learning algorithm
         function obj = DQlearning(obj)
-            % Initialize estimates
-            Q1 = zeros(obj.env.nStates, obj.env.nActions);
-            Q2 = zeros(obj.env.nStates, obj.env.nActions);
             % Iterate on episodes
             for e = 1 : obj.nEpisodes
                 % Generate a randomic initial state
@@ -158,20 +159,20 @@ classdef TempDiff
                     if (rand() < 0.5)
                         % Compute the new estimate based on the maximum of
                         % Q2
-                        Qest = r + obj.gamma * max(Q2(sp, :));
+                        Qest = r + obj.gamma * max(obj.Q2(sp, :));
                         % Update Q1
-                        Q1(s, a) = Q1(s, a) + ...
-                            obj.alpha * (Qest - Q1(s, a));
+                        obj.Q1(s, a) = obj.Q1(s, a) + ...
+                            obj.alpha * (Qest - obj.Q1(s, a));
                     else
                         % Compute the new estimate based on the maximum of
                         % Q1
-                        Qest = r + obj.gamma * max(Q1(sp, :));
+                        Qest = r + obj.gamma * max(obj.Q1(sp, :));
                         % Update Q2
-                        Q2(s, a) = Q2(s, a) + ...
-                            obj.alpha * (Qest - Q2(s, a));
+                        obj.Q2(s, a) = obj.Q2(s, a) + ...
+                            obj.alpha * (Qest - obj.Q2(s, a));
                     end
                     % Update Q using the average of Q1 and Q2
-                    obj.Q(s, a) = 0.5 * (Q1(s, a) + Q2(s, a));
+                    obj.Q(s, a) = 0.5 * (obj.Q1(s, a) + obj.Q2(s, a));
                     % Update the state value function and the policy
                     [obj.V(s), obj.pi(s)] = max(obj.Q(s, :));
                     % Set the state for the next episode
