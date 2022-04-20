@@ -5,7 +5,7 @@
 %  Email: alessandro.tenaglia@uniroma2.it  %
 % ---------------------------------------- %
 
-% My Grid World
+% Windy Grid World
 classdef WindyGridWorld < MyGridWorld
 
     properties
@@ -31,7 +31,7 @@ classdef WindyGridWorld < MyGridWorld
                 sp = s;
                 r = 0;
             elseif (ismember(s, obj.obstStates))
-                % If it's an obstacle, the state dosn't change and ...
+                % If it's an obstacle, the state doesn't change and ...
                 % the reward is -1e6
                 sp = s;
                 r = -1e6;
@@ -64,26 +64,6 @@ classdef WindyGridWorld < MyGridWorld
                         % distance traveled
                         r = -1;
                     end
-                end
-            end
-        end
-
-
-        % Generate the transition matrix
-        function obj = generateMDP(obj)
-            % Initialize the transition and reward matrix
-            obj.P = zeros(obj.nStates, obj.nActions, obj.nStates);
-            obj.R = zeros(obj.nStates, obj.nActions);
-            % Iterate on states
-            for s = 1 : obj.nStates
-                % Iterate on actions
-                for a = 1 : obj.nActions
-                    % Simulate the move
-                    [sp, r] = step(obj, s, a);
-                    % Set the transition
-                    obj.P(s, a, sp) = 1;
-                    % Set the reward
-                    obj.R(s, a) = r;
                 end
             end
         end
