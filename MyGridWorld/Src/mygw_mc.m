@@ -32,7 +32,7 @@ MC_EPS = MonteCarlo(mygw, gamma, nEpisodes);
 %% MC Control: Exploring start vs Epsilon-greedy
 % Plots
 fig = figure();
-sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: STOP'));
+sgtitle(sprintf('GridWorld - Monte Carlo\nSTOP'));
 % MC EXP subfigure
 ax1 = subplot(1, 2, 1);
 title('Exploring start');
@@ -49,12 +49,11 @@ pause();
 
 % Iterate on repetitions
 nRepetitions = 1e2;
-fprintf('Repetions:  %3d%\n', 0);
 for r = 1 : nRepetitions
     % Update repetition number
-    fprintf('\b\b\b\b%3.0f%%', (r / nRepetitions) * 100);
-    sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: %d/%d', ...
-        r, nRepetitions));
+    sgtitle(sprintf(['GridWorld - Temporal Difference\n' ...
+        'Repetitions: %d/%d\nEpisodes: %d'], ...
+        r, nRepetitions, r*nEpisodes));
     
     % Exploring start
     MC_EXP = MC_EXP.controlExploring();
@@ -75,5 +74,5 @@ for r = 1 : nRepetitions
     % Force drawing
     drawnow
 end
-sgtitle(sprintf('GridWorld - Monte Carlo\nRepetitions: END'));
+sgtitle(sprintf('GridWorld - Monte Carlo\END'));
 fprintf('\n');

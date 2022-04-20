@@ -40,7 +40,7 @@ TD_DQL = TempDiff(mygw, alpha, eps, gamma, nEpisodes);
 %% Temporal Difference: SARSA vs ESARSA vs QL vs DQL
 % Plots
 fig = figure();
-sgtitle(sprintf('GridWorld - Temporal Difference\nRepetitions: STOP'));
+sgtitle(sprintf('GridWorld - Temporal Difference\nSTOP'));
 % SARSA subfigure
 ax1 = subplot(2, 2, 1);
 title('SARSA');
@@ -69,12 +69,11 @@ pause();
 
 % Iterate on repetitions
 nRepetitions = 1e2;
-fprintf('Repetions:  %3d%\n', 0);
 for r = 1 : nRepetitions
     % Update repetition number
-    fprintf('\b\b\b\b%3.0f%%', (r / nRepetitions) * 100);
-    sgtitle(sprintf('GridWorld - Temporal Difference\nRepetitions: %d/%d', ...
-        r, nRepetitions));
+    sgtitle(sprintf(['GridWorld - Temporal Difference\n' ...
+        'Repetitions: %d/%d\nEpisodes: %d'], ...
+        r, nRepetitions, r*nEpisodes));
 
     % SARSA
     TD_SARSA = TD_SARSA.SARSA();
@@ -111,5 +110,5 @@ for r = 1 : nRepetitions
     % Force drawing
     drawnow
 end
-sgtitle(sprintf('GridWorld - Temporal Difference\nRepetitions: END'));
+sgtitle(sprintf('GridWorld - Temporal Difference\nEND'));
 fprintf('\n');
