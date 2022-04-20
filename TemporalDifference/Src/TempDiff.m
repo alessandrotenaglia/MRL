@@ -62,7 +62,8 @@ classdef TempDiff
                     % method
                     ap = epsGreedy(obj, sp);
                     % Compute the new estimate based on the next state AND
-                    % the next action
+                    % the next action 
+                    % -> high variance
                     Qest = r + obj.gamma * obj.Q(sp, ap);
                     % Update the state-action value function
                     obj.Q(s, a) = obj.Q(s, a) + ...
@@ -94,7 +95,8 @@ classdef TempDiff
                         ones(obj.env.nActions, 1);
                     probs(obj.pi(sp)) = probs(obj.pi(sp)) + 1 - obj.eps;
                     % Compute the new estimate based on the expected reward
-                    % of the next state
+                    % of the next state 
+                    % -> less variance than SARSA
                     Qest = r + obj.gamma * obj.Q(sp, :) * probs;
                     % Update the state-action value function
                     obj.Q(s, a) = obj.Q(s, a) + ...
@@ -122,6 +124,7 @@ classdef TempDiff
                     [sp, r] = obj.env.step(s, a);
                     % Compute the new estimate based on the maximum of the
                     % state-action value function
+                    % -> low variance, but nonzero bias
                     Qest = r + obj.gamma * max(obj.Q(sp, :));
                     % Update the state-action value function
                     obj.Q(s, a) = obj.Q(s, a) + ...
@@ -150,7 +153,8 @@ classdef TempDiff
                     a = epsGreedy(obj, s);
                     % Execute a step
                     [sp, r] = obj.env.step(s, a);
-                    % Choose the Q to update randomly
+                    % Choose the Q to update randomly 
+                    % -> low variance and low bias
                     if (rand() < 0.5)
                         % Compute the new estimate based on the maximum of
                         % Q2
