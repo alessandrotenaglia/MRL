@@ -91,7 +91,6 @@ classdef WindyGridWorld < MyGridWorld
             for i = 1 : numel(xs)
                 t = text(xs(i)+0.5, 0.25, num2str(obj.wind(i)));
                 set(t,'HorizontalAlignment','center','VerticalAlignment','middle')
-
             end
         end
     end
