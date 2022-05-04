@@ -9,7 +9,7 @@
 classdef TempDiffLambda
 
     properties (Constant)
-        SHOW = true;
+        SHOW = false;
     end
 
     properties
@@ -60,10 +60,11 @@ classdef TempDiffLambda
                 ax1 = subplot(1, 2, 1);
                 obj.env.plot(ax1);
                 ax2 = subplot(1, 2, 2);
+                xlabel(ax1, 'States'); ylabel(ax1, 'Actions');
             end
             % Iterate on episodes
             for e = 1 : obj.nEpisodes
-                %
+                % Initialize eligibility traces
                 E = zeros(obj.env.nStates, obj.env.nActions);
                 % Generate a randomic initial state
                 s = obj.env.initStates(randi(numel(obj.env.initStates)));
@@ -71,9 +72,9 @@ classdef TempDiffLambda
                 a = epsGreedy(obj, s);
                 % Plot initial data
                 if (obj.SHOW)
-                    rects = obj.env.plotPath(ax1, s);
+                    sts = s;
+                    rects = obj.env.plotPath(ax1, sts);
                     arrs = obj.env.plotPolicy(ax1, obj.pi);
-                    sts = [];
                 end
                 % Generate the episode
                 while (~ismember(s, obj.env.obstStates) && ...
@@ -105,20 +106,19 @@ classdef TempDiffLambda
                     % Set the state and the action for the next episode
                     s = sp;
                     a = ap;
-                    % Plot the episode step by step and the eligibilty
-                    % traces
+                    % Plot the episode step and the changes of the
+                    % eligibilty traces
                     if (obj.SHOW)
                         delete(rects); delete(arrs);
-                        sts = [sts, s];
+                        sts = [sts, sp];
                         rects = obj.env.plotPath(ax1, sts);
                         arrs = obj.env.plotPolicy(ax1, obj.pi);
                         hb = bar3(ax2, E);
                         for k = 1:length(hb)
-                            zdata = hb(k).ZData;
-                            hb(k).CData = zdata;
+                            hb(k).CData = hb(k).ZData;
                             hb(k).FaceColor = 'interp';
                         end
-                        drawnow;
+                        pause();
                     end
                 end
                 % Clear old episode
@@ -136,10 +136,11 @@ classdef TempDiffLambda
                 ax1 = subplot(1, 2, 1);
                 obj.env.plot(ax1);
                 ax2 = subplot(1, 2, 2);
+                xlabel(ax1, 'States'); ylabel(ax1, 'Actions');
             end
             % Iterate on episodes
             for e = 1 : obj.nEpisodes
-                %
+                % Initialize eligibility traces
                 E = zeros(obj.env.nStates, obj.env.nActions);
                 % Generate a randomic initial state
                 s = obj.env.initStates(randi(numel(obj.env.initStates)));
@@ -147,9 +148,9 @@ classdef TempDiffLambda
                 a = epsGreedy(obj, s);
                 % Plot initial data
                 if (obj.SHOW)
-                    rects = obj.env.plotPath(ax1, s);
+                    sts = s;
+                    rects = obj.env.plotPath(ax1, sts);
                     arrs = obj.env.plotPolicy(ax1, obj.pi);
-                    sts = [];
                 end
                 % Generate the episode
                 while (~ismember(s, obj.env.obstStates) && ...
@@ -187,20 +188,19 @@ classdef TempDiffLambda
                     % Set the state and the action for the next episode
                     s = sp;
                     a = ap;
-                    % Plot the episode step by step and the eligibilty
-                    % traces
+                    % Plot the episode step and the changes of the
+                    % eligibilty traces
                     if (obj.SHOW)
                         delete(rects); delete(arrs);
-                        sts = [sts, s];
+                        sts = [sts, sp];
                         rects = obj.env.plotPath(ax1, sts);
                         arrs = obj.env.plotPolicy(ax1, obj.pi);
                         hb = bar3(ax2, E);
                         for k = 1:length(hb)
-                            zdata = hb(k).ZData;
-                            hb(k).CData = zdata;
+                            hb(k).CData = hb(k).ZData;
                             hb(k).FaceColor = 'interp';
                         end
-                        drawnow;
+                        pause();
                     end
                 end
                 % Clear old episode
