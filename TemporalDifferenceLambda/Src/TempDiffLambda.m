@@ -15,8 +15,8 @@ classdef TempDiffLambda
     properties
         env;        % Environment
         alpha;      % Step size
-        gamma;      % Discount factor
         eps;        % Degree of exploration
+        gamma;      % Discount factor
         lambda;     % Lambda factor
         nEpisodes;  % Number of episodes
         pi;         % Current policy
@@ -26,13 +26,13 @@ classdef TempDiffLambda
 
     methods
         % Class constructor
-        function obj = TempDiffLambda(env, alpha, gamma, eps, lambda, ...
+        function obj = TempDiffLambda(env, alpha, eps, gamma, lambda, ...
                 nEpisodes)
             % Set properties
             obj.env = env;
             obj.alpha = alpha;
-            obj.gamma = gamma;
             obj.eps = eps;
+            obj.gamma = gamma;
             obj.lambda = lambda;
             obj.nEpisodes = nEpisodes;
             % Initialize arrays
@@ -90,7 +90,7 @@ classdef TempDiffLambda
                     % Choose the next action using the epsilon-greedy
                     % method
                     ap = epsGreedy(obj, sp);
-                    % Compute the new estimate based on the next state AND
+                    % Compute the error based on the next state AND
                     % the next action
                     delta = r + obj.gamma * obj.Q(sp, ap) - obj.Q(s, a);
                     % Update the eligibility traces
@@ -152,7 +152,7 @@ classdef TempDiffLambda
                 E = zeros(obj.env.nStates, obj.env.nActions);
                 % Generate a randomic initial state
                 s = obj.env.initStates(randi(numel(obj.env.initStates)));
-                % Choose the action using the epsilon-greedy method
+                % Choose the initial action using the epsilon-greedy method
                 a = epsGreedy(obj, s);
                 % Plot initial data
                 if (obj.SHOW)
@@ -174,8 +174,8 @@ classdef TempDiffLambda
                     % Choose the next action using the epsilon-greedy
                     % method
                     ap = epsGreedy(obj, sp);
-                    % Compute the new estimate based on the maximum of the
-                    % state-action value function
+                    % Compute the new estimate based on the next state AND
+                    % the best action
                     [Qbest, abest] = max(obj.Q(sp, :));
                     delta = r + obj.gamma * Qbest - obj.Q(s, a);
                     % Update the eligibility traces
@@ -210,7 +210,7 @@ classdef TempDiffLambda
                         end
                         pause();
                     end
-                    % Check if the next action is exploratory
+                    %
                     if (ap ~= abest)
                         % Reset eligibility traces
                         E = zeros(obj.env.nStates, obj.env.nActions);
