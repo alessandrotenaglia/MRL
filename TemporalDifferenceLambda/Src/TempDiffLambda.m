@@ -17,7 +17,7 @@ classdef TempDiffLambda
         alpha;      % Step size
         gamma;      % Discount factor
         eps;        % Degree of exploration
-        lambda;     %
+        lambda;     % Lambda factor
         nEpisodes;  % Number of episodes
         pi;         % Current policy
         V;          % Current state value function
@@ -60,7 +60,7 @@ classdef TempDiffLambda
                 ax1 = subplot(1, 2, 1);
                 obj.env.plot(ax1);
                 ax2 = subplot(1, 2, 2);
-                xlabel(ax1, 'States'); ylabel(ax1, 'Actions');
+                xlabel(ax2, 'States'); ylabel(ax2, 'Actions');
             end
             % Iterate on episodes
             for e = 1 : obj.nEpisodes
@@ -75,6 +75,12 @@ classdef TempDiffLambda
                     sts = s;
                     rects = obj.env.plotPath(ax1, sts);
                     arrs = obj.env.plotPolicy(ax1, obj.pi);
+                    hb = bar3(ax2, E);
+                    for k = 1:length(hb)
+                        hb(k).CData = hb(k).ZData;
+                        hb(k).FaceColor = 'interp';
+                    end
+                    pause();
                 end
                 % Generate the episode
                 while (~ismember(s, obj.env.obstStates) && ...
@@ -93,19 +99,18 @@ classdef TempDiffLambda
                         % Accumulating traces
                         E(s, a) = E(s, a) + 1;
                     elseif (eleg == 2)
-                        % Replacing trace
+                        % Replacing traces
                         E(s, a) = 1;
                     else
-                        % Dutch trace
+                        % Dutch traces
+                        % alpha = 0 -> Accumulating traces
+                        % alpha = 1 -> Replacing traces
                         E(s, a) = (1 - obj.alpha) * E(s, a) + 1;
                     end
                     % Update the state-action value function
                     obj.Q = obj.Q + obj.alpha * delta * E;
                     % Update the state value function and the policy
                     [obj.V(s), obj.pi(s)] = max(obj.Q(s, :));
-                    % Set the state and the action for the next episode
-                    s = sp;
-                    a = ap;
                     % Plot the episode step and the changes of the
                     % eligibilty traces
                     if (obj.SHOW)
@@ -120,6 +125,9 @@ classdef TempDiffLambda
                         end
                         pause();
                     end
+                    % Set the state and the action for the next episode
+                    s = sp;
+                    a = ap;
                 end
                 % Clear old episode
                 if (obj.SHOW)
@@ -136,7 +144,7 @@ classdef TempDiffLambda
                 ax1 = subplot(1, 2, 1);
                 obj.env.plot(ax1);
                 ax2 = subplot(1, 2, 2);
-                xlabel(ax1, 'States'); ylabel(ax1, 'Actions');
+                xlabel(ax2, 'States'); ylabel(ax2, 'Actions');
             end
             % Iterate on episodes
             for e = 1 : obj.nEpisodes
@@ -151,6 +159,12 @@ classdef TempDiffLambda
                     sts = s;
                     rects = obj.env.plotPath(ax1, sts);
                     arrs = obj.env.plotPolicy(ax1, obj.pi);
+                    hb = bar3(ax2, E);
+                    for k = 1:length(hb)
+                        hb(k).CData = hb(k).ZData;
+                        hb(k).FaceColor = 'interp';
+                    end
+                    pause();
                 end
                 % Generate the episode
                 while (~ismember(s, obj.env.obstStates) && ...
@@ -165,29 +179,23 @@ classdef TempDiffLambda
                     [Qbest, abest] = max(obj.Q(sp, :));
                     delta = r + obj.gamma * Qbest - obj.Q(s, a);
                     % Update the eligibility traces
-                    E = obj.gamma * E;
+                    E = obj.gamma * obj.lambda * E;
                     if (eleg == 1)
                         % Accumulating traces
                         E(s, a) = E(s, a) + 1;
                     elseif (eleg == 2)
-                        % Replacing trace
+                        % Replacing traces
                         E(s, a) = 1;
                     else
-                        % Dutch trace
+                        % Dutch traces
+                        % alpha = 0 -> Accumulating traces
+                        % alpha = 1 -> Replacing traces
                         E(s, a) = (1 - obj.alpha) * E(s, a) + 1;
                     end
                     % Update the state-action value function
                     obj.Q = obj.Q + obj.alpha * delta * E;
                     % Update the state value function and the policy
                     [obj.V(s), obj.pi(s)] = max(obj.Q(s, :));
-                    %
-                    if (ap ~= abest)
-                        %
-                        E = zeros(obj.env.nStates, obj.env.nActions);
-                    end
-                    % Set the state and the action for the next episode
-                    s = sp;
-                    a = ap;
                     % Plot the episode step and the changes of the
                     % eligibilty traces
                     if (obj.SHOW)
@@ -202,6 +210,14 @@ classdef TempDiffLambda
                         end
                         pause();
                     end
+                    % Check if the next action is exploratory
+                    if (ap ~= abest)
+                        % Reset eligibility traces
+                        E = zeros(obj.env.nStates, obj.env.nActions);
+                    end
+                    % Set the state and the action for the next episode
+                    s = sp;
+                    a = ap;
                 end
                 % Clear old episode
                 if (obj.SHOW)
