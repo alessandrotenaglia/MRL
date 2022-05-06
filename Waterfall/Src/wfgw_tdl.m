@@ -20,25 +20,29 @@ else
 end
 
 %% Temporal Difference Lambda params
-alpha = 0.01;
 eps = 0.1;
 gamma = 1.0;
-lambda = 0.9;
-nEpisodes = 1e2;
+nEpisodes = 1e3;
 
 % SARSA
-SARSA_0 = TempDiffLambda(wfgw, alpha, eps, gamma, 0, nEpisodes);
+alpha = 0.1;
+lambda = 0;
+SARSA_0 = TempDiffLambda(wfgw, alpha, eps, gamma, lambda, nEpisodes);
 
 % SARSA Eligibility traces
-SARSA_lambda = TempDiffLambda(wfgw, alpha, eps, gamma, lambda, ...
-    nEpisodes);
+alpha = 0.01;
+lambda = 0.5;
+SARSA_lambda = TempDiffLambda(wfgw, alpha, eps, gamma, lambda, nEpisodes);
 
 % Q-Learning
-QL_0 = TempDiffLambda(wfgw, alpha, eps, gamma, 0, nEpisodes);
+alpha = 0.1;
+lambda = 0;
+QL_0 = TempDiffLambda(wfgw, alpha, eps, gamma, lambda, nEpisodes);
 
 % Q-Learning Eligibility traces
-QL_lambda = TempDiffLambda(wfgw, alpha, eps, gamma, lambda, ...
-    nEpisodes);
+alpha = 0.1;
+lambda = 0.2;
+QL_lambda = TempDiffLambda(wfgw, alpha, eps, gamma, lambda, nEpisodes);
 
 %% SARSA vs QL : Accumulating vs Replacing vs Dutch traces
 % Plots

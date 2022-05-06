@@ -5,11 +5,11 @@
 %  Email: alessandro.tenaglia@uniroma2.it  %
 % ---------------------------------------- %
 
-% Temporal Difference algorithms
+% Temporal Difference Lambda algorithms
 classdef TempDiffLambda
 
     properties (Constant)
-        SHOW = false;
+        SHOW = false;  % Flag to show plots
     end
 
     properties
@@ -75,10 +75,10 @@ classdef TempDiffLambda
                     sts = s;
                     rects = obj.env.plotPath(ax1, sts);
                     arrs = obj.env.plotPolicy(ax1, obj.pi);
-                    hb = bar3(ax2, E);
-                    for k = 1:length(hb)
-                        hb(k).CData = hb(k).ZData;
-                        hb(k).FaceColor = 'interp';
+                    het = bar3(ax2, E);
+                    for k = 1:length(het)
+                        het(k).CData = het(k).ZData;
+                        het(k).FaceColor = 'interp';
                     end
                     pause();
                 end
@@ -115,13 +115,13 @@ classdef TempDiffLambda
                     % eligibilty traces
                     if (obj.SHOW)
                         delete(rects); delete(arrs);
-                        sts = [sts, sp];
+                        sts = [sts, s];
                         rects = obj.env.plotPath(ax1, sts);
                         arrs = obj.env.plotPolicy(ax1, obj.pi);
-                        hb = bar3(ax2, E);
-                        for k = 1:length(hb)
-                            hb(k).CData = hb(k).ZData;
-                            hb(k).FaceColor = 'interp';
+                        het = bar3(ax2, E);
+                        for k = 1:length(het)
+                            het(k).CData = het(k).ZData;
+                            het(k).FaceColor = 'interp';
                         end
                         pause();
                     end
@@ -210,7 +210,7 @@ classdef TempDiffLambda
                         end
                         pause();
                     end
-                    %
+                    % Check if the next action is exploratory
                     if (ap ~= abest)
                         % Reset eligibility traces
                         E = zeros(obj.env.nStates, obj.env.nActions);
