@@ -12,10 +12,10 @@ nX = 7;
 nY = 8;
 moves = 'kings';
 initCells = [1; 5];
-termCells = [6; 5];
+termCells = [nX; 5];
 obstCells = [1:nX; ones(1, nX)];
-wind = [0 0 -2 -2 -1 -1 0];
-wfgw = WindyGridWorld(nX, nY, moves, initCells, termCells, obstCells, wind);
+wind = [0 1 2 2 2 1 0];
+wfgw = WaterfallGridWorld(nX, nY, moves, initCells, termCells, obstCells, wind);
 % Plot the Grid World
 figure(); ax = axes('Parent', gcf);
 wfgw.plot(ax);

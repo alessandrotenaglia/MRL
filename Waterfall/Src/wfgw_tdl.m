@@ -20,27 +20,24 @@ else
 end
 
 %% Temporal Difference Lambda params
+alpha = 0.1;
 eps = 0.1;
 gamma = 1.0;
-nEpisodes = 1e3;
+nEpisodes = 5e1;
 
 % SARSA
-alpha = 0.1;
 lambda = 0;
 SARSA_0 = TempDiffLambda(wfgw, alpha, eps, gamma, lambda, nEpisodes);
 
 % SARSA Eligibility traces
-alpha = 0.01;
-lambda = 0.5;
+lambda = 0.2;
 SARSA_lambda = TempDiffLambda(wfgw, alpha, eps, gamma, lambda, nEpisodes);
 
 % Q-Learning
-alpha = 0.1;
 lambda = 0;
-QL_0 = TempDiffLambda(wfgw, alpha, eps, gamma, lambda, nEpisodes);
+QL_0 = TempDiffLambda(wfgw, alpha,eps, gamma, lambda, nEpisodes);
 
 % Q-Learning Eligibility traces
-alpha = 0.1;
 lambda = 0.2;
 QL_lambda = TempDiffLambda(wfgw, alpha, eps, gamma, lambda, nEpisodes);
 
@@ -81,7 +78,7 @@ for r = 1 : nRepetitions
         r, nRepetitions, r*nEpisodes));
 
     % SARSA
-    SARSA_0 = SARSA_0.SARSALambda(1);
+    SARSA_0 = SARSA_0.SARSALambda(2);
     % Delete old plots
     delete(sarsa_rects); delete(sarsa_arrs);
     % Plot SARSA optimal policy
@@ -89,7 +86,7 @@ for r = 1 : nRepetitions
     sarsa_arrs = wfgw.plotPolicy(ax1, SARSA_0.pi);
 
     % SARSA Eligibility traces
-    SARSA_lambda = SARSA_lambda.SARSALambda(1);
+    SARSA_lambda = SARSA_lambda.SARSALambda(2);
     % Delete old plots
     delete(sarsa_et_rects); delete(sarsa_et_arrs);
     % Plot SARSA Lambda optimal policy
@@ -97,7 +94,7 @@ for r = 1 : nRepetitions
     sarsa_et_arrs = wfgw.plotPolicy(ax2, SARSA_lambda.pi);
 
     % QL
-    QL_0 = QL_0.QLambda(1);
+    QL_0 = QL_0.QLambda(2);
     % Delete old plots
     delete(ql_rects); delete(ql_arrs);
     % Plot QL optimal policy
@@ -105,7 +102,7 @@ for r = 1 : nRepetitions
     ql_arrs = wfgw.plotPolicy(ax3, QL_0.pi);
 
     % QL Eligibility traces
-    QL_lambda = QL_lambda.QLambda(1);
+    QL_lambda = QL_lambda.QLambda(2);
     % Delete old plots
     delete(ql_et_rects); delete(ql_et_arrs);
     % Plot QL Lambda optimal policy

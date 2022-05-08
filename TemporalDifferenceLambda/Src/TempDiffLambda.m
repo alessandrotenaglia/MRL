@@ -57,24 +57,28 @@ classdef TempDiffLambda
             % Create the figure
             if (obj.SHOW)
                 figure();
+                % Environment subfigure
                 ax1 = subplot(1, 2, 1);
                 obj.env.plot(ax1);
+                % Eligibility traces subfigure
                 ax2 = subplot(1, 2, 2);
                 xlabel(ax2, 'States'); ylabel(ax2, 'Actions');
             end
             % Iterate on episodes
             for e = 1 : obj.nEpisodes
-                % Initialize eligibility traces
-                E = zeros(obj.env.nStates, obj.env.nActions);
                 % Generate a randomic initial state
                 s = obj.env.initStates(randi(numel(obj.env.initStates)));
                 % Choose the initial action using the epsilon-greedy method
                 a = epsGreedy(obj, s);
+                % Initialize eligibility traces
+                E = zeros(obj.env.nStates, obj.env.nActions);
                 % Plot initial data
                 if (obj.SHOW)
+                    % Environment subfigure
                     sts = s;
                     rects = obj.env.plotPath(ax1, sts);
                     arrs = obj.env.plotPolicy(ax1, obj.pi);
+                    % Eligibility traces subfigure
                     het = bar3(ax2, E);
                     for k = 1:length(het)
                         het(k).CData = het(k).ZData;
@@ -90,11 +94,7 @@ classdef TempDiffLambda
                     % Choose the next action using the epsilon-greedy
                     % method
                     ap = epsGreedy(obj, sp);
-                    % Compute the error based on the next state AND
-                    % the next action
-                    delta = r + obj.gamma * obj.Q(sp, ap) - obj.Q(s, a);
-                    % Update the eligibility traces
-                    E = obj.gamma * obj.lambda * E;
+                    % Update the eligibility trace of the state-action pair
                     if (eleg == 1)
                         % Accumulating traces
                         E(s, a) = E(s, a) + 1;
@@ -107,6 +107,9 @@ classdef TempDiffLambda
                         % alpha = 1 -> Replacing traces
                         E(s, a) = (1 - obj.alpha) * E(s, a) + 1;
                     end
+                    % Compute the error based on the next state AND
+                    % the next action
+                    delta = r + obj.gamma * obj.Q(sp, ap) - obj.Q(s, a);
                     % Update the state-action value function
                     obj.Q = obj.Q + obj.alpha * delta * E;
                     % Update the state value function and the policy
@@ -114,10 +117,12 @@ classdef TempDiffLambda
                     % Plot the episode step and the changes of the
                     % eligibilty traces
                     if (obj.SHOW)
+                        % Environment subfigure
                         delete(rects); delete(arrs);
                         sts = [sts, s];
                         rects = obj.env.plotPath(ax1, sts);
                         arrs = obj.env.plotPolicy(ax1, obj.pi);
+                        % Eligibility traces subfigure
                         het = bar3(ax2, E);
                         for k = 1:length(het)
                             het(k).CData = het(k).ZData;
@@ -128,6 +133,8 @@ classdef TempDiffLambda
                     % Set the state and the action for the next episode
                     s = sp;
                     a = ap;
+                    % Decrease the eligibility traces
+                    E = obj.gamma * obj.lambda * E;
                 end
                 % Clear old episode
                 if (obj.SHOW)
@@ -141,28 +148,32 @@ classdef TempDiffLambda
             % Create the figure
             if (obj.SHOW)
                 figure();
+                % Environment subfigure
                 ax1 = subplot(1, 2, 1);
                 obj.env.plot(ax1);
+                % Eligibility traces subfigure
                 ax2 = subplot(1, 2, 2);
                 xlabel(ax2, 'States'); ylabel(ax2, 'Actions');
             end
             % Iterate on episodes
             for e = 1 : obj.nEpisodes
-                % Initialize eligibility traces
-                E = zeros(obj.env.nStates, obj.env.nActions);
                 % Generate a randomic initial state
                 s = obj.env.initStates(randi(numel(obj.env.initStates)));
                 % Choose the initial action using the epsilon-greedy method
                 a = epsGreedy(obj, s);
+                % Initialize eligibility traces
+                E = zeros(obj.env.nStates, obj.env.nActions);
                 % Plot initial data
                 if (obj.SHOW)
+                    % Environment subfigure
                     sts = s;
                     rects = obj.env.plotPath(ax1, sts);
                     arrs = obj.env.plotPolicy(ax1, obj.pi);
-                    hb = bar3(ax2, E);
-                    for k = 1:length(hb)
-                        hb(k).CData = hb(k).ZData;
-                        hb(k).FaceColor = 'interp';
+                    % Eligibility traces subfigure
+                    het = bar3(ax2, E);
+                    for k = 1:length(het)
+                        het(k).CData = het(k).ZData;
+                        het(k).FaceColor = 'interp';
                     end
                     pause();
                 end
@@ -174,12 +185,7 @@ classdef TempDiffLambda
                     % Choose the next action using the epsilon-greedy
                     % method
                     ap = epsGreedy(obj, sp);
-                    % Compute the new estimate based on the next state AND
-                    % the best action
-                    [Qbest, abest] = max(obj.Q(sp, :));
-                    delta = r + obj.gamma * Qbest - obj.Q(s, a);
                     % Update the eligibility traces
-                    E = obj.gamma * obj.lambda * E;
                     if (eleg == 1)
                         % Accumulating traces
                         E(s, a) = E(s, a) + 1;
@@ -192,6 +198,10 @@ classdef TempDiffLambda
                         % alpha = 1 -> Replacing traces
                         E(s, a) = (1 - obj.alpha) * E(s, a) + 1;
                     end
+                    % Compute the new estimate based on the next state AND
+                    % the best action
+                    [Qbest, abest] = max(obj.Q(sp, :));
+                    delta = r + obj.gamma * Qbest - obj.Q(s, a);
                     % Update the state-action value function
                     obj.Q = obj.Q + obj.alpha * delta * E;
                     % Update the state value function and the policy
@@ -199,25 +209,30 @@ classdef TempDiffLambda
                     % Plot the episode step and the changes of the
                     % eligibilty traces
                     if (obj.SHOW)
+                        % Environment subfigure
                         delete(rects); delete(arrs);
-                        sts = [sts, sp];
+                        sts = [sts, s];
                         rects = obj.env.plotPath(ax1, sts);
                         arrs = obj.env.plotPolicy(ax1, obj.pi);
-                        hb = bar3(ax2, E);
-                        for k = 1:length(hb)
-                            hb(k).CData = hb(k).ZData;
-                            hb(k).FaceColor = 'interp';
+                        % Eligibility traces subfigure
+                        het = bar3(ax2, E);
+                        for k = 1:length(het)
+                            het(k).CData = het(k).ZData;
+                            het(k).FaceColor = 'interp';
                         end
                         pause();
-                    end
-                    % Check if the next action is exploratory
-                    if (ap ~= abest)
-                        % Reset eligibility traces
-                        E = zeros(obj.env.nStates, obj.env.nActions);
                     end
                     % Set the state and the action for the next episode
                     s = sp;
                     a = ap;
+                    % Check if the next action is exploratory
+                    if (ap == abest)
+                        % Decrease the eligibility traces
+                        E = obj.gamma * obj.lambda * E;
+                    else
+                        % Reset the eligibility traces
+                        E = zeros(obj.env.nStates, obj.env.nActions);
+                    end
                 end
                 % Clear old episode
                 if (obj.SHOW)
