@@ -23,7 +23,7 @@ end
 alpha = 0.1;
 eps = 0.1;
 gamma = 1.0;
-nEpisodes = 1e2;
+nEpisodes = 1e1;
 
 % Q-Learning Eligibility traces
 QL = TempDiff(maze, alpha, eps, gamma, nEpisodes);
@@ -53,7 +53,6 @@ title('DynaQ+');
 maze.plot(ax2);
 rects_plus = maze.plotPath(ax2, maze.run(0, DynaPlus.pi));
 arrs_plus = maze.plotPolicy(ax2, DynaPlus.pi);
-pause;
 % DynaQ Priorized subfigure
 ax3 = subplot(1, 3, 3);
 title('DynaQ Priorized');
@@ -86,13 +85,13 @@ for r = 1 : nRepetitions
     rects_plus = maze.plotPath(ax2, maze.run(0, DynaPlus.pi));
     arrs_plus = maze.plotPolicy(ax2, DynaPlus.pi);
 
-    % DynaQ
-    DynaPrio = DynaPrio.dyna();
-    % Delete old plots
-    delete(rects_prio); delete(arrs_prio);
-    % Plot Epsilon greedy optimal policy
-    rects_prio = maze.plotPath(ax2, maze.run(0, DynaPrio.pi));
-    arrs_prio = maze.plotPolicy(ax2, DynaPrio.pi);
+%     % DynaQ
+%     DynaPrio = DynaPrio.dyna();
+%     % Delete old plots
+%     delete(rects_prio); delete(arrs_prio);
+%     % Plot Epsilon greedy optimal policy
+%     rects_prio = maze.plotPath(ax2, maze.run(0, DynaPrio.pi));
+%     arrs_prio = maze.plotPolicy(ax2, DynaPrio.pi);
 
     % Force drawing
     drawnow

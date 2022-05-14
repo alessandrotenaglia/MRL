@@ -26,7 +26,7 @@ classdef DynaQprio
 
     methods
         % Class constructor
-        function obj = DynaQplus(env, alpha, eps, gamma, theta, nEpisodes)
+        function obj = DynaQprio(env, alpha, eps, gamma, theta, nEpisodes)
             % Set properties
             obj.env = env;
             obj.alpha = alpha;
@@ -40,8 +40,8 @@ classdef DynaQprio
             obj.Q = zeros(env.nStates, env.nActions);
             obj.P = zeros(env.nStates, env.nActions);
             obj.R = zeros(env.nStates, env.nActions);
+            obj.I = cell(env.nStates, 1);
             obj.PQ = PriorityQueue(2);
-            obj.ED = cell(env.nStates, 1);
         end
 
         % Choose the action using the epsilon-greedy method
@@ -51,7 +51,7 @@ classdef DynaQprio
                 a = randi(obj.env.nActions);
             else
                 % Greedy choice (prob = 1-eps)
-                [~, a] = obj.pi(s);
+                a = obj.pi(s);
             end
         end
 
@@ -72,18 +72,20 @@ classdef DynaQprio
                     obj.P(s, a) = sp;
                     obj.R(s, a) = r;
                     % Add the edge
-                    if (~ismember([s a], obj.I{sp}, 'rows'))
+                    if (isempty(obj.I{sp}) || ~ismember([s a], obj.I{sp}, 'rows'))
                         % Add the edge
                         obj.I{s} = [obj.I{s}; s a];
                     end
-                    % 
+                    %
                     prio = abs(r + obj.gamma * max(obj.Q(sp, :)) - obj.Q(s, a));
+                    %
                     if (prio > obj.theta)
-                        obj.PQ = obj.PQ.push(prio, [s; a]);
+                        % Add the pair to the priority queue
+                        obj.PQ = obj.PQ.push(prio, [s a]);
                     end
                     %
                     while (obj.PQ.nElems > 0)
-                        pair = obj.PQ.pop();
+                        [obj.PQ, pair] = obj.PQ.pop();
                         sl = pair(1);
                         al = pair(2);
                         spl = obj.P(sl, al);
@@ -93,6 +95,8 @@ classdef DynaQprio
                         Qest = rl + obj.gamma * max(obj.Q(spl, :));
                         obj.Q(sl, al) = obj.Q(sl, al) + ...
                             obj.alpha * (Qest - obj.Q(sl, al));
+                        % Update the state value function and the policy
+                        [obj.V(sl), obj.pi(sl)] = max(obj.Q(sl, :));
                         %
                         pairs = obj.I{sl};
                         for p = 1 : size(pairs, 1)
@@ -101,13 +105,13 @@ classdef DynaQprio
                             rpre = obj.R(spre, apre);
                             %
                             prio = abs(rpre + obj.gamma * max(obj.Q(sl, :)) - obj.Q(spre, apre));
+                            %
                             if (prio > obj.theta)
-                                obj.PQ = obj.PQ.push(prio, [s; a]);
+                                %
+                                obj.PQ = obj.PQ.push(prio, [spre apre]);
                             end
                         end
                     end
-                    % Update the state value function and the policy
-                    [obj.V(s), obj.pi(s)] = max(obj.Q(s, :));
                     % Set the state for the next episode
                     s = sp;
                 end
