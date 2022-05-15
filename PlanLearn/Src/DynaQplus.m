@@ -19,7 +19,7 @@ classdef DynaQplus
         pi;         % Current policy
         V;          % Current state value function
         Q;          % Current state-action value function
-        P;          % Transition matrix
+        Pdet;       % Tansition matrix of a sample model
         R;          % Reward matrix
         tau;        % Number of times a pair has been visited
     end
@@ -39,7 +39,7 @@ classdef DynaQplus
             obj.pi = randi(env.nActions, env.nStates, 1);
             obj.V = zeros(env.nStates, 1);
             obj.Q = zeros(env.nStates, env.nActions);
-            obj.P = zeros(env.nStates, env.nActions);
+            obj.Pdet = zeros(env.nStates, env.nActions);
             obj.R = zeros(env.nStates, env.nActions);
             obj.tau = zeros(env.nStates, env.nActions);
         end
@@ -73,8 +73,10 @@ classdef DynaQplus
                     Qest = r + obj.gamma * max(obj.Q(sp, :));
                     obj.Q(s, a) = obj.Q(s, a) + ...
                         obj.alpha * (Qest - obj.Q(s, a));
+                    % Update the state value function and the policy
+                    [obj.V(s), obj.pi(s)] = max(obj.Q(s, :));
                     % Update internal model
-                    obj.P(s, a) = sp;
+                    obj.Pdet(s, a) = sp;
                     obj.R(s, a) = r;
                     % Increment non-visited pair
                     obj.tau = obj.tau + 1;
@@ -82,20 +84,20 @@ classdef DynaQplus
                     % Planning loops
                     for it = 1 : obj.N
                         % Choose randomly a previously visited pair
-                        [idxs, idxa] = find(obj.P ~= 0);
+                        [idxs, idxa] = find(obj.Pdet ~= 0);
                         rnd = randi(length(idxs));
                         sl = idxs(rnd);
                         al = idxa(rnd);
-                        spl = obj.P(sl, al);
+                        spl = obj.Pdet(sl, al);
                         rl = obj.R(sl, al);
                         % Update the state-action value function using
                         % Q-learning algorithm
                         Qest = rl + obj.gamma * max(obj.Q(spl, :));
                         obj.Q(sl, al) = obj.Q(sl, al) + ...
                             obj.alpha * (Qest - obj.Q(sl, al));
+                        % Update the state value function and the policy
+                        [obj.V(sl), obj.pi(sl)] = max(obj.Q(sl, :));
                     end
-                    % Update the state value function and the policy
-                    [obj.V(s), obj.pi(s)] = max(obj.Q(s, :));
                     % Set the state for the next episode
                     s = sp;
                 end

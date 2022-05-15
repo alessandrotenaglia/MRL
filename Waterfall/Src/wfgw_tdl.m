@@ -1,5 +1,5 @@
 % ---------------------------------------- %
-%  File: wfgw_td.m                         %
+%  File: wfgw_tdl.m                        %
 %  Date: April 14, 2022                    %
 %  Author: Alessandro Tenaglia             %
 %  Email: alessandro.tenaglia@uniroma2.it  %

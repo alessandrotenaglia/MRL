@@ -18,7 +18,7 @@ classdef DynaQprio
         pi;         % Current policy
         V;          % Current state value function
         Q;          % Current state-action value function
-        P;          % Transition matrix
+        Pdet;          % Transition matrix
         R;          % Reward matrix
         I;          % Pairs
         PQ;         % Priority Queue
@@ -38,7 +38,7 @@ classdef DynaQprio
             obj.pi = randi(env.nActions, env.nStates, 1);
             obj.V = zeros(env.nStates, 1);
             obj.Q = zeros(env.nStates, env.nActions);
-            obj.P = zeros(env.nStates, env.nActions);
+            obj.Pdet = zeros(env.nStates, env.nActions);
             obj.R = zeros(env.nStates, env.nActions);
             obj.I = cell(env.nStates, 1);
             obj.PQ = PriorityQueue(2);
@@ -69,26 +69,29 @@ classdef DynaQprio
                     % Execute a step
                     [sp, r] = obj.env.step(s, a);
                     % Update internal model
-                    obj.P(s, a) = sp;
+                    obj.Pdet(s, a) = sp;
                     obj.R(s, a) = r;
-                    % Add the edge
-                    if (isempty(obj.I{sp}) || ~ismember([s a], obj.I{sp}, 'rows'))
-                        % Add the edge
-                        obj.I{s} = [obj.I{s}; s a];
+                    % Check if the pair is already stored
+                    if (isempty(obj.I{sp}) || ...
+                            ~ismember([s a], obj.I{sp}, 'rows'))
+                        % Add the pair
+                        obj.I{sp} = [obj.I{sp}; s a];
                     end
-                    %
-                    prio = abs(r + obj.gamma * max(obj.Q(sp, :)) - obj.Q(s, a));
-                    %
+                    % Compute the pair priority as the QL error
+                    prio = abs(r + obj.gamma * max(obj.Q(sp, :)) ...
+                        - obj.Q(s, a));
+                    % Check if the priority is higher than the threashold
                     if (prio > obj.theta)
                         % Add the pair to the priority queue
                         obj.PQ = obj.PQ.push(prio, [s a]);
                     end
-                    %
+                    % Iterate until the queue is empty
                     while (obj.PQ.nElems > 0)
+                        % Pop the first element
                         [obj.PQ, pair] = obj.PQ.pop();
                         sl = pair(1);
                         al = pair(2);
-                        spl = obj.P(sl, al);
+                        spl = obj.Pdet(sl, al);
                         rl = obj.R(sl, al);
                         % Update the state-action value function using
                         % Q-learning algorithm
@@ -97,17 +100,19 @@ classdef DynaQprio
                             obj.alpha * (Qest - obj.Q(sl, al));
                         % Update the state value function and the policy
                         [obj.V(sl), obj.pi(sl)] = max(obj.Q(sl, :));
-                        %
+                        % Iterate on stored pairs
                         pairs = obj.I{sl};
                         for p = 1 : size(pairs, 1)
                             spre = pairs(p, 1);
                             apre = pairs(p, 2);
                             rpre = obj.R(spre, apre);
-                            %
-                            prio = abs(rpre + obj.gamma * max(obj.Q(sl, :)) - obj.Q(spre, apre));
-                            %
+                            % Compute the pair priority as the QL error
+                            prio = abs(rpre + obj.gamma * max(obj.Q(sl, :)) ...
+                                - obj.Q(spre, apre));
+                            % Check if the priority is higher than 
+                            % the threashold
                             if (prio > obj.theta)
-                                %
+                                % Add the pair to the priority queue
                                 obj.PQ = obj.PQ.push(prio, [spre apre]);
                             end
                         end

@@ -85,13 +85,13 @@ for r = 1 : nRepetitions
     rects_plus = maze.plotPath(ax2, maze.run(0, DynaPlus.pi));
     arrs_plus = maze.plotPolicy(ax2, DynaPlus.pi);
 
-%     % DynaQ
-%     DynaPrio = DynaPrio.dyna();
-%     % Delete old plots
-%     delete(rects_prio); delete(arrs_prio);
-%     % Plot Epsilon greedy optimal policy
-%     rects_prio = maze.plotPath(ax2, maze.run(0, DynaPrio.pi));
-%     arrs_prio = maze.plotPolicy(ax2, DynaPrio.pi);
+    % DynaQ
+    DynaPrio = DynaPrio.dyna();
+    % Delete old plots
+    delete(rects_prio); delete(arrs_prio);
+    % Plot Epsilon greedy optimal policy
+    rects_prio = maze.plotPath(ax3, maze.run(0, DynaPrio.pi));
+    arrs_prio = maze.plotPolicy(ax3, DynaPrio.pi);
 
     % Force drawing
     drawnow
