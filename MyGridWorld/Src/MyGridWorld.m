@@ -87,12 +87,12 @@ classdef MyGridWorld
         function [sp, r] = step(obj, s, a)
             % Check the nature of the state
             if (ismember(s, obj.termStates))
-                % If it's a terminal state, the state dosn't change and ...
+                % If it's a terminal state, the state doesn't change and
                 % the reward is 0
                 sp = s;
                 r = 0;
             elseif (ismember(s, obj.obstStates))
-                % If it's an obstacle, the state dosn't change and ...
+                % If it's an obstacle, the state doesn't change and
                 % the reward is -1e6
                 sp = s;
                 r = -1e6;
@@ -111,14 +111,14 @@ classdef MyGridWorld
                     % If it's an obstacle, the reward is -1e6
                     r = -1e6;
                 else
-                    % If it's not an obstacle, the reward is the ...
+                    % If it's not an obstacle, the reward is the
                     % distance traveled
-                    r = -vecnorm([dx, dy]);
+                    r = -1;
                 end
             end
         end
 
-        % Run an episode following a determinitic policy
+        % Run an episode following a deterministic policy
         function sts = run(obj, s0, policy)
             % Set initial state
             if (s0 < 1 || s0 > obj.nStates)
