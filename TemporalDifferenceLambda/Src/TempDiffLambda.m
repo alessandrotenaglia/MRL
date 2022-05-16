@@ -133,7 +133,7 @@ classdef TempDiffLambda
                     % Set the state and the action for the next episode
                     s = sp;
                     a = ap;
-                    % Decrease the eligibility traces
+                    % Decrement the eligibility traces
                     E = obj.gamma * obj.lambda * E;
                 end
                 % Clear old episode
@@ -227,7 +227,7 @@ classdef TempDiffLambda
                     a = ap;
                     % Check if the next action is exploratory
                     if (ap == abest)
-                        % Decrease the eligibility traces
+                        % Decrement the eligibility traces
                         E = obj.gamma * obj.lambda * E;
                     else
                         % Reset the eligibility traces

@@ -23,7 +23,7 @@ end
 alpha = 0.1;
 eps = 0.1;
 gamma = 1.0;
-nEpisodes = 5e1;
+nEpisodes = 2e1;
 
 % SARSA
 lambda = 0;
@@ -68,6 +68,7 @@ title('QL Eligibility traces');
 wfgw.plot(ax4);
 ql_et_rects = wfgw.plotPath(ax4, wfgw.run(0, QL_lambda.pi));
 ql_et_arrs = wfgw.plotPolicy(ax4, QL_lambda.pi);
+pause;
 
 % Iterate on repetitions
 nRepetitions = 1e2;
