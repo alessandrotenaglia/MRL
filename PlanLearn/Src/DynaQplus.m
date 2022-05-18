@@ -5,8 +5,12 @@
 %  Email: alessandro.tenaglia@uniroma2.it  %
 % ---------------------------------------- %
 
-% Temporal Difference algorithms
+% Dyna-Q+ algorithm
 classdef DynaQplus
+
+    properties (Constant)
+        SHOW = false;  % Flag to show plots
+    end
 
     properties
         env;        % Environment
@@ -57,10 +61,25 @@ classdef DynaQplus
 
         % Dyna-Q+ algorithm
         function obj = dyna(obj)
+            % Create the figure
+            if (obj.SHOW)
+                figure();
+                ax1 = subplot(1, 2, 1);
+                obj.env.plot(ax1);
+                ax2 = subplot(1, 2, 2);
+                obj.env.plot(ax2);
+            end
             % Iterate on episodes
             for e = 1 : obj.nEpisodes
                 % Generate a randomic initial state
                 s = obj.env.initStates(randi(numel(obj.env.initStates)));
+                % Plot initial data
+                if (obj.SHOW)
+                    sts = s;
+                    rects1 = obj.env.plotPath(ax1, sts);
+                    arrs1 = obj.env.plotPolicy(ax1, obj.pi);
+                    arrs2 = obj.env.plotPolicy(ax2, obj.pi);
+                end
                 % Generate the episode
                 while (~ismember(s, obj.env.obstStates) && ...
                         ~ismember(s, obj.env.termStates))
@@ -75,6 +94,14 @@ classdef DynaQplus
                         obj.alpha * (Qest - obj.Q(s, a));
                     % Update the state value function and the policy
                     [obj.V(s), obj.pi(s)] = max(obj.Q(s, :));
+                    % SHOW: Update the figure
+                    if (obj.SHOW)
+                        delete(rects1); delete(arrs1);
+                        sts = [sts, sp];
+                        rects1 = obj.env.plotPath(ax1, sts);
+                        arrs1 = obj.env.plotPolicy(ax1, obj.pi);
+                        pause(.1);
+                    end
                     % Update internal model
                     obj.Pdet(s, a) = sp;
                     obj.R(s, a) = r;
@@ -97,9 +124,21 @@ classdef DynaQplus
                             obj.alpha * (Qest - obj.Q(sl, al));
                         % Update the state value function and the policy
                         [obj.V(sl), obj.pi(sl)] = max(obj.Q(sl, :));
+                        % SHOW: Update the figure
+                        if (obj.SHOW)
+                            delete(arrs2);
+                            rects2 = obj.env.plotPath(ax2, [sl, spl]);
+                            arrs2 = obj.env.plotPolicy(ax2, obj.pi);
+                            drawnow;
+                            delete(rects2)
+                        end
                     end
                     % Set the state for the next episode
                     s = sp;
+                end
+                % Clear old episode
+                if (obj.SHOW)
+                    delete(rects1); delete(arrs1); delete(arrs2);
                 end
             end
         end

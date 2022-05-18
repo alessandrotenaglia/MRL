@@ -8,6 +8,10 @@
 % Temporal Difference algorithms
 classdef DynaQprio
 
+    properties (Constant)
+        SHOW = true;  % Flag to show plots
+    end
+
     properties
         env;        % Environment
         alpha;      % Step size
@@ -57,10 +61,25 @@ classdef DynaQprio
 
         % Dyna-Q Priorized algorithm
         function obj = dyna(obj)
+            % Create the figure
+            if (obj.SHOW)
+                figure();
+                ax1 = subplot(1, 2, 1);
+                obj.env.plot(ax1);
+                ax2 = subplot(1, 2, 2);
+                obj.env.plot(ax2);
+            end
             % Iterate on episodes
             for e = 1 : obj.nEpisodes
                 % Generate a randomic initial state
                 s = obj.env.initStates(randi(numel(obj.env.initStates)));
+                % Plot initial data
+                if (obj.SHOW)
+                    sts = s;
+                    rects1 = obj.env.plotPath(ax1, sts);
+                    arrs1 = obj.env.plotPolicy(ax1, obj.pi);
+                    arrs2 = obj.env.plotPolicy(ax2, obj.pi);
+                end
                 % Generate the episode
                 while (~ismember(s, obj.env.obstStates) && ...
                         ~ismember(s, obj.env.termStates))
@@ -68,6 +87,14 @@ classdef DynaQprio
                     a = epsGreedy(obj, s);
                     % Execute a step
                     [sp, r] = obj.env.step(s, a);
+                    % SHOW: Update the figure
+                    if (obj.SHOW)
+                        delete(rects1); delete(arrs1);
+                        sts = [sts, sp];
+                        rects1 = obj.env.plotPath(ax1, sts);
+                        arrs1 = obj.env.plotPolicy(ax1, obj.pi);
+                        pause(.1);
+                    end
                     % Update internal model
                     obj.Pdet(s, a) = sp;
                     obj.R(s, a) = r;
@@ -100,6 +127,14 @@ classdef DynaQprio
                             obj.alpha * (Qest - obj.Q(sl, al));
                         % Update the state value function and the policy
                         [obj.V(sl), obj.pi(sl)] = max(obj.Q(sl, :));
+                        % SHOW: Update the figure
+                        if (obj.SHOW)
+                            delete(arrs2);
+                            rects2 = obj.env.plotPath(ax2, [sl, spl]);
+                            arrs2 = obj.env.plotPolicy(ax2, obj.pi);
+                            drawnow;
+                            delete(rects2)
+                        end
                         % Iterate on stored pairs
                         pairs = obj.I{sl};
                         for p = 1 : size(pairs, 1)
@@ -119,6 +154,10 @@ classdef DynaQprio
                     end
                     % Set the state for the next episode
                     s = sp;
+                end
+                % Clear old episode
+                if (obj.SHOW)
+                    delete(rects1); delete(arrs1); delete(arrs2);
                 end
             end
         end
