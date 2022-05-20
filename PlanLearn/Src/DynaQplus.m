@@ -23,9 +23,9 @@ classdef DynaQplus
         pi;         % Current policy
         V;          % Current state value function
         Q;          % Current state-action value function
-        Pdet;       % Tansition matrix of a sample model
+        Pdet;       % Tansition matrix
         R;          % Reward matrix
-        tau;        % Number of times a pair has been visited
+        tau;        % Elapsed time counter
     end
 
     methods
@@ -61,7 +61,7 @@ classdef DynaQplus
 
         % Dyna-Q+ algorithm
         function obj = dyna(obj)
-            % Create the figure
+            % SHOW: Create the figure
             if (obj.SHOW)
                 figure();
                 ax1 = subplot(1, 2, 1);
@@ -73,7 +73,7 @@ classdef DynaQplus
             for e = 1 : obj.nEpisodes
                 % Generate a randomic initial state
                 s = obj.env.initStates(randi(numel(obj.env.initStates)));
-                % Plot initial data
+                % SHOW: Plot initial data
                 if (obj.SHOW)
                     sts = s;
                     rects1 = obj.env.plotPath(ax1, sts);
@@ -136,7 +136,7 @@ classdef DynaQplus
                     % Set the state for the next episode
                     s = sp;
                 end
-                % Clear old episode
+                % SHOW: Clear the old episode
                 if (obj.SHOW)
                     delete(rects1); delete(arrs1); delete(arrs2);
                 end

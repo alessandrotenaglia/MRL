@@ -62,7 +62,7 @@ arrs_prio = maze.plotPolicy(ax3, DynaPrio.pi);
 pause;
 
 % Iterate on repetitions
-nRepetitions = 1e2;
+nRepetitions = 50;
 for r = 1 : nRepetitions
     % Update repetition number
     sgtitle(sprintf(['Maze\n' ...

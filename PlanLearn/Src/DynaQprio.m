@@ -5,11 +5,11 @@
 %  Email: alessandro.tenaglia@uniroma2.it  %
 % ---------------------------------------- %
 
-% Temporal Difference algorithms
+% Dyna-Q Priorized algorithm
 classdef DynaQprio
 
     properties (Constant)
-        SHOW = true;  % Flag to show plots
+        SHOW = false;  % Flag to show plots
     end
 
     properties
@@ -17,14 +17,14 @@ classdef DynaQprio
         alpha;      % Step size
         eps;        % Degree of exploration
         gamma;      % Discount factor
-        theta;      % Treshold
+        theta;      % Threshold for prioritues
         nEpisodes;  % Number of episodes
         pi;         % Current policy
         V;          % Current state value function
         Q;          % Current state-action value function
-        Pdet;          % Transition matrix
+        Pdet;       % Transition matrix
         R;          % Reward matrix
-        I;          % Pairs
+        I;          % Tranistion pairs
         PQ;         % Priority Queue
     end
 
@@ -61,7 +61,7 @@ classdef DynaQprio
 
         % Dyna-Q Priorized algorithm
         function obj = dyna(obj)
-            % Create the figure
+            % SHOW: Create the figure
             if (obj.SHOW)
                 figure();
                 ax1 = subplot(1, 2, 1);
@@ -73,7 +73,7 @@ classdef DynaQprio
             for e = 1 : obj.nEpisodes
                 % Generate a randomic initial state
                 s = obj.env.initStates(randi(numel(obj.env.initStates)));
-                % Plot initial data
+                % SHOW: Plot initial data
                 if (obj.SHOW)
                     sts = s;
                     rects1 = obj.env.plotPath(ax1, sts);
@@ -155,7 +155,7 @@ classdef DynaQprio
                     % Set the state for the next episode
                     s = sp;
                 end
-                % Clear old episode
+                % SHOW: Clear old episode
                 if (obj.SHOW)
                     delete(rects1); delete(arrs1); delete(arrs2);
                 end
