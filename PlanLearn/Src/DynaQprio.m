@@ -115,7 +115,7 @@ classdef DynaQprio
                     % Iterate until the queue is empty
                     while (obj.PQ.nElems > 0)
                         % Pop the first element
-                        [obj.PQ, pair] = obj.PQ.pop();
+                        [obj.PQ, ~, pair] = obj.PQ.pop();
                         sl = pair(1);
                         al = pair(2);
                         spl = obj.Pdet(sl, al);

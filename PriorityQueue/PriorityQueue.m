@@ -102,13 +102,15 @@ classdef PriorityQueue
 
         % Pops the first element of the queue.
         %
+        % return prio: the priority of element that has been removed
         % return elem: the element that has been removed
-        function [obj, elem] = pop(obj)
+        function [obj, prio, elem] = pop(obj)
             % Check the element dimension
             if (obj.nElems == 0)
                 error('Error: the queue is empty.')
             end
             % Save the first element
+            prio = obj.elems(1, 1);
             elem = obj.elems(1, 2:end);
             % Decrease the counter of elements
             obj.nElems = obj.nElems - 1;
