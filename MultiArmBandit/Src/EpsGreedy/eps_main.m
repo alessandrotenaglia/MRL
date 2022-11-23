@@ -10,7 +10,7 @@ clear; close all; clc;
 %% Deterministic and stationary case: constant vs decreasing eps
 close all;
 rng(1);
-nArms = 4;
+nArms = 1;
 means = (1:nArms)';
 stdevs = zeros(nArms, 1);
 stat = true;
