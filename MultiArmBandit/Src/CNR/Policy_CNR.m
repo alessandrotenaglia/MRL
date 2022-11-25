@@ -38,23 +38,28 @@ classdef (Abstract) Policy_CNR
 
         % Run an episode
         function obj = run(obj)
-            % Iterate nIters times
-            disp('iterating...');
+            % Iterate nIters times            
             for iter = 1 : obj.nIters
-                % set the environment
-                obj.bandit.write_env;
-                % select action
-                actIndex = obj.chooseAct(iter);
-                % define the action
-                obj.bandit.write_act(actIndex);
-                % run the simulation
-                obj.bandit = obj.bandit.run_simulation;
-                % Get the reward
-                obj.bandit = obj.bandit.read_reward;
-                % Store simluation data
-                obj = obj.storeData(iter, actIndex, obj.bandit.reward);
-                % Update policy params
-                obj = obj.updateParams(iter, actIndex, obj.bandit.reward);
+                clc
+                disp([num2str(iter),'/',num2str(obj.nIters)]);
+                try
+                    % set the environment
+                    obj.bandit.write_env;
+                    % select action
+                    actIndex = obj.chooseAct(iter);
+                    % define the action
+                    obj.bandit.write_act(actIndex);
+                    % run the simulation
+                    obj.bandit = obj.bandit.run_simulation;
+                    % Get the reward
+                    obj.bandit = obj.bandit.read_reward;
+                    % Store simluation data
+                    obj = obj.storeData(iter, actIndex, obj.bandit.reward);
+                    % Update policy params
+                    obj = obj.updateParams(iter, actIndex, obj.bandit.reward);
+                catch
+                    iter = iter-1;
+                end
             end
         end
 

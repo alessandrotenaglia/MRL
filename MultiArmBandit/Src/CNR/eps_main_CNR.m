@@ -13,9 +13,9 @@ rng(1);
 nArms = 1;
 stat = true;
 alphas = 0.0;
-nIters = 1e2;
+nIters = 2e2;
 initEst = zeros(nArms, 1);
-epsilons = 0.9;
+epsilons = 0.1;
 epsconst = true;
 
 % define input
