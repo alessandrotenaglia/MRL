@@ -18,6 +18,8 @@ classdef (Abstract) Policy_CNR
         avgReward;  % Average reward
         meansEst;   % Estimate of means
         nOpt;       % Number of optimal actions taken
+        sim_data;   % structure with all the data from simulations
+        iter;       % current iteration
     end
 
     methods
@@ -42,6 +44,7 @@ classdef (Abstract) Policy_CNR
             for iter = 1 : obj.nIters
                 clc
                 disp([num2str(iter),'/',num2str(obj.nIters)]);
+                obj.iter = iter;
                 try
                     % set the environment
                     obj.bandit.write_env;
@@ -59,7 +62,7 @@ classdef (Abstract) Policy_CNR
                     obj = obj.updateParams(iter, actIndex, obj.bandit.reward);
                 catch
                     iter = iter-1;
-                end
+                end                
             end
         end
 
@@ -85,7 +88,109 @@ classdef (Abstract) Policy_CNR
                 % Q_a(k) = alpha * R + (1 - alpha) * Q_a(k-1)
                 obj.meansEst(actIndex, iter) = obj.meansEst(actIndex, iter) + ...
                     obj.alpha * (reward - obj.meansEst(actIndex, iter));
-            end            
+            end   
+
+            %%% store data from simulation %%
+            % get names in Risultati
+            a = dir(obj.bandit.dir_results);
+            pos = find(a(end).name == '_');
+            number = a(end).name(1:pos-1);        
+            % mask
+            T = readtable(strcat(obj.bandit.dir_results,'/',number,'_OUTPUTMask.csv'));
+            a = T.Variables;
+            obj.sim_data.mask_no(:,obj.iter) = a(~isnan(a(:,2)),2);
+            obj.sim_data.mask_surgical(:,obj.iter) = a(~isnan(a(:,3)),3);
+            obj.sim_data.mask_ffp2(:,obj.iter) = a(~isnan(a(:,4)),4);
+            % mask cumulata
+            T = readtable(strcat(obj.bandit.dir_results,'/',number,'OUTPUTMaskCumulata.csv'));
+            a = T.Variables;
+            obj.sim_data.mask_no_cumul(:,obj.iter) = a(~isnan(a(:,2)),2);
+            obj.sim_data.mask_surgical_cumul(:,obj.iter) = a(~isnan(a(:,3)),3);
+            obj.sim_data.mask_ffp2_cumul(:,obj.iter) = a(~isnan(a(:,4)),4);
+            % people
+            T = readtable(strcat(obj.bandit.dir_results,'/',number,'_OUTPUTPeople.csv'));
+            a = T.Variables;
+            obj.sim_data.people_tot(:,obj.iter) = a(~isnan(a(:,2)),2);
+            obj.sim_data.people_pos(:,obj.iter) = a(~isnan(a(:,3)),3);
+            obj.sim_data.people_contact(:,obj.iter) = a(~isnan(a(:,4)),4);
+            % people cumulata
+            T = readtable(strcat(obj.bandit.dir_results,'/',number,'OUTPUTPeopleCumulata.csv'));
+            a = T.Variables;
+            obj.sim_data.people_tot_cumul(:,obj.iter) = a(~isnan(a(:,2)),2);
+            obj.sim_data.people_pos_cumul(:,obj.iter) = a(~isnan(a(:,3)),3);
+            obj.sim_data.people_contact_cumul(:,obj.iter) = a(~isnan(a(:,4)),4);
+            % risk
+            T = readtable(strcat(obj.bandit.dir_results,'/',number,'_OUTPUTRisk.csv'));
+            a = T.Variables;
+            obj.sim_data.risk(:,obj.iter) = a(~isnan(a(:,2)),2);
+            % time
+            obj.sim_data.time = a(~isnan(a(:,1)),1);
+            % check mask and people            
+            obj.sim_data.mask_tot(:,obj.iter) = obj.sim_data.mask_no(:,obj.iter) + obj.sim_data.mask_surgical(:,obj.iter) + obj.sim_data.mask_ffp2(:,obj.iter);
+
+            % clear result directory
+            command = strcat({'rm -r'}, {' '}, obj.bandit.dir_results);
+            system(command{1});
+        end
+
+        % plot data
+        function obj = plot(obj)
+            % people
+            figure(1);
+            grid on
+            hold on
+            title('People')
+            plot(obj.sim_data.time,obj.sim_data.people_tot,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.people_pos,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.people_contact,'LineWidth',2);
+            legend('tot','pos','contact')
+
+            % people cumulate
+            figure(2);
+            grid on
+            hold on
+            title('People cumulate')
+            plot(obj.sim_data.time,obj.sim_data.people_tot_cumul,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.people_pos_cumul,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.people_contact_cumul,'LineWidth',2);
+            legend('tot','pos','contact')
+
+            % people
+            figure(3);
+            grid on
+            hold on
+            title('Mask')
+            plot(obj.sim_data.time,obj.sim_data.mask_no,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_surgical,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_ffp2,'LineWidth',2);
+            legend('no','surgical','ffp2')
+
+            % people cumulate
+            figure(4);
+            grid on
+            hold on
+            title('Mask cumulate')
+            plot(obj.sim_data.time,obj.sim_data.mask_no_cumul,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_surgical_cumul,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_ffp2_cumul,'LineWidth',2);
+            legend('no','surgical','ffp2')
+
+            % risk
+            figure(5);
+            grid on
+            hold on
+            title('Risk')
+            plot(obj.sim_data.time,obj.sim_data.risk,'LineWidth',2);
+
+            % check mask and people
+            figure(6)
+            grid on
+            hold on
+            plot(obj.sim_data.time,obj.sim_data.people_tot,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_tot,'LineWidth',2);
+            legend('people tot','mask tot')
+
+            
         end
     end
 

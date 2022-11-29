@@ -74,11 +74,7 @@ classdef Bandit_CNR < handle
             T = readtable(obj.output_file);
             data = T.Variables;
             data = data(~isnan(data(:,2)),2);
-            obj.reward = 1/mean(data);
-
-            % clear result directory
-            command = strcat({'rm -r'}, {' '}, obj.dir_results);
-            system(command{1});
+            obj.reward = 1/mean(data);            
         end        
 
         % Set value in the environment
@@ -127,8 +123,8 @@ classdef Bandit_CNR < handle
         function obj = run_simulation(obj)
             command = strcat('mkdir ', {' '}, obj.dir_results);
             system(command{1});
-            obj.response = system(strcat('./',obj.exec_file));
-            %system(['cp Openness_model/dummyOutput.xlsx ', obj.dir_results, '/111_OUTPUTRisk.xlsx']);
+            %obj.response = system(strcat('./',obj.exec_file));
+            system(['cp Openness_model/dummyOutput.xlsx ', obj.dir_results, '/111_OUTPUTRisk.xlsx']);
             % get names in Risultati
             a = dir(obj.dir_results);
             pos = find(a(end).name == '_');
