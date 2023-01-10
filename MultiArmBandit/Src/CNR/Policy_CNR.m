@@ -25,10 +25,10 @@ classdef (Abstract) Policy_CNR
     methods
         % Class constructor
         function obj = Policy_CNR(stat, alpha, nIters, initEst, ...
-                                  input_file, exec_file, dir_results, action_table)
+                                  input_file, exec_file, dir_results, dir_storage, action_table)
             % Set params
             obj.alpha = alpha;
-            obj.bandit = Bandit_CNR(stat, input_file, exec_file, dir_results, action_table);
+            obj.bandit = Bandit_CNR(stat, input_file, exec_file, dir_results, dir_storage, action_table);
             obj.nIters = nIters;
             % Init arrays to store simulation data
             obj.actCnt = zeros(obj.bandit.nActs, 1);
@@ -129,20 +129,23 @@ classdef (Abstract) Policy_CNR
             obj.sim_data.mask_tot(:,obj.iter) = obj.sim_data.mask_no(:,obj.iter) + obj.sim_data.mask_surgical(:,obj.iter) + obj.sim_data.mask_ffp2(:,obj.iter);
 
             % clear result directory
-            command = strcat({'rm -r'}, {' '}, obj.bandit.dir_results);
+            store_dir = strcat(obj.bandit.dir_storage,'/',number,'/');
+            command = strcat({'mkdir '}, store_dir);
+            system(command{1});
+            command = strcat({'mv'}, {' '}, obj.bandit.dir_results,{'/* '}, store_dir);
             system(command{1});
         end
 
         % plot data
-        function obj = plot(obj)
+        function obj = plot(obj,sim)
             % people
             figure(1);
             grid on
             hold on
             title('People')
-            plot(obj.sim_data.time,obj.sim_data.people_tot,'LineWidth',2);
-            plot(obj.sim_data.time,obj.sim_data.people_pos,'LineWidth',2);
-            plot(obj.sim_data.time,obj.sim_data.people_contact,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.people_tot(:,sim),'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.people_pos(:,sim),'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.people_contact(:,sim),'LineWidth',2);
             legend('tot','pos','contact')
 
             % people cumulate
@@ -150,9 +153,9 @@ classdef (Abstract) Policy_CNR
             grid on
             hold on
             title('People cumulate')
-            plot(obj.sim_data.time,obj.sim_data.people_tot_cumul,'LineWidth',2);
-            plot(obj.sim_data.time,obj.sim_data.people_pos_cumul,'LineWidth',2);
-            plot(obj.sim_data.time,obj.sim_data.people_contact_cumul,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.people_tot_cumul(:,sim),'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.people_pos_cumul(:,sim),'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.people_contact_cumul(:,sim),'LineWidth',2);
             legend('tot','pos','contact')
 
             % people
@@ -160,9 +163,9 @@ classdef (Abstract) Policy_CNR
             grid on
             hold on
             title('Mask')
-            plot(obj.sim_data.time,obj.sim_data.mask_no,'LineWidth',2);
-            plot(obj.sim_data.time,obj.sim_data.mask_surgical,'LineWidth',2);
-            plot(obj.sim_data.time,obj.sim_data.mask_ffp2,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_no(:,sim),'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_surgical(:,sim),'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_ffp2(:,sim),'LineWidth',2);
             legend('no','surgical','ffp2')
 
             % people cumulate
@@ -170,9 +173,9 @@ classdef (Abstract) Policy_CNR
             grid on
             hold on
             title('Mask cumulate')
-            plot(obj.sim_data.time,obj.sim_data.mask_no_cumul,'LineWidth',2);
-            plot(obj.sim_data.time,obj.sim_data.mask_surgical_cumul,'LineWidth',2);
-            plot(obj.sim_data.time,obj.sim_data.mask_ffp2_cumul,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_no_cumul(:,sim),'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_surgical_cumul(:,sim),'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_ffp2_cumul(:,sim),'LineWidth',2);
             legend('no','surgical','ffp2')
 
             % risk
@@ -180,14 +183,14 @@ classdef (Abstract) Policy_CNR
             grid on
             hold on
             title('Risk')
-            plot(obj.sim_data.time,obj.sim_data.risk,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.risk(:,sim),'LineWidth',2);
 
             % check mask and people
             figure(6)
             grid on
             hold on
-            plot(obj.sim_data.time,obj.sim_data.people_tot,'LineWidth',2);
-            plot(obj.sim_data.time,obj.sim_data.mask_tot,'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.people_tot(:,sim),'LineWidth',2);
+            plot(obj.sim_data.time,obj.sim_data.mask_tot(:,sim),'LineWidth',2);
             legend('people tot','mask tot')
 
             

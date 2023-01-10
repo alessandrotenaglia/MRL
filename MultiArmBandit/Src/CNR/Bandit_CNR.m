@@ -23,18 +23,20 @@ classdef Bandit_CNR < handle
         exec_file;      % executable file to run the simulation
         response;       % simulator response
         dir_results;    % results directory
+        dir_storage;    % all sim storage 
         reward;         % simulation reward
         env;            % struct with current env
     end
 
     methods
         % Class constructor
-        function obj = Bandit_CNR(stat, input_file, exec_file, dir_results, action_table)
+        function obj = Bandit_CNR(stat, input_file, exec_file, dir_results, dir_storage, action_table)
             % Set properties of the bandit                      
             obj.stat = stat;
             % input file
             obj.input_file = input_file;           
             obj.dir_results = dir_results;
+            obj.dir_storage = dir_storage;
             % Create a local random number generator
             obj.rng = RandStream('dsfmt19937', 'Seed', 42);
             % Why 42? It's the Answer to the Ultimate Question of Life,
@@ -44,6 +46,11 @@ classdef Bandit_CNR < handle
             obj.reward = 5;
             % define action table
             obj.define_actiontable(action_table);
+            % create directories
+            command = strcat('mkdir ', {' '}, obj.dir_results);
+            system(command{1});
+            command = strcat('mkdir ', {' '}, obj.dir_storage);
+            system(command{1});
         end
 
         % define action table
@@ -120,11 +127,9 @@ classdef Bandit_CNR < handle
         end
 
         % run simulation
-        function obj = run_simulation(obj)
-            command = strcat('mkdir ', {' '}, obj.dir_results);
-            system(command{1});
-            %obj.response = system(strcat('./',obj.exec_file));
-            system(['cp Openness_model/dummyOutput.xlsx ', obj.dir_results, '/111_OUTPUTRisk.xlsx']);
+        function obj = run_simulation(obj)            
+            obj.response = system(strcat('./',obj.exec_file));
+            %system(['cp Openness_model/dummyOutput.xlsx ', obj.dir_results, '/111_OUTPUTRisk.xlsx']);
             % get names in Risultati
             a = dir(obj.dir_results);
             pos = find(a(end).name == '_');
