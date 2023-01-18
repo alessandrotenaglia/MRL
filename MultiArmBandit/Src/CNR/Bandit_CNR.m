@@ -26,6 +26,7 @@ classdef Bandit_CNR < handle
         dir_storage;    % all sim storage 
         reward;         % simulation reward
         env;            % struct with current env
+        dummy = 0;
     end
 
     methods
@@ -77,11 +78,19 @@ classdef Bandit_CNR < handle
 
         % Get the reward
         function obj = read_reward(obj)
-            % get the reward from STAM results
-            T = readtable(obj.output_file);
-            data = T.Variables;
-            data = data(~isnan(data(:,2)),2);
-            obj.reward = 1/mean(data);            
+
+            if ~obj.dummy
+                % get the reward from STAM results
+                T = readtable(obj.output_file);
+                data = T.Variables;
+                data = data(~isnan(data(:,2)),2);
+                obj.reward = 1/(1+mean(data));   
+            else
+                % dummy test            
+                obj.reward = rand();
+            end
+
+            
         end        
 
         % Set value in the environment
@@ -127,9 +136,12 @@ classdef Bandit_CNR < handle
         end
 
         % run simulation
-        function obj = run_simulation(obj)            
-            obj.response = system(strcat('./',obj.exec_file));
-            %system(['cp Openness_model/dummyOutput.xlsx ', obj.dir_results, '/111_OUTPUTRisk.xlsx']);
+        function obj = run_simulation(obj)  
+            if ~obj.dummy
+                obj.response = system(strcat('./',obj.exec_file));
+            else
+                system(['cp Versione6_Oliva/dummyOutput.xlsx Versione6_Oliva/Risultati/_OUTPUTRisk.xlsx']);
+            end
             % get names in Risultati
             a = dir(obj.dir_results);
             pos = find(a(end).name == '_');

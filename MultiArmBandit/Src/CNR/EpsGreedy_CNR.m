@@ -12,6 +12,7 @@ classdef EpsGreedy_CNR < Policy_CNR
         % Eps-greedy params
         eps;    % Degree of exploration
         const;  % True if eps is constant, false otherwise
+        decay = 1.05;
     end
 
     methods
@@ -53,7 +54,7 @@ classdef EpsGreedy_CNR < Policy_CNR
                 % x = @(t) exp(-lambda*t);
                 % hold on; plot(t, x(t)); plot(t, x(tbar)*ones(size(t)), 'k-')
                 obj.eps(iter+1) = obj.eps(1) * ...
-                    exp((log(0.05) / (obj.nIters/3)) * iter);
+                    exp((log(0.05) / (obj.nIters/obj.decay)) * iter);
             end
         end
     end
